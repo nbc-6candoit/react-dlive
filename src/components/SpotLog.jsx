@@ -10,9 +10,36 @@ const SpotLog = () => {
         <StHorizontalLine />
       </StDetailInfo>
       <StLogListWrapper>
-        <LogCard />
-        <LogCard />
-        <LogCard />
+        <LogCard
+          src="https://www.readersnews.com/news/photo/201809/90001_50000_293.jpg"
+          spotName="안반데기"
+          nickName="닉네임"
+          contents="한국에서 가장 높은 곳에 위치한 마을강릉 안반데기는
+        해발 1,100m에 위치한 만큼가슴 속까지 뻥- 뚫리는 뷰를 마주할 수 있어요.
+        사실 안반데기의 진가는 밤이 되면 나타나는데요.
+        칠흑같은 밤하늘을 수놓은 별들이마치 쏟아질 듯 아름다운 풍경을 자아낸답니다.
+        깨끗한 공기와 영롱한 자연의 진가를확인하기에는 최적의 차박 명소예요."
+        />
+        <LogCard
+          src="https://www.readersnews.com/news/photo/201809/90001_50000_293.jpg"
+          spotName="안반데기"
+          nickName="닉네임"
+          contents="한국에서 가장 높은 곳에 위치한 마을강릉 안반데기는
+        해발 1,100m에 위치한 만큼가슴 속까지 뻥- 뚫리는 뷰를 마주할 수 있어요.
+        사실 안반데기의 진가는 밤이 되면 나타나는데요.
+        칠흑같은 밤하늘을 수놓은 별들이마치 쏟아질 듯 아름다운 풍경을 자아낸답니다.
+        깨끗한 공기와 영롱한 자연의 진가를확인하기에는 최적의 차박 명소예요."
+        />
+        <LogCard
+          src="https://www.readersnews.com/news/photo/201809/90001_50000_293.jpg"
+          spotName="안반데기"
+          nickName="닉네임"
+          contents="한국에서 가장 높은 곳에 위치한 마을강릉 안반데기는
+        해발 1,100m에 위치한 만큼가슴 속까지 뻥- 뚫리는 뷰를 마주할 수 있어요.
+        사실 안반데기의 진가는 밤이 되면 나타나는데요.
+        칠흑같은 밤하늘을 수놓은 별들이마치 쏟아질 듯 아름다운 풍경을 자아낸답니다.
+        깨끗한 공기와 영롱한 자연의 진가를확인하기에는 최적의 차박 명소예요."
+        />
       </StLogListWrapper>
     </StSpotInfoContainer>
   );

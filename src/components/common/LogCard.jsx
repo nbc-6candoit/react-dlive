@@ -2,24 +2,19 @@ import React from "react";
 import styled from "styled-components";
 import Avatar from "./Avatar";
 
-const LogCard = () => {
+const LogCard = ({ src, spotName, nickName, contents }) => {
   return (
     <StLogCard>
       <StImgWrapper>
-        <img
-          src="https://www.readersnews.com/news/photo/201809/90001_50000_293.jpg"
-          alt="안반데기"
-        />
+        <img src={src} alt={spotName} />
       </StImgWrapper>
       <StLogWrapper>
         <div>
           <Avatar />
-          <h4>닉네임</h4>
+          <h4>{nickName}</h4>
         </div>
         <div>
-          <p>
-            리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰리뷰
-          </p>
+          <p>{contents}</p>
         </div>
       </StLogWrapper>
     </StLogCard>
