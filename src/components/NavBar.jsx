@@ -30,7 +30,7 @@ export const NavBar = () => {
 export default NavBar;
 
 const StNavContainer = styled.div`
-  width: 750px;
+  width: 100%;
   height: 56px;
   display: flex;
   padding: 5px;
