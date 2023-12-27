@@ -106,20 +106,20 @@ const StLogListWrapper = styled.div`
 `;
 
 const StLogCard = styled.div`
-  width: 700px;
+  width: 80%;
   max-height: 120px;
   display: flex;
   gap: 1.2rem;
 `;
 
 const StImgWrapper = styled.div`
-  width: 120px;
+  width: 150px;
   height: 120px;
-  overflow: hidden;
   border-radius: 0.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
   & img {
     width: 100%;
     height: 100%;
