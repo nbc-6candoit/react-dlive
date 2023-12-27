@@ -34,6 +34,7 @@ const StNavContainer = styled.div`
   height: 56px;
   display: flex;
   padding: 5px;
+  justify-content: space-between;
   background: #ebebeb;
 `;
 const StNavLogo = styled.img`
@@ -43,7 +44,6 @@ const StNavLogo = styled.img`
   align-items: center;
   width: 110px;
   height: 44px;
-
   cursor: pointer;
 `;
 export const StBtnInputWrapper = styled.div`
@@ -55,20 +55,19 @@ export const StBtnInputWrapper = styled.div`
 export const StHeaderButton = styled.button`
   display: flex;
   flex-direction: row;
-  justify-content: center;
   align-items: center;
   gap: 30px;
+
   margin: 0 auto 5 30px;
   cursor: pointer;
-  /* &:hover {
-    border: solid #0000;
-  } */
   & button {
-    color: #000;
+    color: #5eb470;
     font-family: Inter;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+
+    border: 2px solid #5eb470;
   }
 `;

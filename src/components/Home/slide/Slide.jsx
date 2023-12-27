@@ -14,6 +14,7 @@ const SlideImage = styled.img`
   padding: 100px;
   width: 100%;
   height: 100%;
+  border-radius: 2px;
 
-  background-color: greenyellow;
+  background-color: #5eb470;
 `;
