@@ -3,6 +3,10 @@ import styled from "styled-components";
 import LogCard from "./common/LogCard";
 
 const SpotLog = () => {
+  const handleMoreLogClick = () => {
+    alert("더보기");
+  };
+
   return (
     <StSpotInfoContainer>
       <StDetailInfo>
@@ -41,6 +45,9 @@ const SpotLog = () => {
         깨끗한 공기와 영롱한 자연의 진가를확인하기에는 최적의 차박 명소예요."
         />
       </StLogListWrapper>
+      <StMoreLogButton onClick={handleMoreLogClick}>
+        차박로그 더보기
+      </StMoreLogButton>
     </StSpotInfoContainer>
   );
 };
@@ -76,4 +83,13 @@ const StLogListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
+`;
+
+const StMoreLogButton = styled.button`
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  width: 80%;
+  padding: 0.7rem;
+  text-align: center;
+  cursor: pointer;
 `;
