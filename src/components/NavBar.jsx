@@ -1,7 +1,10 @@
 import React from "react";
+import styled from "styled-components";
 
 const NavBar = () => {
-  return <div>NavBar</div>;
+  return <StNavContainer>NavBar</StNavContainer>;
 };
 
 export default NavBar;
+
+const StNavContainer = styled.div``;
