@@ -1,7 +1,7 @@
 // 차박명소 상세페이지(Spot)
 import React from "react";
-import SpotInfo from "components/SpotInfo";
-import SpotLog from "components/SpotLog";
+import SpotInfo from "components/SpotDetail/SpotInfo";
+import SpotLog from "components/SpotDetail/SpotLog";
 import styled from "styled-components";
 
 const Spot = () => {
