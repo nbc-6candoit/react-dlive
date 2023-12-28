@@ -11,12 +11,13 @@ export const Slide = () => {
     infinite: true,
     speed: 2000,
     autoplay: true,
-    autoplaySpeed: 1000, // Fixed property name
+    autoplaySpeed: 1000,
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: true,
     pauseOnHover: true,
     focusOnSelect: true,
+    pauseOnDotsHover: true, // 마우스 드래그 기능
   };
 
   return (
