@@ -1,8 +1,29 @@
 // Global Button
 import React from "react";
+import styled from "styled-components";
 
-const Button = () => {
-  return <div>Button</div>;
+const Button = ({ text, onClick, width }) => {
+  return (
+    <StButton onClick={onClick} width={width}>
+      {text}
+    </StButton>
+  );
 };
 
 export default Button;
+
+const StButton = styled.button`
+  width: ${(props) => (props.width ? props.width : "100%")};
+  height: 48px;
+  font-size: 16px;
+  color: #5eb470;
+  border-radius: 5px;
+  border: 1px solid #5eb470;
+  margin-top: 40px;
+  cursor: pointer;
+  transition: background 200ms;
+  &:hover {
+    color: #fff;
+    background: #5eb470;
+  }
+`;
