@@ -1,18 +1,19 @@
 // 차박명소 등록페이지(AddSpot)
 import Tag from "components/common/Tag";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "shared/firebase";
 import { v4 as uuid } from "uuid";
-import { PiToilet } from "react-icons/pi";
-import { PiShower } from "react-icons/pi";
-import { AiOutlineShop } from "react-icons/ai";
-import { PiSignpost } from "react-icons/pi";
-import { PiDog } from "react-icons/pi";
+import { FaToilet } from "react-icons/fa";
+import { FaShower } from "react-icons/fa";
+import { AiFillShop } from "react-icons/ai";
+import { BsFillSignpost2Fill } from "react-icons/bs";
+import { MdOutlinePets } from "react-icons/md";
 import { FaPlus } from "react-icons/fa6";
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
+import { FaSink } from "react-icons/fa";
 import Button from "components/common/Button";
 
 const AddSpot = () => {
@@ -23,7 +24,47 @@ const AddSpot = () => {
   const [thumnailImages, setThumnailImages] = useState([]);
   const [mapCenter, setMapCenter] = useState(null);
 
+  const [selectedView, setSelectedView] = useState(null);
+  const [selectedSeasons, setSelectedSeasons] = useState([]);
+  const [selectedFacilities, setSelectedFacilities] = useState([]);
   const fileRef = useRef(null);
+
+  const [clickedFacilities, setClickedFacilities] = useState({
+    toilet: false,
+    shower: false,
+    sink: false,
+    shop: false,
+    trail: false,
+    pets: false,
+  });
+
+  const handleFacilityClick = (facility) => {
+    setClickedFacilities((prev) => ({
+      ...prev,
+      [facility]: !prev[facility],
+    }));
+  };
+
+  useEffect(() => {
+    setSelectedFacilities(
+      Object.entries(clickedFacilities)
+        .filter(([key, value]) => value)
+        .map(([key]) => key)
+    );
+  }, [clickedFacilities]);
+
+  const handleTagClick = (tagName, category) => {
+    switch (category) {
+      case "view":
+        setSelectedView(tagName);
+        break;
+      case "seasons":
+        setSelectedSeasons((prev) => [...prev, tagName]);
+        break;
+      default:
+        break;
+    }
+  };
 
   const handleChangeSpotName = (e) => {
     setName(e.target.value);
@@ -32,12 +73,6 @@ const AddSpot = () => {
   const handleChangeSpotLocation = (e) => {
     setLocation(e.target.value);
   };
-
-  const handleChangeSpotSum = (e) => {
-    setSum(e.target.value);
-  };
-
-  window.google.maps.event.addDomListener(window, "load", () => {});
 
   const handleLocationSeacrchButton = async (e) => {
     e.preventDefault();
@@ -61,6 +96,10 @@ const AddSpot = () => {
       };
       setMapCenter(newCenter);
     });
+  };
+
+  const handleChangeSpotSum = (e) => {
+    setSum(e.target.value);
   };
 
   const handleAddContent = (e) => {
@@ -97,10 +136,15 @@ const AddSpot = () => {
         imageUrls.push(imageUrl);
       }
 
-      // 차박로그 업로드
-      const docRef = await addDoc(collection(db, "log"), {
+      // 차박명소 업로드
+      const docRef = await addDoc(collection(db, "spot"), {
         id: uuid(),
         name,
+        location,
+        view: selectedView,
+        seasons: selectedSeasons,
+        facilities: selectedFacilities,
+        sum,
         content,
         images: imageUrls,
       });
@@ -146,56 +190,121 @@ const AddSpot = () => {
         </StBox>
         <StBox>
           <StInfoWrapper>
-            <label>뷰</label>
+            <p>뷰</p>
             <StTag>
-              <Tag tagName="마운틴뷰" />
-              <Tag tagName="리버뷰" />
-              <Tag tagName="오션뷰" />
-              <Tag tagName="신설" />
+              <Tag
+                tagName="마운틴뷰"
+                category="view"
+                onClick={(tagName, category) =>
+                  handleTagClick(tagName, category)
+                }
+              />
+              <Tag
+                tagName="리버뷰"
+                category="view"
+                onClick={(tagName, category) =>
+                  handleTagClick(tagName, category)
+                }
+              />
+              <Tag
+                tagName="오션뷰"
+                category="view"
+                onClick={(tagName, category) =>
+                  handleTagClick(tagName, category)
+                }
+              />
             </StTag>
           </StInfoWrapper>
         </StBox>
         <StBox>
           <StInfoWrapper>
-            <label>추천계절</label>
+            <p>추천계절</p>
             <StTag>
-              <Tag tagName="봄" />
-              <Tag tagName="여름" />
-              <Tag tagName="가을" />
-              <Tag tagName="겨울" />
+              <Tag
+                tagName="봄"
+                category="seasons"
+                onClick={(tagName, category) =>
+                  handleTagClick(tagName, category)
+                }
+              />
+              <Tag
+                tagName="여름"
+                category="seasons"
+                onClick={(tagName, category) =>
+                  handleTagClick(tagName, category)
+                }
+              />
+              <Tag
+                tagName="가을"
+                category="seasons"
+                onClick={(tagName, category) =>
+                  handleTagClick(tagName, category)
+                }
+              />
+              <Tag
+                tagName="겨울"
+                category="seasons"
+                onClick={(tagName, category) =>
+                  handleTagClick(tagName, category)
+                }
+              />
             </StTag>
           </StInfoWrapper>
         </StBox>
         <StInfoWrapper>
-          <label>편의시설</label>
+          <p>편의시설</p>
           <StIconContainer>
             <div>
-              <StIconWrapper>
-                <PiToilet />
+              <StIconWrapper
+                clicked={clickedFacilities.toilet}
+                onClick={() => handleFacilityClick("toilet")}
+              >
+                <FaToilet />
                 <p>화장실</p>
               </StIconWrapper>
             </div>
             <div>
-              <StIconWrapper>
-                <PiShower />
+              <StIconWrapper
+                clicked={clickedFacilities.shower}
+                onClick={() => handleFacilityClick("shower")}
+              >
+                <FaShower />
                 <p>샤워실</p>
               </StIconWrapper>
             </div>
             <div>
-              <StIconWrapper>
-                <AiOutlineShop />
+              <StIconWrapper
+                clicked={clickedFacilities.sink}
+                onClick={() => handleFacilityClick("sink")}
+              >
+                <FaSink />
+                <p>싱크대</p>
+              </StIconWrapper>
+            </div>
+            <div>
+              <StIconWrapper
+                clicked={clickedFacilities.shop}
+                onClick={() => handleFacilityClick("shop")}
+              >
+                <AiFillShop />
                 <p>매점</p>
               </StIconWrapper>
             </div>
             <div>
-              <StIconWrapper>
-                <PiSignpost />
+              <StIconWrapper
+                clicked={clickedFacilities.trail}
+                onClick={() => handleFacilityClick("trail")}
+              >
+                <BsFillSignpost2Fill />
                 <p>산책로</p>
               </StIconWrapper>
             </div>
             <div>
-              <StIconWrapper>
-                <PiDog />
+              <StIconWrapper
+                clicked={clickedFacilities.pets}
+                onClick={() => handleFacilityClick("pets")}
+              >
+                <MdOutlinePets />
                 <p>반려동물</p>
               </StIconWrapper>
             </div>
@@ -228,12 +337,12 @@ const AddSpot = () => {
             </StImgSelect>
             {[...Array(4)].map((_, index) => (
               <StImgBox key={index}>
-                {/* {thumnailImages[index] && (
+                {thumnailImages[index] && (
                   <img
                     src={thumnailImages[index]}
                     alt={`image${index} 썸네일 이미지`}
                   />
-                )} */}
+                )}
               </StImgBox>
             ))}
           </StImgWrap>
@@ -246,9 +355,7 @@ const AddSpot = () => {
             onChange={handleAddImages}
           />
         </StBox>
-
         <Button type="submit" text="차박명소 등록하기" />
-        {/* <StButton type="submit">차박명소 등록하기</StButton> */}
       </StForm>
     </>
   );
@@ -274,6 +381,7 @@ const StBox = styled.div`
       color: #999;
     }
   }
+
   & input {
     width: 100%;
     height: 48px;
@@ -378,4 +486,6 @@ const StIconWrapper = styled.div`
   align-items: center;
   font-size: 30px;
   gap: 1px;
+  cursor: pointer;
+  color: ${(props) => (props.clicked ? "#5eb470" : "#999")};
 `;
