@@ -2,9 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import logo from "../assets/img/logo.png";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Login from "pages/Login";
 
 export const NavBar = () => {
+  const authState = useSelector((state) => state.authSlice);
+
+  console.log(authState.isLogin);
   // const dispatch = useDispatch();
   // const isLogin = useSelector((state) => state.authSlice.isLogin);
   return (
@@ -17,10 +21,15 @@ export const NavBar = () => {
           <Link to="/mypage">
             <button>마이페이지</button>
           </Link>
-          <Link to="/login">
-            <button>로그인</button>
-          </Link>
-          <button>로그아웃</button>
+          <div>
+            {authState.isLogin === true ? (
+              <button>로그아웃</button>
+            ) : (
+              <Link to="/login">
+                <button>로그인</button>
+              </Link>
+            )}
+          </div>
         </StHeaderButton>
       </StBtnInputWrapper>
     </StNavContainer>
