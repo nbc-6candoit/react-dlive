@@ -67,7 +67,5 @@ export const StHeaderButton = styled.button`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-
-    border: 2px solid #5eb470;
   }
 `;

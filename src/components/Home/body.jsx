@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Slide } from "./slide/Slide";
 import dlivelogo from "assets/img/logo.png";
 import SpotLog from "components/SpotLog";
+
 function body() {
   return (
     <>
@@ -10,6 +11,7 @@ function body() {
         <>
           <Slide />
         </>
+
         <StcategoryContainer>
           <StCategoryButton>마운틴뷰</StCategoryButton>
           <StCategoryButton>리버뷰</StCategoryButton>
@@ -43,7 +45,7 @@ function body() {
 
 export default body;
 
-const StbodyContainer = styled.div`
+const StbodyContainer = styled.main`
   overflow-y: auto;
   height: fit-content;
   margin-bottom: 50px;
@@ -55,6 +57,7 @@ const StcategoryContainer = styled.div`
   justify-content: space-between;
   text-align: center;
   padding: 30px;
+  gap: 5px;
 `;
 const StCategoryButton = styled.button`
   width: 100px;
