@@ -1,13 +1,30 @@
 import { ko } from 'date-fns/locale';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
 import { FaPlus } from 'react-icons/fa6';
+import { storage } from 'shared/firebase';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 const AddLogForm = () => {
-    const Today = new Date();
-    const [selectedDate, setSelectedDate] = useState(Today);
+    const today = new Date();
+    const [selectedDate, setSelectedDate] = useState(today);
+    const [thumnailImages, setThumnailImages] = useState([]);
+    const [title, setTitle] = useState();
+    const [content, setContent] = useState();
+
+    const [imageUpload, setImageUpload] = useState();
+
+    const handleTitle = (e) => {
+        console.log(e.target.value);
+        setTitle(e.target.value);
+    };
+
+    const handleContent = (e) => {
+        console.log(e.target.value);
+        setContent(e.target.value);
+    };
 
     const fileRef = useRef(null);
 
@@ -15,14 +32,38 @@ const AddLogForm = () => {
         fileRef.current?.click();
     };
 
-    const handleImageChange = () => {};
+    const handleAddImages = (e) => {
+        const files = e.target.files;
+        // 최대 4개까지만 선택할 수 있도록 설정
+        if (files.length > 4 || files.length + thumnailImages.length > 4) {
+            alert('최대 파일 4개만 선택해주세요');
+        } else {
+            const filesArray = Array.from(files);
+            const selectedFiles = filesArray.map((file) => URL.createObjectURL(file));
+            setThumnailImages((prev) => prev.concat(selectedFiles));
+        }
+    };
+
+    const handleSubmmit = (e) => {
+        e.preventDefault();
+        const promises = thumnailImages.map((file) => {
+            console.log('file', file);
+            const imageRef = ref(storage, `photo/${file}`);
+            return uploadBytes(imageRef, file).then((snapshot) => {
+                return getDownloadURL(snapshot.ref);
+            });
+        });
+    };
+
+    //
+    // useEffect(() => {}, [imageUpload]);
 
     return (
-        <StForm>
+        <StForm onSubmit={handleSubmmit}>
             <h2>차박로그 등록하기</h2>
             <StBox>
                 <label htmlFor='log_title'>차박로그 제목*</label>
-                <input type='text' id='log_title' />
+                <input type='text' id='log_title' value={title} onChange={handleTitle} />
             </StBox>
             <StBox>
                 <label>방문 일시*</label>
@@ -31,16 +72,15 @@ const AddLogForm = () => {
                         locale={ko}
                         dateFormat='yyyy년 MM월 dd일' // 날짜 형태
                         shouldCloseOnSelect // 날짜를 선택하면 datepicker가 자동으로 닫힘
-                        minDate={new Date('2000-01-01')} // minDate 이전 날짜 선택 불가
+                        maxDate={today} // 현재 날짜 이후의 날짜를 선택할 수 없도록 설정
                         selected={selectedDate}
                         onChange={setSelectedDate}
                     />
-                    <StDatePicker />
                 </StDate>
             </StBox>
             <StBox>
                 <label>차박로그 내용*</label>
-                <StTextarea placeholder='차박 장소를 소개해주세요!' />
+                <StTextarea value={content} onChange={handleContent} placeholder='차박 장소를 소개해주세요!' />
             </StBox>
             <StBox>
                 <label htmlFor='file'>
@@ -50,10 +90,13 @@ const AddLogForm = () => {
                     <StImgSelect onClick={handleImageClick}>
                         <FaPlus size={18} fill='#999' />
                     </StImgSelect>
-                    <StImgBox></StImgBox>
-                    <StImgBox></StImgBox>
-                    <StImgBox></StImgBox>
-                    <StImgBox></StImgBox>
+                    {[...Array(4)].map((_, index) => (
+                        <StImgBox key={index}>
+                            {thumnailImages[index] && (
+                                <img src={thumnailImages[index]} alt={`image${index} 썸네일 이미지`} />
+                            )}
+                        </StImgBox>
+                    ))}
                 </StImgWrap>
                 <input
                     ref={fileRef}
@@ -61,7 +104,7 @@ const AddLogForm = () => {
                     type='file'
                     accept='image/jpeg, image/jpg, image/png, image/webp'
                     multiple
-                    onChange={handleImageChange}
+                    onChange={handleAddImages}
                 />
             </StBox>
             <StBox>
@@ -127,6 +170,7 @@ const StTextarea = styled.textarea`
     padding: 20px;
     background: #f1f1f1;
     border-radius: 5px;
+    white-space: pre-wrap;
     resize: none;
 `;
 
@@ -144,12 +188,21 @@ const StImgSelect = styled.div`
     width: 90px;
     height: 90px;
     background: #f1f1f1;
+    border-radius: 5px;
     cursor: pointer;
 `;
 const StImgBox = styled.div`
     width: 90px;
     height: 90px;
+    border-radius: 5px;
     background: #f1f1f1;
+    overflow: hidden;
+
+    & img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 `;
 
 const StButton = styled.button`
