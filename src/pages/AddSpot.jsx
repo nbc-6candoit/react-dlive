@@ -6,15 +6,15 @@ import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "shared/firebase";
 import { v4 as uuid } from "uuid";
+import Button from "components/common/Button";
+
 import { FaToilet } from "react-icons/fa";
 import { FaShower } from "react-icons/fa";
 import { AiFillShop } from "react-icons/ai";
 import { BsFillSignpost2Fill } from "react-icons/bs";
 import { MdOutlinePets } from "react-icons/md";
 import { FaPlus } from "react-icons/fa6";
-import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import { FaSink } from "react-icons/fa";
-import Button from "components/common/Button";
 
 const AddSpot = () => {
   const [name, setName] = useState();
@@ -22,7 +22,6 @@ const AddSpot = () => {
   const [location, setLocation] = useState();
   const [sum, setSum] = useState("");
   const [thumnailImages, setThumnailImages] = useState([]);
-  const [mapCenter, setMapCenter] = useState(null);
 
   const [selectedView, setSelectedView] = useState(null);
   const [selectedSeasons, setSelectedSeasons] = useState([]);
@@ -84,7 +83,17 @@ const AddSpot = () => {
             : [...prev, tagName]
         );
         setClickedSeasons((prev) => ({ ...prev, [tagName]: !prev[tagName] }));
-
+        break;
+      case "facilities":
+        setSelectedFacilities((prev) =>
+          prev.includes(tagName)
+            ? prev.filter((facilities) => facilities !== tagName)
+            : [...prev, tagName]
+        );
+        setClickedFacilities((prev) => ({
+          ...prev,
+          [tagName]: !prev[tagName],
+        }));
         break;
       default:
         break;
@@ -102,25 +111,7 @@ const AddSpot = () => {
   const handleLocationSeacrchButton = async (e) => {
     e.preventDefault();
 
-    // Google Maps API를 이용한 주소 검색
-    const autoComplete = new window.google.maps.places.Autocomplete(
-      document.getElementById("spot_location")
-    );
-
-    autoComplete.addListener("place_changed", () => {
-      const place = autoComplete.getPlace();
-      if (!place.geomety) {
-        console.error("위치를 찾을 수 없습니다.");
-        return;
-      }
-      setLocation(place.formatted_address);
-
-      const newCenter = {
-        lat: place.geometry.location.lat(),
-        lng: place.geometry.location.lng(),
-      };
-      setMapCenter(newCenter);
-    });
+    // Naver Maps API를 이용한 주소 검색
   };
 
   const handleChangeSpotSum = (e) => {
@@ -179,6 +170,10 @@ const AddSpot = () => {
       setLocation("");
       setSum("");
       setContent("");
+      setSelectedView(null);
+      setSelectedSeasons([]);
+      setSelectedFacilities([]);
+
       setClickedView({
         마운틴뷰: false,
         리버뷰: false,
@@ -190,10 +185,7 @@ const AddSpot = () => {
         가을: false,
         겨울: false,
       });
-
-      // setSelectedView(null);
-      // setSelectedSeasons([]);
-      setSelectedFacilities({
+      setClickedFacilities({
         toilet: false,
         shower: false,
         sink: false,
@@ -239,11 +231,7 @@ const AddSpot = () => {
             />
             <button onClick={handleLocationSeacrchButton}>검색</button>
           </div>
-          <StMapWrapper>
-            <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_API}>
-              <GoogleMap center={mapCenter} zoom={3}></GoogleMap>
-            </LoadScript>
-          </StMapWrapper>
+          <StMapWrapper></StMapWrapper>
         </StBox>
         <StBox>
           <StInfoWrapper>
