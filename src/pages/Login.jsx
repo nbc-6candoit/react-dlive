@@ -13,6 +13,7 @@ import {
   changeMemberStatus,
 } from "../redux/modules/authSlice";
 import swal from "sweetalert";
+import { Link } from "react-router-dom";
 
 export default function Login({ setModalOpen }) {
   const [loginEmail, setLoginEmail] = useState("");
@@ -92,7 +93,9 @@ export default function Login({ setModalOpen }) {
             dispatch(changeMemberStatus(false));
           }}
         >
-          회원가입
+          <Link to="/signup">
+            <button>회원가입</button>
+          </Link>
         </StyledButton>
       </ButtonSection>
     </LoginWrapper>
