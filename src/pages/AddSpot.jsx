@@ -29,6 +29,19 @@ const AddSpot = () => {
   const [selectedFacilities, setSelectedFacilities] = useState([]);
   const fileRef = useRef(null);
 
+  const [clickedView, setClickedView] = useState({
+    마운틴뷰: false,
+    리버뷰: false,
+    오션뷰: false,
+  });
+
+  const [clickedSeasons, setClickedSeasons] = useState({
+    봄: false,
+    여름: false,
+    가을: false,
+    겨울: false,
+  });
+
   const [clickedFacilities, setClickedFacilities] = useState({
     toilet: false,
     shower: false,
@@ -41,7 +54,7 @@ const AddSpot = () => {
   const handleFacilityClick = (facility) => {
     setClickedFacilities((prev) => ({
       ...prev,
-      [facility]: !prev[facility],
+      [facility]: prev[facility] === true ? false : true,
     }));
   };
 
@@ -57,9 +70,21 @@ const AddSpot = () => {
     switch (category) {
       case "view":
         setSelectedView(tagName);
+        setClickedView((prev) => ({
+          마운틴뷰: false,
+          리버뷰: false,
+          오션뷰: false,
+          [tagName]: true,
+        }));
         break;
       case "seasons":
-        setSelectedSeasons((prev) => [...prev, tagName]);
+        setSelectedSeasons((prev) =>
+          prev.includes(tagName)
+            ? prev.filter((season) => season !== tagName)
+            : [...prev, tagName]
+        );
+        setClickedSeasons((prev) => ({ ...prev, [tagName]: !prev[tagName] }));
+
         break;
       default:
         break;
@@ -151,12 +176,44 @@ const AddSpot = () => {
       console.log("Document written with ID: ", docRef.id);
 
       setName("");
+      setLocation("");
+      setSum("");
       setContent("");
-      setThumnailImages("");
+      setClickedView({
+        마운틴뷰: false,
+        리버뷰: false,
+        오션뷰: false,
+      });
+      setClickedSeasons({
+        봄: false,
+        여름: false,
+        가을: false,
+        겨울: false,
+      });
+
+      // setSelectedView(null);
+      // setSelectedSeasons([]);
+      setSelectedFacilities({
+        toilet: false,
+        shower: false,
+        sink: false,
+        shop: false,
+        trail: false,
+        pets: false,
+      });
+      setThumnailImages([]);
     } catch (error) {
       console.error("데이터 추가 에러", error.message);
     }
   };
+
+  console.log(name);
+  console.log(location);
+  console.log(selectedView);
+  console.log(selectedSeasons);
+  console.log(selectedFacilities);
+  console.log(sum);
+  console.log(content);
 
   return (
     <>
@@ -198,6 +255,7 @@ const AddSpot = () => {
                 onClick={(tagName, category) =>
                   handleTagClick(tagName, category)
                 }
+                clicked={clickedView["마운틴뷰"]}
               />
               <Tag
                 tagName="리버뷰"
@@ -205,6 +263,7 @@ const AddSpot = () => {
                 onClick={(tagName, category) =>
                   handleTagClick(tagName, category)
                 }
+                clicked={clickedView["리버뷰"]}
               />
               <Tag
                 tagName="오션뷰"
@@ -212,6 +271,7 @@ const AddSpot = () => {
                 onClick={(tagName, category) =>
                   handleTagClick(tagName, category)
                 }
+                clicked={clickedView["오션뷰"]}
               />
             </StTag>
           </StInfoWrapper>
@@ -226,6 +286,7 @@ const AddSpot = () => {
                 onClick={(tagName, category) =>
                   handleTagClick(tagName, category)
                 }
+                clicked={clickedSeasons["봄"]}
               />
               <Tag
                 tagName="여름"
@@ -233,6 +294,7 @@ const AddSpot = () => {
                 onClick={(tagName, category) =>
                   handleTagClick(tagName, category)
                 }
+                clicked={clickedSeasons["여름"]}
               />
               <Tag
                 tagName="가을"
@@ -240,6 +302,7 @@ const AddSpot = () => {
                 onClick={(tagName, category) =>
                   handleTagClick(tagName, category)
                 }
+                clicked={clickedSeasons["가을"]}
               />
               <Tag
                 tagName="겨울"
@@ -247,6 +310,7 @@ const AddSpot = () => {
                 onClick={(tagName, category) =>
                   handleTagClick(tagName, category)
                 }
+                clicked={clickedSeasons["겨울"]}
               />
             </StTag>
           </StInfoWrapper>
@@ -254,60 +318,52 @@ const AddSpot = () => {
         <StInfoWrapper>
           <p>편의시설</p>
           <StIconContainer>
-            <div>
-              <StIconWrapper
-                clicked={clickedFacilities.toilet}
-                onClick={() => handleFacilityClick("toilet")}
-              >
-                <FaToilet />
-                <p>화장실</p>
-              </StIconWrapper>
-            </div>
-            <div>
-              <StIconWrapper
-                clicked={clickedFacilities.shower}
-                onClick={() => handleFacilityClick("shower")}
-              >
-                <FaShower />
-                <p>샤워실</p>
-              </StIconWrapper>
-            </div>
-            <div>
-              <StIconWrapper
-                clicked={clickedFacilities.sink}
-                onClick={() => handleFacilityClick("sink")}
-              >
-                <FaSink />
-                <p>싱크대</p>
-              </StIconWrapper>
-            </div>
-            <div>
-              <StIconWrapper
-                clicked={clickedFacilities.shop}
-                onClick={() => handleFacilityClick("shop")}
-              >
-                <AiFillShop />
-                <p>매점</p>
-              </StIconWrapper>
-            </div>
-            <div>
-              <StIconWrapper
-                clicked={clickedFacilities.trail}
-                onClick={() => handleFacilityClick("trail")}
-              >
-                <BsFillSignpost2Fill />
-                <p>산책로</p>
-              </StIconWrapper>
-            </div>
-            <div>
-              <StIconWrapper
-                clicked={clickedFacilities.pets}
-                onClick={() => handleFacilityClick("pets")}
-              >
-                <MdOutlinePets />
-                <p>반려동물</p>
-              </StIconWrapper>
-            </div>
+            <StIconWrapper
+              clicked={clickedFacilities.toilet}
+              onClick={() => handleFacilityClick("toilet")}
+            >
+              <FaToilet />
+              <p>화장실</p>
+            </StIconWrapper>
+
+            <StIconWrapper
+              clicked={clickedFacilities.shower}
+              onClick={() => handleFacilityClick("shower")}
+            >
+              <FaShower />
+              <p>샤워실</p>
+            </StIconWrapper>
+
+            <StIconWrapper
+              clicked={clickedFacilities.sink}
+              onClick={() => handleFacilityClick("sink")}
+            >
+              <FaSink />
+              <p>싱크대</p>
+            </StIconWrapper>
+
+            <StIconWrapper
+              clicked={clickedFacilities.shop}
+              onClick={() => handleFacilityClick("shop")}
+            >
+              <AiFillShop />
+              <p>매점</p>
+            </StIconWrapper>
+            <StIconWrapper
+              clicked={clickedFacilities.trail}
+              onClick={() => handleFacilityClick("trail")}
+            >
+              <BsFillSignpost2Fill />
+              <p>산책로</p>
+            </StIconWrapper>
+
+            <StIconWrapper
+              clicked={clickedFacilities.pets}
+              onClick={() => handleFacilityClick("pets")}
+            >
+              <MdOutlinePets />
+              <p>반려동물</p>
+            </StIconWrapper>
           </StIconContainer>
         </StInfoWrapper>
         <StBox>
@@ -338,10 +394,7 @@ const AddSpot = () => {
             {[...Array(4)].map((_, index) => (
               <StImgBox key={index}>
                 {thumnailImages[index] && (
-                  <img
-                    src={thumnailImages[index]}
-                    alt={`image${index} 썸네일 이미지`}
-                  />
+                  <img src={thumnailImages[index]} alt="차박명소" />
                 )}
               </StImgBox>
             ))}
@@ -460,10 +513,6 @@ const StInfoWrapper = styled.div`
   display: flex;
   gap: 2rem;
   align-items: center;
-  & div {
-    display: flex;
-    gap: 0.5rem;
-  }
 `;
 
 const StTag = styled.div`
@@ -471,7 +520,7 @@ const StTag = styled.div`
   gap: 0.5rem;
 `;
 
-const StIconContainer = styled.p`
+const StIconContainer = styled.div`
   display: flex;
   gap: 1.5rem;
   & p {
@@ -485,7 +534,8 @@ const StIconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 30px;
-  gap: 1px;
+  gap: 0.7rem;
   cursor: pointer;
-  color: ${(props) => (props.clicked ? "#5eb470" : "#999")};
+  color: ${(props) =>
+    props.clicked === true || props.clicked === "true" ? "#5eb470" : "#999"};
 `;

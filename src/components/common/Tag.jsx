@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-const Tag = ({ tagName, onClick, category }) => {
-  const [clicked, setClicked] = useState(false);
-
+const Tag = ({ tagName, onClick, category, clicked }) => {
   const handleTagClick = () => {
-    setClicked(!clicked);
-    onClick && onClick(tagName, category);
+    onClick && onClick(tagName, category, !clicked);
   };
 
   return (
@@ -21,7 +18,7 @@ export default Tag;
 const StTag = styled.p`
   color: ${(props) => (props.clicked ? "white" : "5eb470")};
   background-color: ${(props) => (props.clicked ? "#5eb470" : "white")};
-  border: 1px solid ${(props) => (props.clicked ? "#5eb470" : "#5eb470")};
+  border: 1px solid #5eb470;
   padding: 0.4rem 1rem;
   width: fit-content;
   height: fit-content;
