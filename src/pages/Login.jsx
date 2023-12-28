@@ -20,7 +20,8 @@ export default function Login({ setModalOpen }) {
   const [loginPassword, setLoginPassword] = useState("");
   const dispatch = useDispatch();
 
-  const loginHandler = async () => {
+  const loginHandler = async (e) => {
+    e.preventDefault();
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -37,13 +38,14 @@ export default function Login({ setModalOpen }) {
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log("error with LogIn", errorCode, errorMessage);
-
-      swal(
-        "Oops...",
-        "등록되지 않은 회원이거나 유효하지 않은 이메일입니다.",
-        "error"
-      );
+      // console.log("error with LogIn", errorCode, errorMessage);
+      console.log("안된다니까요");
+      alert("등록되지 않은 회원이거나 유효하지 않은 이메일입니다.");
+      // swal(
+      //   "Oops...",
+      //   "등록되지 않은 회원이거나 유효하지 않은 이메일입니다.",
+      //   "error"
+      // );
     }
   };
   const googleLoginHandler = async () => {
