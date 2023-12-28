@@ -54,7 +54,7 @@ const SpotLog = () => {
 
 export default SpotLog;
 
-const StHorizontalLine = styled.div`
+export const StHorizontalLine = styled.div`
   width: 80%;
   border-bottom: 1px solid gray;
 `;

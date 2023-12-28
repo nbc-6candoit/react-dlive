@@ -1,11 +1,13 @@
 import { ko } from 'date-fns/locale';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
 import { FaPlus } from 'react-icons/fa6';
-import { storage } from 'shared/firebase';
+import { db, storage } from 'shared/firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { addDoc, collection } from 'firebase/firestore';
+import { v4 as uuid } from 'uuid';
 
 const AddLogForm = () => {
     const today = new Date();
@@ -14,15 +16,11 @@ const AddLogForm = () => {
     const [title, setTitle] = useState();
     const [content, setContent] = useState();
 
-    const [imageUpload, setImageUpload] = useState();
-
     const handleTitle = (e) => {
-        console.log(e.target.value);
         setTitle(e.target.value);
     };
 
     const handleContent = (e) => {
-        console.log(e.target.value);
         setContent(e.target.value);
     };
 
@@ -44,19 +42,38 @@ const AddLogForm = () => {
         }
     };
 
-    const handleSubmmit = (e) => {
+    const handleSubmmit = async (e) => {
         e.preventDefault();
-        const promises = thumnailImages.map((file) => {
-            console.log('file', file);
-            const imageRef = ref(storage, `photo/${file}`);
-            return uploadBytes(imageRef, file).then((snapshot) => {
-                return getDownloadURL(snapshot.ref);
-            });
-        });
-    };
+        try {
+            // 스토리지에 먼저 사진 업로드
+            const imageUrls = [];
+            for (const image of thumnailImages) {
+                console.log('image는 무슨 주소', image);
+                const imageRef = ref(storage, `log_images/${image}`);
+                await uploadBytes(imageRef, image);
 
-    //
-    // useEffect(() => {}, [imageUpload]);
+                const imageUrl = await getDownloadURL(imageRef);
+                imageUrls.push(imageUrl);
+            }
+
+            // 차박로그 업로드
+            const docRef = await addDoc(collection(db, 'log'), {
+                id: uuid(),
+                title,
+                content,
+                date: selectedDate,
+                images: imageUrls,
+            });
+            console.log('Document written with ID: ', docRef.id);
+
+            setTitle('');
+            setContent('');
+            setThumnailImages('');
+            setSelectedDate(today);
+        } catch (error) {
+            console.error('데이터 추가 에러', error.message);
+        }
+    };
 
     return (
         <StForm onSubmit={handleSubmmit}>
