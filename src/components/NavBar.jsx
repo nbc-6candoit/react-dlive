@@ -11,6 +11,7 @@ export const NavBar = () => {
   console.log(authState.isLogin);
   // const dispatch = useDispatch();
   // const isLogin = useSelector((state) => state.authSlice.isLogin);
+
   return (
     <StNavContainer>
       <Link to="/">
@@ -18,16 +19,24 @@ export const NavBar = () => {
       </Link>
       <StBtnInputWrapper>
         <StHeaderButton>
-          <Link to="/mypage">
+          {/* <Link to="/mypage">
             <button>마이페이지</button>
-          </Link>
+          </Link> */}
           <div>
+            <></>
             {authState.isLogin === true ? (
-              <button>로그아웃</button>
+              <>
+                <Link to="/mypage">
+                  <button>마이페이지</button>
+                </Link>
+                <button>로그아웃</button>
+              </>
             ) : (
-              <Link to="/login">
-                <button>로그인</button>
-              </Link>
+              <>
+                <Link to="/login">
+                  <button>로그인</button>
+                </Link>
+              </>
             )}
           </div>
         </StHeaderButton>
