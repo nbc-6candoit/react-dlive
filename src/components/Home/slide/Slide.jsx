@@ -16,8 +16,8 @@ export const Slide = () => {
     slidesToScroll: 1,
     arrows: true,
     pauseOnHover: true,
-    focusOnSelect: true,
-    pauseOnDotsHover: true, // 마우스 드래그 기능
+    focusOnSelect: true, // 마우스 드래그 기능
+    pauseOnDotsHover: true,
   };
 
   return (
