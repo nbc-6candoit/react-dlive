@@ -38,6 +38,7 @@ const AddLogForm = () => {
         } else {
             const filesArray = Array.from(files);
             const selectedFiles = filesArray.map((file) => URL.createObjectURL(file));
+
             setThumnailImages((prev) => prev.concat(selectedFiles));
         }
     };
@@ -48,15 +49,26 @@ const AddLogForm = () => {
             // 스토리지에 먼저 사진 업로드
             const imageUrls = [];
             for (const image of thumnailImages) {
+                const docID = uuid();
+                const imageID = `${image}`;
+                const imagePath = `log_images/${docID}/${imageID}`;
+
                 console.log('image는 무슨 주소', image);
-                const imageRef = ref(storage, `log_images/${image}`);
+
+                const imageRef = ref(storage, imagePath);
+
                 await uploadBytes(imageRef, image);
 
                 const imageUrl = await getDownloadURL(imageRef);
-                imageUrls.push(imageUrl);
+
+                // 이미지 경로와 URL을 배열에 추가
+                imageUrls.push({
+                    path: imagePath,
+                    url: imageUrl,
+                });
             }
 
-            // 차박로그 업로드
+            // 모든 이미지가 업로드되면 로그 업로드
             const docRef = await addDoc(collection(db, 'log'), {
                 id: uuid(),
                 title,
@@ -66,9 +78,10 @@ const AddLogForm = () => {
             });
             console.log('Document written with ID: ', docRef.id);
 
+            // 데이터 업로드 이후 초기화
             setTitle('');
             setContent('');
-            setThumnailImages('');
+            setThumnailImages([]);
             setSelectedDate(today);
         } catch (error) {
             console.error('데이터 추가 에러', error.message);
