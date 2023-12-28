@@ -4,15 +4,15 @@ import dlivelogo from "../assets/img/dlivelogo.png";
 
 const Header = () => {
   return (
-    <FixedSide>
+    <StFixedSide>
       <img src={dlivelogo} alt="로고" />
-    </FixedSide>
+    </StFixedSide>
   );
 };
 
 export default Header;
 
-const FixedSide = styled.div`
+const StFixedSide = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;

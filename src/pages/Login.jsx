@@ -1,58 +1,103 @@
-// 로그인/회원가입(Login)
-// import {
-//   GoogleAuthProvider,
-//   signInWithEmailAndPassword,
-//   signInWithPopup,
-// } from "firebase/auth";
-// import { useState } from "react";
-// import { auth } from "../firebase";
-import Glogo from "../assets/Images/logo.png";
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
+import { useState } from "react";
+import { auth } from "../shared/firebase";
+import Glogo from "../assets/img/g-logo.png";
 import styled from "styled-components";
-// import { useDispatch } from "react-redux";
-// import {
-//   changeLoginStatus,
-//   changeMemberStatus,
-// } from "../redux/modules/authSlice";
-// import swal from "sweetalert";
+import { useDispatch } from "react-redux";
+import {
+  changeLoginStatus,
+  changeMemberStatus,
+} from "../redux/modules/authSlice";
+import swal from "sweetalert";
 
-const Login = () => {
+export default function Login({ setModalOpen }) {
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const dispatch = useDispatch();
+
+  const loginHandler = async () => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        loginEmail,
+        loginPassword
+      );
+      setLoginEmail("");
+      setLoginPassword("");
+
+      swal("로그인 완료 🏕️", "어서오세요!", "success");
+
+      dispatch(changeLoginStatus(true));
+      setModalOpen(false);
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log("error with LogIn", errorCode, errorMessage);
+
+      swal(
+        "Oops...",
+        "등록되지 않은 회원이거나 유효하지 않은 이메일입니다.",
+        "error"
+      );
+    }
+  };
+  const googleLoginHandler = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+
+      swal("로그인 완료 🏕️", "어서오세요!", "success");
+
+      setModalOpen(false);
+      dispatch(changeLoginStatus(true));
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log("error with GoogleLogIn", errorCode, errorMessage);
+    }
+  };
+
   return (
     <LoginWrapper>
-      <h1> D:Live에 오신 걸 환영합니다!</h1>
+      <h1>🏕️ D:Live에 오신 걸 환영합니다!</h1>
       <InputSection>
-        <LoginInput placeholder="아이디" />
-        {/* placeholder="아이디"
+        <LoginInput
+          placeholder="아이디"
           value={loginEmail}
-          onChange={(e) => setLoginEmail(e.target.value)} */}
-        <LoginInput placeholder="비밀번호" />
-        {/* placeholder="비밀번호"
-        type="password"
-        value={loginPassword}
-        onChange={(e) => setLoginPassword(e.target.value)} */}
+          onChange={(e) => setLoginEmail(e.target.value)}
+        />
+        <LoginInput
+          placeholder="비밀번호"
+          type="password"
+          value={loginPassword}
+          onChange={(e) => setLoginPassword(e.target.value)}
+        />
       </InputSection>
       <ButtonSection>
-        <StyledButton>
-          {/* type="button" onClick={loginHandler} */}
+        <StyledButton type="button" onClick={loginHandler}>
           로그인
         </StyledButton>
-        <StyledGoogleButton>
-          {/* type="button" onClick={googleLoginHandler} */}
+        <StyledGoogleButton type="button" onClick={googleLoginHandler}>
           <img src={Glogo}></img>
           <p>Sign in with Google</p>
         </StyledGoogleButton>
 
         <StyledButton
-        // type="button"
-        // onClick={() => {
-        //   dispatch(changeMemberStatus(false));
-        // }}
+          type="button"
+          onClick={() => {
+            dispatch(changeMemberStatus(false));
+          }}
         >
           회원가입
         </StyledButton>
       </ButtonSection>
     </LoginWrapper>
   );
-};
+}
 
 const LoginWrapper = styled.div`
   display: flex;
@@ -120,4 +165,3 @@ const StyledGoogleButton = styled.button`
     background-color: white;
   }
 `;
-export default Login;
