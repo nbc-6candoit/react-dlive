@@ -8,6 +8,16 @@ import { db, storage } from "shared/firebase";
 import { v4 as uuid } from "uuid";
 import Button from "components/common/Button";
 import GeocoderMap from "components/naverMap/GeocoderMap";
+import {
+  setName,
+  setLocation,
+  setView,
+  setSeasons,
+  setFacilities,
+  setSum,
+  setContent,
+  setImages,
+} from "../redux/modules/spotSlice";
 
 import { FaToilet } from "react-icons/fa";
 import { FaShower } from "react-icons/fa";
@@ -16,17 +26,12 @@ import { BsFillSignpost2Fill } from "react-icons/bs";
 import { MdOutlinePets } from "react-icons/md";
 import { FaPlus } from "react-icons/fa6";
 import { FaSink } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 
 const AddSpot = () => {
-  const [name, setName] = useState("");
-  const [content, setContent] = useState("");
-  const [location, setLocation] = useState("");
-  const [sum, setSum] = useState("");
-  const [thumnailImages, setThumnailImages] = useState([]);
-
-  const [selectedView, setSelectedView] = useState(null);
-  const [selectedSeasons, setSelectedSeasons] = useState([]);
-  const [selectedFacilities, setSelectedFacilities] = useState([]);
+  const dispatch = useDispatch();
+  const { name, location, view, seasons, facilities, sum, content, images } =
+    useSelector((state) => state.spot);
 
   const fileRef = useRef(null);
   const mapElement = useRef(null);
@@ -45,12 +50,12 @@ const AddSpot = () => {
   });
 
   const [clickedFacilities, setClickedFacilities] = useState({
-    toilet: false,
-    shower: false,
-    sink: false,
-    shop: false,
-    trail: false,
-    pets: false,
+    화장실: false,
+    샤워실: false,
+    싱크대: false,
+    매점: false,
+    산책로: false,
+    반려동물: false,
   });
 
   const handleFacilityClick = (facility) => {
@@ -58,12 +63,13 @@ const AddSpot = () => {
       ...prev,
       [facility]: prev[facility] === true ? false : true,
     }));
+    dispatch(setFacilities(facility));
   };
 
   const handleTagClick = (tagName, category) => {
     switch (category) {
       case "view":
-        setSelectedView(tagName);
+        dispatch(setView(tagName));
         setClickedView((prev) => ({
           마운틴뷰: false,
           리버뷰: false,
@@ -72,19 +78,11 @@ const AddSpot = () => {
         }));
         break;
       case "seasons":
-        setSelectedSeasons((prev) =>
-          prev.includes(tagName)
-            ? prev.filter((season) => season !== tagName)
-            : [...prev, tagName]
-        );
+        dispatch(setSeasons(tagName));
         setClickedSeasons((prev) => ({ ...prev, [tagName]: !prev[tagName] }));
         break;
       case "facilities":
-        setSelectedFacilities((prev) =>
-          prev.includes(tagName)
-            ? prev.filter((facilities) => facilities !== tagName)
-            : [...prev, tagName]
-        );
+        dispatch(setFacilities(tagName));
         setClickedFacilities((prev) => ({
           ...prev,
           [tagName]: !prev[tagName],
@@ -96,15 +94,15 @@ const AddSpot = () => {
   };
 
   const handleChangeSpotName = (e) => {
-    setName(e.target.value);
+    dispatch(setName(e.target.value));
   };
 
   const handleChangeSpotSum = (e) => {
-    setSum(e.target.value);
+    dispatch(setSum(e.target.value));
   };
 
   const handleAddContent = (e) => {
-    setContent(e.target.value);
+    dispatch(setContent(e.target.value));
   };
 
   const handleAddImageClick = () => {
@@ -114,12 +112,13 @@ const AddSpot = () => {
   const handleAddImages = (e) => {
     const files = e.target.files;
     // 최대 4개까지만 선택할 수 있도록 설정
-    if (files.length > 4 || files.length + thumnailImages.length > 4) {
+    if (files.length > 4 || files.length + images.length > 4) {
       alert("최대 파일 4개만 선택해주세요");
     } else {
       const filesArray = Array.from(files);
       const selectedFiles = filesArray.map((file) => URL.createObjectURL(file));
-      setThumnailImages((prev) => prev.concat(selectedFiles));
+      const updatedImages = images.concat(selectedFiles);
+      dispatch(setImages(updatedImages));
     }
   };
 
@@ -128,7 +127,7 @@ const AddSpot = () => {
     try {
       // 스토리지에 먼저 사진 업로드
       const imageUrls = [];
-      for (const image of thumnailImages) {
+      for (const image of images) {
         const imageRef = ref(storage, `log_images/${image}`);
         await uploadBytes(imageRef, image);
 
@@ -141,22 +140,23 @@ const AddSpot = () => {
         id: uuid(),
         name,
         location,
-        view: selectedView,
-        seasons: selectedSeasons,
-        facilities: selectedFacilities,
+        view,
+        seasons,
+        facilities,
         sum,
         content,
         images: imageUrls,
       });
       console.log("Document written with ID: ", docRef.id);
 
-      setName("");
-      setLocation("");
-      setSum("");
-      setContent("");
-      setSelectedView(null);
-      setSelectedSeasons([]);
-      setSelectedFacilities([]);
+      dispatch(setName(""));
+      dispatch(setLocation(""));
+      dispatch(setView(null));
+      dispatch(setSeasons([]));
+      dispatch(setFacilities([]));
+      dispatch(setSum(""));
+      dispatch(setContent(""));
+      dispatch(setImages([]));
 
       setClickedView({
         마운틴뷰: false,
@@ -170,14 +170,13 @@ const AddSpot = () => {
         겨울: false,
       });
       setClickedFacilities({
-        toilet: false,
-        shower: false,
-        sink: false,
-        shop: false,
-        trail: false,
-        pets: false,
+        화장실: false,
+        샤워실: false,
+        싱크대: false,
+        매점: false,
+        산책로: false,
+        반려동물: false,
       });
-      setThumnailImages([]);
     } catch (error) {
       console.error("데이터 추가 에러", error.message);
     }
@@ -188,6 +187,10 @@ const AddSpot = () => {
       e.preventDefault();
     }
   };
+
+  console.log(view);
+  console.log(seasons);
+  console.log(facilities);
 
   return (
     <>
@@ -282,47 +285,47 @@ const AddSpot = () => {
           <p>편의시설</p>
           <StIconContainer>
             <StIconWrapper
-              clicked={clickedFacilities.toilet}
-              onClick={() => handleFacilityClick("toilet")}
+              clicked={clickedFacilities["화장실"]}
+              onClick={() => handleFacilityClick("화장실")}
             >
               <FaToilet />
               <p>화장실</p>
             </StIconWrapper>
 
             <StIconWrapper
-              clicked={clickedFacilities.shower}
-              onClick={() => handleFacilityClick("shower")}
+              clicked={clickedFacilities["샤워실"]}
+              onClick={() => handleFacilityClick("샤워실")}
             >
               <FaShower />
               <p>샤워실</p>
             </StIconWrapper>
 
             <StIconWrapper
-              clicked={clickedFacilities.sink}
-              onClick={() => handleFacilityClick("sink")}
+              clicked={clickedFacilities["싱크대"]}
+              onClick={() => handleFacilityClick("싱크대")}
             >
               <FaSink />
               <p>싱크대</p>
             </StIconWrapper>
 
             <StIconWrapper
-              clicked={clickedFacilities.shop}
-              onClick={() => handleFacilityClick("shop")}
+              clicked={clickedFacilities["매점"]}
+              onClick={() => handleFacilityClick("매점")}
             >
               <AiFillShop />
               <p>매점</p>
             </StIconWrapper>
             <StIconWrapper
-              clicked={clickedFacilities.trail}
-              onClick={() => handleFacilityClick("trail")}
+              clicked={clickedFacilities["산책로"]}
+              onClick={() => handleFacilityClick("산책로")}
             >
               <BsFillSignpost2Fill />
               <p>산책로</p>
             </StIconWrapper>
 
             <StIconWrapper
-              clicked={clickedFacilities.pets}
-              onClick={() => handleFacilityClick("pets")}
+              clicked={clickedFacilities["반려동물"]}
+              onClick={() => handleFacilityClick("반려동물")}
             >
               <MdOutlinePets />
               <p>반려동물</p>
@@ -357,9 +360,7 @@ const AddSpot = () => {
             </StImgSelect>
             {[...Array(4)].map((_, index) => (
               <StImgBox key={index}>
-                {thumnailImages[index] && (
-                  <img src={thumnailImages[index]} alt="차박명소" />
-                )}
+                {images[index] && <img src={images[index]} alt="차박명소" />}
               </StImgBox>
             ))}
           </StImgWrap>
