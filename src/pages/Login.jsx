@@ -13,12 +13,13 @@ import {
   changeMemberStatus,
 } from "../redux/modules/authSlice";
 import swal from "sweetalert";
-import { Await, Link } from "react-router-dom";
+import { Await, Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const loginHandler = async () => {
     try {
@@ -30,7 +31,11 @@ export default function Login() {
       setLoginEmail("");
       setLoginPassword("");
       dispatch(changeLoginStatus(true));
+
       await swal("로그인 완료 🏕️", "어서오세요!", "success");
+
+      console.log("일반 로그인 성공!");
+      navigate("/");
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
@@ -48,9 +53,12 @@ export default function Login() {
     try {
       const result = await signInWithPopup(auth, provider);
 
+      console.log("구글 로그인 성공!");
+
       swal("로그인 완료 🏕️", "어서오세요!", "success");
 
       dispatch(changeLoginStatus(true));
+      navigate("/");
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
