@@ -1,10 +1,12 @@
 import React from "react";
+import { useEffect, useState } from "react";
+import { db, auth } from "shared/firebase";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import logo from "../assets/img/logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import Login from "pages/Login";
-import { auth } from "shared/firebase";
+
 import swal from "sweetalert";
 import {
   changeLoginStatus,
@@ -16,8 +18,6 @@ export const NavBar = () => {
   const authState = useSelector((state) => state.authSlice);
   const dispatch = useDispatch();
   console.log(authState.isLogin);
-  // const dispatch = useDispatch();
-  // const isLogin = useSelector((state) => state.authSlice.isLogin);
 
   const logoutHandler = async () => {
     await signOut(auth);
@@ -40,6 +40,7 @@ export const NavBar = () => {
             {authState.isLogin === true ? (
               <>
                 <Link to="/mypage">마이페이지</Link>
+                ss
                 <button onClick={logoutHandler}>로그아웃</button>
               </>
             ) : (
