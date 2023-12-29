@@ -16,6 +16,7 @@ import { BsFillSignpost2Fill } from "react-icons/bs";
 import { MdOutlinePets } from "react-icons/md";
 import { FaPlus } from "react-icons/fa6";
 import { FaSink } from "react-icons/fa";
+import CurrentMap from "components/SpotDetail/CurrentMap";
 
 const AddSpot = () => {
   const [name, setName] = useState("");
@@ -97,10 +98,6 @@ const AddSpot = () => {
 
   const handleChangeSpotName = (e) => {
     setName(e.target.value);
-  };
-
-  const handleChangeSpotLocation = (e) => {
-    setLocation(e.target.value);
   };
 
   const handleChangeSpotSum = (e) => {
@@ -210,20 +207,8 @@ const AddSpot = () => {
         </StBox>
         <StBox>
           <label htmlFor="address">차박명소 주소*</label>
-          <div>
-            <input
-              type="text"
-              id="address"
-              value={location}
-              onChange={handleChangeSpotLocation}
-              placeholder="주소를 입력하세요"
-            />
-            <button id="submit">검색</button>
-          </div>
-
-          <StMapWrapper id="map" ref={mapElement}>
-            <GeocoderMap />
-          </StMapWrapper>
+          <StMapWrapper id="map" ref={mapElement} />
+          <GeocoderMap location={location} setLocation={setLocation} />
         </StBox>
         <StBox>
           <StInfoWrapper>
