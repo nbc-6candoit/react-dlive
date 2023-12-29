@@ -95,6 +95,12 @@ const GeocoderMap = ({ location, setLocation }) => {
     setLocation(e.target.value);
   };
 
+  const handleInputKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
   return (
     <StBox>
       <input
@@ -103,11 +109,12 @@ const GeocoderMap = ({ location, setLocation }) => {
         value={location}
         onChange={handleChangeSpotLocation}
         placeholder="주소를 입력하세요"
+        onKeyDown={handleInputKeyDown}
       />
       <button type="button" onClick={handleCurrentLocationClick}>
         현재위치
       </button>
-      <button type="submit" onClick={handleSearchAddressClick}>
+      <button type="button" onClick={handleSearchAddressClick}>
         검색
       </button>
     </StBox>

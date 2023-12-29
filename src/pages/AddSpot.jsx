@@ -191,6 +191,12 @@ const AddSpot = () => {
   console.log(sum);
   console.log(content);
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
   return (
     <>
       <StForm onSubmit={handleSubmmit}>
@@ -202,6 +208,7 @@ const AddSpot = () => {
             id="spot_name"
             value={name}
             onChange={handleChangeSpotName}
+            onKeyDown={handleKeyDown}
           />
         </StBox>
         <StBox>
@@ -337,6 +344,7 @@ const AddSpot = () => {
             id="spot_sum"
             value={sum}
             onChange={handleChangeSpotSum}
+            onKeyDown={handleKeyDown}
           />
         </StBox>
         <StBox>
