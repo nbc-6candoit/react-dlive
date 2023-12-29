@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Slide } from "./slide/Slide";
 import dlivelogo from "assets/img/logo.png";
 import SpotLog from "components/SpotDetail/SpotLog";
+import { Map } from "./Map/Map";
 function body() {
   return (
     <>
@@ -10,7 +11,6 @@ function body() {
         <>
           <Slide />
         </>
-
         <StcategoryContainer>
           <StCategoryButton>마운틴뷰</StCategoryButton>
           <StCategoryButton>리버뷰</StCategoryButton>
@@ -35,7 +35,7 @@ function body() {
         <Sth1>주변 차박명소</Sth1>
         <StHorizontalLine />
         <StgpsContainer>
-          <div></div>
+          <Map />
         </StgpsContainer>
       </StbodyContainer>
     </>
@@ -113,6 +113,5 @@ const StgpsContainer = styled.div`
     width: 435px;
     height: 455px;
     margin: auto;
-    background: #d9d9d9;
   }
 `;

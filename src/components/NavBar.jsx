@@ -2,11 +2,32 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import logo from "../assets/img/logo.png";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Login from "pages/Login";
+import { auth } from "shared/firebase";
+import swal from "sweetalert";
+import {
+  changeLoginStatus,
+  changeMemberStatus,
+} from "../redux/modules/authSlice";
+import { signOut } from "firebase/auth";
 
 export const NavBar = () => {
+  const authState = useSelector((state) => state.authSlice);
+  const dispatch = useDispatch();
+  console.log(authState.isLogin);
   // const dispatch = useDispatch();
   // const isLogin = useSelector((state) => state.authSlice.isLogin);
+
+  const logoutHandler = async () => {
+    await signOut(auth);
+
+    swal("로그아웃", "로그아웃 되었습니다.", "success");
+
+    dispatch(changeLoginStatus(false));
+    console.log(authState.isLogin);
+  };
+
   return (
     <StNavContainer>
       <Link to="/">
@@ -14,13 +35,19 @@ export const NavBar = () => {
       </Link>
       <StBtnInputWrapper>
         <StHeaderButton>
-          <Link to="/mypage">
-            <button>마이페이지</button>
-          </Link>
-          <Link to="/login">
-            <button>로그인</button>
-          </Link>
-          <button>로그아웃</button>
+          <div>
+            <></>
+            {authState.isLogin === true ? (
+              <>
+                <Link to="/mypage">마이페이지</Link>
+                onClick={logoutHandler}로그아웃
+              </>
+            ) : (
+              <>
+                <Link to="/login">로그인</Link>
+              </>
+            )}
+          </div>
         </StHeaderButton>
       </StBtnInputWrapper>
     </StNavContainer>

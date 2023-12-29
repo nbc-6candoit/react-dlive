@@ -1,12 +1,13 @@
 // 차박명소 등록페이지(AddSpot)
 import Tag from "components/common/Tag";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "shared/firebase";
 import { v4 as uuid } from "uuid";
 import Button from "components/common/Button";
+import GeocoderMap from "components/naverMap/GeocoderMap";
 
 import { FaToilet } from "react-icons/fa";
 import { FaShower } from "react-icons/fa";
@@ -17,16 +18,18 @@ import { FaPlus } from "react-icons/fa6";
 import { FaSink } from "react-icons/fa";
 
 const AddSpot = () => {
-  const [name, setName] = useState();
-  const [content, setContent] = useState();
-  const [location, setLocation] = useState();
+  const [name, setName] = useState("");
+  const [content, setContent] = useState("");
+  const [location, setLocation] = useState("");
   const [sum, setSum] = useState("");
   const [thumnailImages, setThumnailImages] = useState([]);
 
   const [selectedView, setSelectedView] = useState(null);
   const [selectedSeasons, setSelectedSeasons] = useState([]);
   const [selectedFacilities, setSelectedFacilities] = useState([]);
+
   const fileRef = useRef(null);
+  const mapElement = useRef(null);
 
   const [clickedView, setClickedView] = useState({
     마운틴뷰: false,
@@ -56,14 +59,6 @@ const AddSpot = () => {
       [facility]: prev[facility] === true ? false : true,
     }));
   };
-
-  useEffect(() => {
-    setSelectedFacilities(
-      Object.entries(clickedFacilities)
-        .filter(([key, value]) => value)
-        .map(([key]) => key)
-    );
-  }, [clickedFacilities]);
 
   const handleTagClick = (tagName, category) => {
     switch (category) {
@@ -108,12 +103,6 @@ const AddSpot = () => {
     setLocation(e.target.value);
   };
 
-  const handleLocationSeacrchButton = async (e) => {
-    e.preventDefault();
-
-    // Naver Maps API를 이용한 주소 검색
-  };
-
   const handleChangeSpotSum = (e) => {
     setSum(e.target.value);
   };
@@ -144,7 +133,6 @@ const AddSpot = () => {
       // 스토리지에 먼저 사진 업로드
       const imageUrls = [];
       for (const image of thumnailImages) {
-        console.log("image는 무슨 주소", image);
         const imageRef = ref(storage, `log_images/${image}`);
         await uploadBytes(imageRef, image);
 
@@ -221,17 +209,21 @@ const AddSpot = () => {
           />
         </StBox>
         <StBox>
-          <label htmlFor="spot_location">차박명소 주소*</label>
+          <label htmlFor="address">차박명소 주소*</label>
           <div>
             <input
               type="text"
-              id="spot_location"
+              id="address"
               value={location}
               onChange={handleChangeSpotLocation}
+              placeholder="주소를 입력하세요"
             />
-            <button onClick={handleLocationSeacrchButton}>검색</button>
+            <button id="submit">검색</button>
           </div>
-          <StMapWrapper></StMapWrapper>
+
+          <StMapWrapper id="map" ref={mapElement}>
+            <GeocoderMap />
+          </StMapWrapper>
         </StBox>
         <StBox>
           <StInfoWrapper>
