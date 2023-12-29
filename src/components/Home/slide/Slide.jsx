@@ -4,8 +4,10 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import dlivelogo from "assets/img/logo.png";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 export const Slide = () => {
+  const storage = getStorage();
   const settings = {
     dots: true,
     infinite: true,

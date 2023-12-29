@@ -7,7 +7,6 @@ import { Map } from "./Map/Map";
 import "firebase/storage";
 
 const body = () => {
-  const [state, setState] = useState(null);
   return (
     <>
       <StbodyContainer>
