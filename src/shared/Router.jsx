@@ -22,7 +22,7 @@ const Router = () => {
         <NavBar />
         <Routes>
           <Route path="/" element={<Main />} />
-          <Route path="/mypage/:id" element={<Mypage />} />
+          <Route path="/mypage" element={<Mypage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/spotdetail" element={<SpotDetail />} />
