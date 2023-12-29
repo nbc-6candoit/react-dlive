@@ -183,14 +183,6 @@ const AddSpot = () => {
     }
   };
 
-  console.log(name);
-  console.log(location);
-  console.log(selectedView);
-  console.log(selectedSeasons);
-  console.log(selectedFacilities);
-  console.log(sum);
-  console.log(content);
-
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
