@@ -3,11 +3,12 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import swal from "sweetalert";
-import { auth } from "../shared/firebase";
+import { auth, db, app } from "../shared/firebase";
 import { changeMemberStatus } from "../redux/modules/authSlice";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import defaultphoto from "../assets/img/avatar.png";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 export default function Signup() {
   const [signupEmail, setSignupEmail] = useState("");
@@ -15,6 +16,7 @@ export default function Signup() {
   const [signupNickname, setSignupNickname] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const defaultavatar = defaultphoto;
 
   const checkInputs = () => {
     if (
@@ -51,9 +53,18 @@ export default function Signup() {
         signupEmail,
         signupPassword
       );
+      const userId = userCredential.user.uid;
       await updateProfile(auth.currentUser, {
         displayName: signupNickname,
         photoURL: defaultphoto,
+      });
+
+      const userDocRef = doc(db, "users", auth.currentUser.uid);
+      await setDoc(userDocRef, {
+        email: signupEmail,
+        nickname: signupNickname,
+        avatar: defaultavatar,
+        userId: userId,
       });
 
       swal("Good Job!", "회원가입이 완료되었습니다!", "success");
