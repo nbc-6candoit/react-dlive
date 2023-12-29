@@ -2,7 +2,7 @@
 import React from "react";
 
 const Mypage = () => {
-  return ssss;
+  return <>ssss</>;
 };
 
 export default Mypage;

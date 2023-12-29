@@ -6,12 +6,14 @@ import swal from "sweetalert";
 import { auth } from "../shared/firebase";
 import { changeMemberStatus } from "../redux/modules/authSlice";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [signupNickname, setSignupNickname] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const signupHandler = async () => {
     try {
@@ -27,6 +29,7 @@ export default function Signup() {
       dispatch(changeMemberStatus(true));
       setSignupEmail("");
       setSignupPassword("");
+      navigate("/login");
     } catch (error) {
       const errorCode = error.code;
       if (errorCode === "auth/email-already-in-use") {
@@ -69,10 +72,10 @@ export default function Signup() {
             dispatch(changeMemberStatus(true));
           }}
         >
-          <Link to="/login">로그인</Link>
+          <Link to="/login">로그인 페이지로 이동</Link>
         </StyledButton>
         <StyledButton type="button" onClick={signupHandler}>
-          회원가입
+          회원가입 신청
         </StyledButton>
       </ButtonSection>
     </SignupWrapper>
