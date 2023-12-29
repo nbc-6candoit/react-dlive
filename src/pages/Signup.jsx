@@ -7,6 +7,7 @@ import { auth } from "../shared/firebase";
 import { changeMemberStatus } from "../redux/modules/authSlice";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import defaultphoto from "../assets/img/avatar.png";
 
 export default function Signup() {
   const [signupEmail, setSignupEmail] = useState("");
@@ -15,14 +16,46 @@ export default function Signup() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const resetInputs = () => {
+    setSignupEmail("");
+    setSignupPassword("");
+    setSignupNickname("");
+  };
+
+  const checkInputs = () => {
+    if (
+      signupEmail.trim().length === 0 ||
+      signupPassword.trim().length === 0 ||
+      signupNickname.trim().length === 0
+    ) {
+      swal("정보를 모두 입력해주세요");
+
+      return;
+    }
+    if (2 < signupNickname.length < 10) {
+      swal("닉네임은 2자 이상 10자 이하여야 합니다");
+      setSignupNickname("");
+      return;
+    }
+
+    return true;
+  };
+
   const signupHandler = async () => {
+    if (!checkInputs()) {
+      return;
+    }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         signupEmail,
         signupPassword
       );
-      await updateProfile(auth.currentUser, { displayName: signupNickname });
+      await updateProfile(auth.currentUser, {
+        displayName: signupNickname,
+        photoURL: defaultphoto,
+      });
 
       swal("Good Job!", "회원가입이 완료되었습니다!", "success");
 
@@ -50,6 +83,7 @@ export default function Signup() {
       <InputSection>
         <SignupInput
           placeholder="이메일"
+          type="email"
           value={signupEmail}
           onChange={(e) => setSignupEmail(e.target.value)}
         />
@@ -61,6 +95,7 @@ export default function Signup() {
         />
         <SignupInput
           placeholder="닉네임"
+          type="text"
           value={signupNickname}
           onChange={(e) => setSignupNickname(e.target.value)}
         />
