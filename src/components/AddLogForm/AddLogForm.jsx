@@ -39,7 +39,7 @@ const AddLogForm = () => {
             const filesArray = Array.from(files);
             const selectedFiles = filesArray.map((file) => URL.createObjectURL(file));
 
-            setThumnailImages((prev) => prev.concat(selectedFiles));
+            setThumnailImages([...thumnailImages, ...selectedFiles]);
         }
     };
 
@@ -47,21 +47,20 @@ const AddLogForm = () => {
         e.preventDefault();
         try {
             // 스토리지에 먼저 사진 업로드
+            const docID = uuid();
             const imageUrls = [];
-            for (const image of thumnailImages) {
-                const docID = uuid();
-                const imageID = `${image}`;
+            for (let i = 0; i < thumnailImages.length; i++) {
+                const image = thumnailImages[i];
+                const imageID = `image_${i + 1}`;
                 const imagePath = `log_images/${docID}/${imageID}`;
 
-                console.log('image는 무슨 주소', image);
-
                 const imageRef = ref(storage, imagePath);
-
-                await uploadBytes(imageRef, image);
+                // 이미지를 Firebase 저장소에 업로드하기 전에 blob으로 가져오기
+                const file = await fetch(image).then((res) => res.blob());
+                await uploadBytes(imageRef, file);
 
                 const imageUrl = await getDownloadURL(imageRef);
 
-                // 이미지 경로와 URL을 배열에 추가
                 imageUrls.push({
                     path: imagePath,
                     url: imageUrl,

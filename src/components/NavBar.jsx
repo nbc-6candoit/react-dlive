@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import logo from '../assets/img/logo.png';
-import { useDispatch, useSelector } from 'react-redux';
+// import { useDispatch, useSelector } from "react-redux";
 
 export const NavBar = () => {
     // const dispatch = useDispatch();

@@ -2,8 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Slide } from "./slide/Slide";
 import dlivelogo from "assets/img/logo.png";
-import SpotLog from "components/SpotLog";
-
+import SpotLog from "components/SpotDetail/SpotLog";
 function body() {
   return (
     <>

@@ -1,10 +1,10 @@
-import React from 'react';
+import { React, useState } from 'react';
 import styled from 'styled-components';
-import LogCard from './common/LogCard';
 import { useEffect } from 'react';
-import { collection, getDoc, getDocs } from '@firebase/firestore';
+import { collection, getDocs } from '@firebase/firestore';
 import { db } from 'shared/firebase';
-import { useState } from 'react';
+import LogCard from 'components/common/LogCard';
+import Button from 'components/common/Button';
 
 const SpotLog = () => {
     const handleMoreLogClick = () => {
@@ -74,7 +74,7 @@ const SpotLog = () => {
         깨끗한 공기와 영롱한 자연의 진가를확인하기에는 최적의 차박 명소예요.'
                 />
             </StLogListWrapper>
-            <StMoreLogButton onClick={handleMoreLogClick}>차박로그 더보기</StMoreLogButton>
+            <Button type='button' text='차박로그 더보기' onClick={handleMoreLogClick} width='80%' />
         </StSpotInfoContainer>
     );
 };
