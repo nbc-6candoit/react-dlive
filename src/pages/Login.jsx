@@ -13,15 +13,14 @@ import {
   changeMemberStatus,
 } from "../redux/modules/authSlice";
 import swal from "sweetalert";
-import { Link } from "react-router-dom";
+import { Await, Link } from "react-router-dom";
 
-export default function Login({ setModalOpen }) {
+export default function Login() {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const dispatch = useDispatch();
 
-  const loginHandler = async (e) => {
-    e.preventDefault();
+  const loginHandler = async () => {
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -30,22 +29,18 @@ export default function Login({ setModalOpen }) {
       );
       setLoginEmail("");
       setLoginPassword("");
-
-      swal("로그인 완료 🏕️", "어서오세요!", "success");
-
       dispatch(changeLoginStatus(true));
-      setModalOpen(false);
+      await swal("로그인 완료 🏕️", "어서오세요!", "success");
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
-      // console.log("error with LogIn", errorCode, errorMessage);
-      console.log("안된다니까요");
-      alert("등록되지 않은 회원이거나 유효하지 않은 이메일입니다.");
-      // swal(
-      //   "Oops...",
-      //   "등록되지 않은 회원이거나 유효하지 않은 이메일입니다.",
-      //   "error"
-      // );
+
+      swal(
+        "Oops...",
+        "등록되지 않은 회원이거나 유효하지 않은 이메일입니다.",
+        "error"
+      );
+      console.log("error with Login", errorCode, errorMessage);
     }
   };
   const googleLoginHandler = async () => {
@@ -55,7 +50,6 @@ export default function Login({ setModalOpen }) {
 
       swal("로그인 완료 🏕️", "어서오세요!", "success");
 
-      setModalOpen(false);
       dispatch(changeLoginStatus(true));
     } catch (error) {
       const errorCode = error.code;
@@ -95,9 +89,7 @@ export default function Login({ setModalOpen }) {
             dispatch(changeMemberStatus(false));
           }}
         >
-          <Link to="/signup">
-            <button>회원가입</button>
-          </Link>
+          <Link to="/signup">회원가입</Link>
         </StyledButton>
       </ButtonSection>
     </LoginWrapper>
