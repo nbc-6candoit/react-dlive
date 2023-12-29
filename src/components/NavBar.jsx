@@ -39,16 +39,12 @@ export const NavBar = () => {
             <></>
             {authState.isLogin === true ? (
               <>
-                <Link to="/mypage">
-                  <button>마이페이지</button>
-                </Link>
-                <button onClick={logoutHandler}>로그아웃</button>
+                <Link to="/mypage">마이페이지</Link>
+                onClick={logoutHandler}로그아웃
               </>
             ) : (
               <>
-                <Link to="/login">
-                  <button>로그인</button>
-                </Link>
+                <Link to="/login">로그인</Link>
               </>
             )}
           </div>
