@@ -100,13 +100,14 @@ export default function Signup() {
         />
       </InputSection>
       <ButtonSection>
+        <h4>이미 회원가입을 완료했다면?</h4>
         <StyledButton
           type="button"
           onClick={() => {
             dispatch(changeMemberStatus(true));
           }}
         >
-          <Link to="/login">로그인 페이지로 이동</Link>
+          <Link to="/login">로그인 하러가기</Link>
         </StyledButton>
         <StyledButton type="button" onClick={signupHandler}>
           회원가입 신청
