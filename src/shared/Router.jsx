@@ -12,6 +12,7 @@ import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import Log from "../pages/Log";
 import styled from "styled-components";
+import Signup from "../pages/Signup";
 
 const Router = () => {
   return (
@@ -23,6 +24,7 @@ const Router = () => {
           <Route path="/" element={<Main />} />
           <Route path="/mypage/:id" element={<Mypage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/spotdetail" element={<SpotDetail />} />
           <Route path="/spot" element={<Spot />} />
           <Route path="/addspot" element={<AddSpot />} />
