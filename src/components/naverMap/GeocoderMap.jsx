@@ -1,13 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 const GeocoderMap = ({ location, setLocation }) => {
-  const mapRef = useRef(null);
   const map = useRef(null);
   const { naver } = window;
 
-  // 현재 위치 버튼 클릭 시 현재 위치 표시 함수
-  const showCurrentLocation = () => {
+  // 현재 위치 버튼 클릭 시 현재 위치 및 주소 표시 함수
+  const handleCurrentLocationClick = useCallback(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -27,8 +26,8 @@ const GeocoderMap = ({ location, setLocation }) => {
                   return alert("Something wrong!");
                 }
 
-                var result = response.v2, // 검색 결과의 컨테이너
-                  address = result.address.jibunAddress; // 검색 결과로 만든 주소
+                const result = response.v2; // 검색 결과의 컨테이너
+                const address = result.address.jibunAddress; // 검색 결과로 만든 주소
                 setLocation(address);
               }
             );
@@ -49,25 +48,26 @@ const GeocoderMap = ({ location, setLocation }) => {
     } else {
       console.error("지도를 표시할 수 없습니다.");
     }
-  };
+  }, [naver, map, setLocation]);
 
-  // 주소로 좌표 검색
-  const searchAddressToCoordinate = (address) => {
+  const handleSearchAddressClick = (e) => {
+    e.preventDefault();
+    // 작성된 주소를 좌표로 반환
     naver.maps.Service.geocode(
       {
-        query: address,
+        query: location,
       },
       function (status, response) {
-        if (status === naver.maps.Service.Status.ERROR) {
-          return alert("Something Wrong!");
+        if (status !== naver.maps.Service.Status.OK) {
+          return alert("Something wrong!");
         }
 
-        if (response.v2.meta.totalCount === 0) {
-          return alert("totalCount" + response.v2.meta.totalCount);
-        }
+        const items = response.v2.addresses; // 검색 결과의 배열
+        const newAddress = items[0].jibunAddress;
+        const lat = items[0].x;
+        const lng = items[0].y;
 
-        const item = response.v2.addresses[0];
-        const point = new naver.maps.Point(item.x, item.y);
+        const point = new naver.maps.Point(lat, lng);
 
         map.current.setCenter(point);
 
@@ -75,45 +75,23 @@ const GeocoderMap = ({ location, setLocation }) => {
           position: point,
           map: map.current,
         });
+
+        setLocation(newAddress);
       }
     );
   };
 
-  // 좌표로 주소 검색
-  function searchCoordinateToAddress(latlng) {
-    console.log("Clicked coordinates:", latlng.getLat(), latlng.getLng());
-    alert(`Clicked coordinates: ${latlng.getLat()}, ${latlng.getLng()}`);
-  }
-
   useEffect(() => {
-    const mapInstance = new naver.maps.Map("map", {
-      center: new naver.maps.LatLng(37.5666103, 126.9783882),
-      zoom: 15,
-      mapTypeControl: true,
-    });
-
-    map.current = mapInstance;
-
-    showCurrentLocation();
-
-    // 엔터키로 검색
-    document
-      .getElementById("address")
-      .addEventListener("keydown", function (e) {
-        var keyCode = e.which;
-        if (keyCode === 13) {
-          searchAddressToCoordinate(document.getElementById("address").value);
-        }
+    if (!map.current) {
+      map.current = new naver.maps.Map("map", {
+        mapTypeControl: true,
       });
-
-    // 검색 버튼으로 검색
-    document.getElementById("submit").addEventListener("click", function (e) {
-      e.preventDefault();
-      searchAddressToCoordinate(document.getElementById("address").value);
-    });
+      handleCurrentLocationClick();
+    }
   }, []);
 
   const handleChangeSpotLocation = (e) => {
+    e.preventDefault();
     setLocation(e.target.value);
   };
 
@@ -126,11 +104,12 @@ const GeocoderMap = ({ location, setLocation }) => {
         onChange={handleChangeSpotLocation}
         placeholder="주소를 입력하세요"
       />
-      <button id="here" onClick={showCurrentLocation}>
+      <button type="button" onClick={handleCurrentLocationClick}>
         현재위치
       </button>
-      <button id="submit">검색</button>
-      {/* <div id="map" style={{ width: "100%", height: "300px" }}></div> */}
+      <button type="submit" onClick={handleSearchAddressClick}>
+        검색
+      </button>
     </StBox>
   );
 };
@@ -140,8 +119,4 @@ export default GeocoderMap;
 const StBox = styled.div`
   display: flex;
   margin: 10px 0;
-  & button {
-    font-size: 14px;
-    width: 150px;
-  }
 `;

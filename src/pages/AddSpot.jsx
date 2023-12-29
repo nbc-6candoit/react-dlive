@@ -16,7 +16,6 @@ import { BsFillSignpost2Fill } from "react-icons/bs";
 import { MdOutlinePets } from "react-icons/md";
 import { FaPlus } from "react-icons/fa6";
 import { FaSink } from "react-icons/fa";
-import CurrentMap from "components/SpotDetail/CurrentMap";
 
 const AddSpot = () => {
   const [name, setName] = useState("");
@@ -416,12 +415,18 @@ const StBox = styled.div`
     align-items: center;
   }
   & button {
-    width: 80px;
+    width: 120px;
     height: 48px;
     border-radius: 5px;
     margin-left: 10px;
     margin-top: 12px;
     background-color: lightgray;
+    cursor: pointer;
+    transition: background 200ms;
+    &:hover {
+      color: #fff;
+      background: #5eb470;
+    }
   }
 `;
 
