@@ -35,9 +35,6 @@ export const NavBar = () => {
       </Link>
       <StBtnInputWrapper>
         <StHeaderButton>
-          {/* <Link to="/mypage">
-            <button>마이페이지</button>
-          </Link> */}
           <div>
             <></>
             {authState.isLogin === true ? (
