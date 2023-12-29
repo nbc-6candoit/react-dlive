@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Slide } from "./slide/Slide";
 import dlivelogo from "assets/img/logo.png";
-import SpotLog from "components/SpotDetail/SpotLog";
+import SpotLog from "components/spotDetail/SpotLog";
 import { Map } from "./Map/Map";
 function body() {
   return (

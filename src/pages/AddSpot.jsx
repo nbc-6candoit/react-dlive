@@ -1,6 +1,7 @@
 // 차박명소 등록페이지(AddSpot)
 import Tag from "components/common/Tag";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
@@ -9,13 +10,10 @@ import { v4 as uuid } from "uuid";
 import Button from "components/common/Button";
 import GeocoderMap from "components/naverMap/GeocoderMap";
 import {
-  setName,
   setLocation,
   setView,
   setSeasons,
   setFacilities,
-  setSum,
-  setContent,
   setImages,
 } from "../redux/modules/spotSlice";
 
@@ -27,29 +25,38 @@ import { MdOutlinePets } from "react-icons/md";
 import { FaPlus } from "react-icons/fa6";
 import { FaSink } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
+import useInput from "hooks/useInput";
+import useClickedState from "hooks/useClickedState";
 
 const AddSpot = () => {
   const dispatch = useDispatch();
-  const { name, location, view, seasons, facilities, sum, content, images } =
-    useSelector((state) => state.spot);
+  const navigate = useNavigate();
+  const { location, view, seasons, facilities, images } = useSelector(
+    (state) => state.spot
+  );
 
   const fileRef = useRef(null);
   const mapElement = useRef(null);
 
-  const [clickedView, setClickedView] = useState({
+  // 커스텀훅 사용
+  const [name, handleChangeSpotName] = useInput();
+  const [sum, handleChangeSpotSum] = useInput();
+  const [content, handleAddContent] = useInput();
+
+  const [clickedView, toggleView] = useClickedState({
     마운틴뷰: false,
     리버뷰: false,
     오션뷰: false,
   });
 
-  const [clickedSeasons, setClickedSeasons] = useState({
+  const [clickedSeasons, toggleSeasons] = useClickedState({
     봄: false,
     여름: false,
     가을: false,
     겨울: false,
   });
 
-  const [clickedFacilities, setClickedFacilities] = useState({
+  const [clickedFacilities, toggleFacilities] = useClickedState({
     화장실: false,
     샤워실: false,
     싱크대: false,
@@ -58,51 +65,24 @@ const AddSpot = () => {
     반려동물: false,
   });
 
-  const handleFacilityClick = (facility) => {
-    setClickedFacilities((prev) => ({
-      ...prev,
-      [facility]: prev[facility] === true ? false : true,
-    }));
-    dispatch(setFacilities(facility));
+  const handleFacilityClick = (tagName) => {
+    dispatch(setFacilities(tagName));
+    toggleFacilities(tagName);
   };
 
   const handleTagClick = (tagName, category) => {
     switch (category) {
       case "view":
         dispatch(setView(tagName));
-        setClickedView((prev) => ({
-          마운틴뷰: false,
-          리버뷰: false,
-          오션뷰: false,
-          [tagName]: true,
-        }));
+        toggleView(tagName, category);
         break;
       case "seasons":
         dispatch(setSeasons(tagName));
-        setClickedSeasons((prev) => ({ ...prev, [tagName]: !prev[tagName] }));
-        break;
-      case "facilities":
-        dispatch(setFacilities(tagName));
-        setClickedFacilities((prev) => ({
-          ...prev,
-          [tagName]: !prev[tagName],
-        }));
+        toggleSeasons(tagName);
         break;
       default:
         break;
     }
-  };
-
-  const handleChangeSpotName = (e) => {
-    dispatch(setName(e.target.value));
-  };
-
-  const handleChangeSpotSum = (e) => {
-    dispatch(setSum(e.target.value));
-  };
-
-  const handleAddContent = (e) => {
-    dispatch(setContent(e.target.value));
   };
 
   const handleAddImageClick = () => {
@@ -149,34 +129,7 @@ const AddSpot = () => {
       });
       console.log("Document written with ID: ", docRef.id);
 
-      dispatch(setName(""));
-      dispatch(setLocation(""));
-      dispatch(setView(null));
-      dispatch(setSeasons([]));
-      dispatch(setFacilities([]));
-      dispatch(setSum(""));
-      dispatch(setContent(""));
-      dispatch(setImages([]));
-
-      setClickedView({
-        마운틴뷰: false,
-        리버뷰: false,
-        오션뷰: false,
-      });
-      setClickedSeasons({
-        봄: false,
-        여름: false,
-        가을: false,
-        겨울: false,
-      });
-      setClickedFacilities({
-        화장실: false,
-        샤워실: false,
-        싱크대: false,
-        매점: false,
-        산책로: false,
-        반려동물: false,
-      });
+      navigate("/spot");
     } catch (error) {
       console.error("데이터 추가 에러", error.message);
     }
@@ -188,9 +141,13 @@ const AddSpot = () => {
     }
   };
 
+  console.log(name);
+  console.log(location);
   console.log(view);
   console.log(seasons);
   console.log(facilities);
+  console.log(sum);
+  console.log(content);
 
   return (
     <>
