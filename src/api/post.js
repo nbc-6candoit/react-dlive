@@ -22,5 +22,3 @@ export const getFilterdPosts = async (property, value) => {
 export const addPost = async (newPost) => {
   await addDoc(collection(db, "post"), newPost);
 };
-
-export const orderbylog = async (newpost) => {};

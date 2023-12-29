@@ -26,7 +26,7 @@ export const Map = () => {
     const markerPosition = new naver.maps.LatLng({
       lat: 37.5666102,
       lng: 126.9783881,
-    });
+    }); // 마커 위치
 
     new naver.maps.Marker({
       position: markerPosition,

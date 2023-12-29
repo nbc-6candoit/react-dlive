@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Slide } from "./slide/Slide";
 import dlivelogo from "assets/img/logo.png";
 import SpotLog from "components/SpotDetail/SpotLog";
 import { Map } from "./Map/Map";
-function body() {
+import "firebase/storage";
+
+const body = () => {
+  const [state, setState] = useState(null);
   return (
     <>
       <StbodyContainer>
@@ -15,7 +18,6 @@ function body() {
           <StCategoryButton>마운틴뷰</StCategoryButton>
           <StCategoryButton>리버뷰</StCategoryButton>
           <StCategoryButton>오션뷰</StCategoryButton>
-          <StCategoryButton>신설</StCategoryButton>
         </StcategoryContainer>
         <Sth1>지금뜨는 차박명소</Sth1>
         <StHorizontalLine />
@@ -41,7 +43,7 @@ function body() {
       </StbodyContainer>
     </>
   );
-}
+};
 
 export default body;
 
