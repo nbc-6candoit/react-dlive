@@ -14,13 +14,9 @@ export const NavBar = () => {
       </Link>
       <StBtnInputWrapper>
         <StHeaderButton>
-          <Link to="/mypage">
-            <button>마이페이지</button>
-          </Link>
-          <Link to="/login">
-            <button>로그인</button>
-          </Link>
-          <button>로그아웃</button>
+          <Link to="/mypage">{/* <label>마이페이지</label> */}</Link>
+          <Link to="/login">{/* <label>로그인</label> */}</Link>
+          {/* <label>로그아웃</label> */}
         </StHeaderButton>
       </StBtnInputWrapper>
     </StNavContainer>
