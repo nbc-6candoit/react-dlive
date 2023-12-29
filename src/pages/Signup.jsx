@@ -69,9 +69,7 @@ export default function Signup() {
             dispatch(changeMemberStatus(true));
           }}
         >
-          <Link to="/login">
-            <button>로그인</button>
-          </Link>
+          <Link to="/login">로그인</Link>
         </StyledButton>
         <StyledButton type="button" onClick={signupHandler}>
           회원가입
