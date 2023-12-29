@@ -44,8 +44,8 @@ export const Map = () => {
 const StMapContainer = styled.div`
   position: fixed;
   z-index: 1;
-  width: 700px;
-  height: 700px;
+  width: 1000px;
+  height: 1000px;
   margin: 0 auto;
 `;
 

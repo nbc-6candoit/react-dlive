@@ -20,6 +20,7 @@ function body() {
         <Sth1>지금뜨는 차박명소</Sth1>
         <StHorizontalLine />
         <StspotContainer>
+          {/* 데이터 연결 예정 */}
           <Stbox src={dlivelogo}></Stbox>
           <Stbox src={dlivelogo}></Stbox>
           <Stbox src={dlivelogo}></Stbox>
