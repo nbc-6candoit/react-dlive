@@ -145,6 +145,8 @@ const ButtonSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  align-items: center;
+  justify-content: center;
 `;
 const StyledButton = styled.button`
   background-color: white;
