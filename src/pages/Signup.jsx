@@ -16,12 +16,6 @@ export default function Signup() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const resetInputs = () => {
-    setSignupEmail("");
-    setSignupPassword("");
-    setSignupNickname("");
-  };
-
   const checkInputs = () => {
     if (
       signupEmail.trim().length === 0 ||
@@ -32,7 +26,12 @@ export default function Signup() {
 
       return;
     }
-    if (2 < signupNickname.length < 10) {
+    if (signupNickname.length < 2) {
+      swal("닉네임은 2자 이상 10자 이하여야 합니다");
+      setSignupNickname("");
+      return;
+    }
+    if (signupNickname.length > 10) {
       swal("닉네임은 2자 이상 10자 이하여야 합니다");
       setSignupNickname("");
       return;
