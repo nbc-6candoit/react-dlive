@@ -16,8 +16,6 @@ const SpotInfo = () => {
   const spotMap = useRef(null);
   const { naver } = window;
 
-  console.log(spot);
-
   useEffect(() => {
     dispatch(__getSpots());
   }, [dispatch]);
@@ -105,7 +103,7 @@ const SpotInfo = () => {
           </StInfoWrapper>
         </StDetailInfo>
         <StDetailInfo>
-          <h3>소개글</h3>
+          <h3>상세소개</h3>
           <StHorizontalLine />
           {selectedSpot.content}
         </StDetailInfo>
