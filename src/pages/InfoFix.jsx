@@ -1,15 +1,28 @@
 import { useEffect, useState } from "react";
-import { auth } from "../shared/firebase";
+import { auth, db } from "../shared/firebase";
 import React from "react";
 import styled from "styled-components";
-import defaultphoto from "../assets/img/avatar.png";
+import { updateDoc, doc, collection } from "firebase/firestore";
 import Avatar from "components/common/Avatar";
 import Button from "components/common/Button";
 import { Link } from "react-router-dom";
 
+// const updateUser = async (nickname, avatar) => {
+//   // 원하는 데이터 가져옴
+//   const userDoc = doc(db, "users", nickname);
+//   try {
+//     const res = await updateDoc(userDoc, { nickname: username });
+//     console.log(res); // res는 undefined
+//   } catch (e) {
+//     console.log(e);
+//   } finally {
+//     console.log("end");
+//   }
+// };
 const InfoFix = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [username, setUsername] = useState("");
+  const [avatar, setAvatar] = useState(null);
 
   useEffect(() => {
     const fetchProfileInfo = async () => {
@@ -18,20 +31,13 @@ const InfoFix = () => {
         const user = auth.currentUser;
 
         if (user) {
-          // 사용자의 제공자 데이터를 반복
           user.providerData.forEach((profile) => {
-            // 제공자의 ID (예: google.com)
             const providerId = profile.providerId;
-
-            // 제공자에 특정한 UID
             const uid = profile.uid;
-
-            // 이름, 이메일 주소 및 프로필 사진 URL
             const name = profile.displayName;
             const email = profile.email;
             const photoUrl = profile.photoURL;
 
-            // 사용자 프로필 정보 상태 업데이트
             setUserProfile({ providerId, uid, name, email, photoUrl });
           });
         }
@@ -43,6 +49,44 @@ const InfoFix = () => {
     fetchProfileInfo();
   }, []);
 
+  const updateUser = async () => {
+    const userDoc = doc(db, "users", auth.currentUser.uid);
+
+    try {
+      await updateDoc(userDoc, { nickname: username });
+      console.log("프로필이 성공적으로 업데이트되었습니다!");
+    } catch (e) {
+      console.error("프로필 업데이트 오류:", e);
+    } finally {
+      console.log("end");
+    }
+  };
+  const handleUpdateProfile = async () => {
+    try {
+      const user = auth.currentUser;
+
+      // 프로필 업데이트
+      await updateDoc(doc(collection(db, "users"), user.uid), {
+        name: username,
+      });
+
+      console.log("프로필이 성공적으로 업데이트되었습니다!");
+
+      // 업데이트 된 프로필 정보를 다시 가져와서 상태 업데이트
+      const userDoc = await doc(collection(db, "users"), user.uid);
+      const userData = await userDoc.data();
+
+      setUserProfile({
+        providerId: userData.providerId,
+        uid: userData.uid,
+        name: userData.name,
+        email: userData.email,
+        photoUrl: userData.photoUrl,
+      });
+    } catch (error) {
+      console.error("프로필 업데이트 오류:", error);
+    }
+  };
   return (
     <div>
       {userProfile && (
@@ -57,12 +101,17 @@ const InfoFix = () => {
                   placeholder={`${userProfile.name}`}
                   onChange={(e) => setUsername(e.target.value)}
                 ></Stnameinput>
-
+                {username}
+                <Button
+                  text="프로필 업데이트"
+                  width="20%"
+                  onClick={updateUser(username)}
+                ></Button>
                 <Link to="/Mypage">
                   <Button
                     type="button"
-                    text="프로필 업데이트"
-                    width="100%"
+                    text="mypage돌아가기"
+                    width="70%"
                   ></Button>
                 </Link>
               </div>
