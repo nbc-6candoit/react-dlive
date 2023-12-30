@@ -1,10 +1,18 @@
 import React from "react";
 import styled from "styled-components";
 import { Slide } from "./slide/Slide";
-import SpotLog from "../../components/spotDetail/SpotLog";
+import SpotLog from "../spotDetail/SpotLog";
 import { Map } from "./Map/Map";
 import HotSpotList from "./HotSpotList";
-function body() {
+import Button from "components/common/Button";
+import { Link, useNavigate } from "react-router-dom";
+
+function Body() {
+  const navigate = useNavigate();
+  const handleMoreDetailButtonClick = (contentType) => {
+    navigate(`/spotdetail/${contentType}`);
+  };
+
   return (
     <>
       <StbodyContainer>
@@ -18,13 +26,28 @@ function body() {
             <StCategoryButton>오션뷰</StCategoryButton>
             <StCategoryButton>신설</StCategoryButton>
           </StcategoryContainer>
+          <Button
+            type={"button"}
+            onClick={() => (window.location.href = "/addspot")}
+            text={"나만의 차박명소 등록하기"}
+          />
           <StDetailInfo>
             <h3>지금뜨는 차박명소</h3>
             <StHorizontalLine />
             <HotSpotList />
+            <Button
+              type={"button"}
+              onClick={() => handleMoreDetailButtonClick("spot")}
+              text={"차박명소 더보기"}
+            />
           </StDetailInfo>
           <>
             <SpotLog />
+            <Button
+              type="button"
+              text="차박로그 더보기"
+              onClick={() => handleMoreDetailButtonClick("log")}
+            />
           </>
           <StDetailInfo>
             <h3>주변 차박명소</h3>
@@ -39,7 +62,7 @@ function body() {
   );
 }
 
-export default body;
+export default Body;
 
 const StbodyContainer = styled.main`
   overflow-y: auto;
