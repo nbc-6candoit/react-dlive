@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import defaultphoto from "../assets/img/avatar.png";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
+import Button from "components/common/Button";
 
 export default function Signup() {
   const [signupEmail, setSignupEmail] = useState("");
@@ -42,7 +43,7 @@ export default function Signup() {
     return true;
   };
 
-  const signupHandler = async () => {
+  const handlersignup = async () => {
     if (!checkInputs()) {
       return;
     }
@@ -88,47 +89,46 @@ export default function Signup() {
     }
   };
   return (
-    <SignupWrapper>
+    <StsignupWrapper>
       <h1>🏕️ D:Live의 회원이 되어보세요!</h1>
-      <InputSection>
-        <SignupInput
+      <StinputSection>
+        <StsignupInput
           placeholder="이메일"
           type="email"
           value={signupEmail}
           onChange={(e) => setSignupEmail(e.target.value)}
         />
-        <SignupInput
+        <StsignupInput
           placeholder="비밀번호 (6자 이상)"
           type="password"
           value={signupPassword}
           onChange={(e) => setSignupPassword(e.target.value)}
         />
-        <SignupInput
+        <StsignupInput
           placeholder="닉네임"
           type="text"
           value={signupNickname}
           onChange={(e) => setSignupNickname(e.target.value)}
         />
-      </InputSection>
-      <ButtonSection>
-        <h4>이미 회원가입을 완료했다면?</h4>
-        <StyledButton
-          type="button"
-          onClick={() => {
-            dispatch(changeMemberStatus(true));
-          }}
-        >
-          <Link to="/login">로그인 하러가기</Link>
-        </StyledButton>
-        <StyledButton type="button" onClick={signupHandler}>
-          회원가입 신청
-        </StyledButton>
-      </ButtonSection>
-    </SignupWrapper>
+      </StinputSection>
+      <StbuttonSection>
+        <Link to="/login">
+          <h4>이미 회원가입을 완료했다면?</h4>
+          <Button
+            text="로그인 하러가기"
+            type="button"
+            onClick={() => {
+              dispatch(changeMemberStatus(true));
+            }}
+          />
+        </Link>
+        <Button text="회원가입 신청" type="button" onClick={handlersignup} />
+      </StbuttonSection>
+    </StsignupWrapper>
   );
 }
 
-const SignupWrapper = styled.div`
+const StsignupWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -139,12 +139,12 @@ const SignupWrapper = styled.div`
     font-size: 20px;
   }
 `;
-const InputSection = styled.div`
+const StinputSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px;
 `;
-const SignupInput = styled.input`
+const StsignupInput = styled.input`
   width: 200px;
   height: 20px;
   border-radius: 20px;
@@ -152,20 +152,10 @@ const SignupInput = styled.input`
   padding: 15px;
   font-size: 16px;
 `;
-const ButtonSection = styled.div`
+const StbuttonSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
   align-items: center;
   justify-content: center;
-`;
-const StyledButton = styled.button`
-  background-color: white;
-  border: 1px solid black;
-  width: 189px;
-  height: 35px;
-  border-radius: 20px;
-  font-size: 16px;
-
-  cursor: pointer;
 `;

@@ -7,6 +7,7 @@ import { useState } from "react";
 import { auth } from "../shared/firebase";
 import Glogo from "../assets/img/g-logo.png";
 import styled from "styled-components";
+import Button from "components/common/Button";
 import { useDispatch } from "react-redux";
 import {
   changeLoginStatus,
@@ -21,7 +22,7 @@ export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const loginHandler = async () => {
+  const handlerlogin = async () => {
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -48,7 +49,7 @@ export default function Login() {
       console.log("error with Login", errorCode, errorMessage);
     }
   };
-  const googleLoginHandler = async () => {
+  const handlergoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
@@ -67,44 +68,42 @@ export default function Login() {
   };
 
   return (
-    <LoginWrapper>
+    <StloginWrapper>
       <h1>🏕️ D:Live에 오신 걸 환영합니다!</h1>
-      <InputSection>
-        <LoginInput
+      <StinputSection>
+        <StloginInput
           placeholder="아이디"
           value={loginEmail}
           onChange={(e) => setLoginEmail(e.target.value)}
         />
-        <LoginInput
+        <StloginInput
           placeholder="비밀번호"
           type="password"
           value={loginPassword}
           onChange={(e) => setLoginPassword(e.target.value)}
         />
-      </InputSection>
-      <ButtonSection>
-        <StyledButton type="button" onClick={loginHandler}>
-          로그인
-        </StyledButton>
-        <StyledGoogleButton type="button" onClick={googleLoginHandler}>
+      </StinputSection>
+      <StbuttonSection>
+        <Button type="button" onClick={handlerlogin} text="로그인"></Button>
+        <StstyledGoogleButton type="button" onClick={handlergoogleLogin}>
           <img src={Glogo}></img>
           <p>Sign in with Google</p>
-        </StyledGoogleButton>
-
-        <StyledButton
-          type="button"
-          onClick={() => {
-            dispatch(changeMemberStatus(false));
-          }}
-        >
-          <Link to="/signup">회원가입</Link>
-        </StyledButton>
-      </ButtonSection>
-    </LoginWrapper>
+        </StstyledGoogleButton>
+        <Link to="/signup">
+          <Button
+            text="회원가입"
+            type="button"
+            onClick={() => {
+              dispatch(changeMemberStatus(false));
+            }}
+          ></Button>
+        </Link>
+      </StbuttonSection>
+    </StloginWrapper>
   );
 }
 
-const LoginWrapper = styled.div`
+const StloginWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -116,13 +115,13 @@ const LoginWrapper = styled.div`
   }
 `;
 
-const InputSection = styled.div`
+const StinputSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px;
 `;
 
-const LoginInput = styled.input`
+const StloginInput = styled.input`
   width: 200px;
   height: 20px;
   border-radius: 20px;
@@ -130,38 +129,26 @@ const LoginInput = styled.input`
   padding: 15px;
   font-size: 16px;
 `;
-const ButtonSection = styled.div`
+const StbuttonSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
 `;
-const StyledButton = styled.button`
-  background-color: white;
-  border: 1px solid black;
-  width: 189px;
-  height: 35px;
-  border-radius: 20px;
-  font-size: 16px;
 
-  cursor: pointer;
-`;
-const StyledGoogleButton = styled.button`
-  background-color: white;
-  border: 1px solid black;
-  width: 189px;
-  height: 35px;
-  border-radius: 20px;
+const StstyledGoogleButton = styled.button`
+  width: ${(props) => (props.width ? props.width : "100%")};
+  height: 48px;
   font-size: 16px;
-
+  color: #5eb470;
+  border-radius: 5px;
+  border: 1px solid #5eb470;
+  margin-top: 30px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
+  transition: background 200ms;
   &:hover {
-    background-color: #4285f4;
-    color: white;
+    color: #fff;
+    background: #5eb470;
   }
+
   & img {
     width: 20px;
     height: 20px;

@@ -7,18 +7,6 @@ import Avatar from "components/common/Avatar";
 import Button from "components/common/Button";
 import { Link } from "react-router-dom";
 
-// const updateUser = async (nickname, avatar) => {
-//   // 원하는 데이터 가져옴
-//   const userDoc = doc(db, "users", nickname);
-//   try {
-//     const res = await updateDoc(userDoc, { nickname: username });
-//     console.log(res); // res는 undefined
-//   } catch (e) {
-//     console.log(e);
-//   } finally {
-//     console.log("end");
-//   }
-// };
 const InfoFix = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [username, setUsername] = useState("");
@@ -27,8 +15,8 @@ const InfoFix = () => {
   useEffect(() => {
     const fetchProfileInfo = async () => {
       try {
-        console.log(auth.currentUser);
         const user = auth.currentUser;
+        console.log(user);
 
         if (user) {
           user.providerData.forEach((profile) => {
@@ -49,7 +37,9 @@ const InfoFix = () => {
     fetchProfileInfo();
   }, []);
 
-  const updateUser = async () => {
+  const updateUser = async (username, e) => {
+    e.preventDefault();
+    setUsername(username);
     const userDoc = doc(db, "users", auth.currentUser.uid);
 
     try {
@@ -61,6 +51,7 @@ const InfoFix = () => {
       console.log("end");
     }
   };
+
   const handleUpdateProfile = async () => {
     try {
       const user = auth.currentUser;
@@ -87,25 +78,26 @@ const InfoFix = () => {
       console.error("프로필 업데이트 오류:", error);
     }
   };
+
   return (
     <div>
       {userProfile && (
         <>
           <StLogCard>
             <StLogWrapper>
-              <div>
+              <form onSubmit={(e) => updateUser(username, e)}>
                 <Avatar />
-
                 <Stnameinput
                   type="text"
                   placeholder={`${userProfile.name}`}
+                  value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 ></Stnameinput>
                 {username}
                 <Button
+                  type="submit"
                   text="프로필 업데이트"
                   width="20%"
-                  onClick={updateUser(username)}
                 ></Button>
                 <Link to="/Mypage">
                   <Button
@@ -114,7 +106,7 @@ const InfoFix = () => {
                     width="70%"
                   ></Button>
                 </Link>
-              </div>
+              </form>
             </StLogWrapper>
           </StLogCard>
         </>

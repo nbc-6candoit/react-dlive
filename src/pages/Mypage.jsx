@@ -9,6 +9,7 @@ import Button from "components/common/Button";
 import { Link } from "react-router-dom";
 const Mypage = () => {
   const [userProfile, setUserProfile] = useState(null);
+  // const { id } = useParams();
 
   useEffect(() => {
     const fetchProfileInfo = async () => {
@@ -41,11 +42,12 @@ const Mypage = () => {
     fetchProfileInfo();
   }, []);
 
+  console.log(userProfile);
   return (
     <div>
       {userProfile && (
         <>
-          <div>UID: {userProfile.uid}</div>
+          <div>UID: {userProfile.userId}</div>
           <div>닉네임: {userProfile.name}</div>
           <div>사용자 이메일: {userProfile.email}</div>
           <div>프로필 사진 URL: {userProfile.photoUrl}</div>
