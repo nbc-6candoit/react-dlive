@@ -22,7 +22,7 @@ const HotSpotList = () => {
       {recentSpots.map((spot) => (
         <Link to={`/spot/${spot.id}`}>
           <Stbox key={spot.id}>
-            <img src={spot.images[0]} alt={spot.name} />
+            <img src={spot?.images?.[0]} alt={spot.name} />
           </Stbox>
         </Link>
       ))}

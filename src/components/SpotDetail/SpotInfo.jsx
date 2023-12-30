@@ -11,33 +11,43 @@ import Tag from "components/common/Tag";
 import { useDispatch, useSelector } from "react-redux";
 import { __getSpots } from "../../redux/modules/spotDataSlice";
 import { useParams } from "react-router-dom";
+import { FACILITIES_DATA } from "constants/spotOptions";
+import FacilitiesIcons from "components/addSpot/FacilitiesIcons";
 
 const SpotInfo = () => {
   const dispatch = useDispatch();
   const { spot, isLoading, isError } = useSelector((state) => state.spotData);
   const { spotId } = useParams();
 
+  console.log(spot);
+
   useEffect(() => {
     dispatch(__getSpots());
-  }, []);
+  }, [dispatch]);
 
-  console.log(spot);
+  const selectedSpot = spot.find((spot) => spot.id === spotId);
+  if (!selectedSpot) {
+    return <div>일치하는 차박 명소가 없습니다.</div>;
+  }
+
+  const seasonsString = selectedSpot.seasons.join("/");
 
   return (
     <>
+      <StImageWrapper>
+        <img src={spot?.images?.[0]} alt={selectedSpot.name} />
+      </StImageWrapper>
       <StSpotInfoContainer>
         <StTitle>
-          <Tag tagName="마운틴뷰" clicked="true" />
-          <h2>안반데기</h2>
+          <Tag
+            tagName={`${selectedSpot.view}`}
+            clicked="true"
+            disableCursor={true}
+          />
+          <h2>{selectedSpot.name}</h2>
           <div>
-            <span>
-              <StLogIcon />
-              <p>차박로그(56)</p>
-            </span>
-            <span>
-              <StSpotIcon />
-              <p>경북 고령군 덕곡면 덕운로 34</p>
-            </span>
+            <StSpotIcon />
+            <p>{selectedSpot.location}</p>
           </div>
         </StTitle>
         <StDetailInfo>
@@ -51,40 +61,19 @@ const SpotInfo = () => {
               <h4>시설정보</h4>
             </div>
             <div>
-              <p>마운틴뷰</p>
-              <p>고지대 캠핑장! 자연뷰 맛집 캠핑장</p>
-              <p>봄/여름/가을/겨울</p>
+              <p>{selectedSpot.view}</p>
+              <p>{selectedSpot.sum}</p>
+              <p>{seasonsString}</p>
               <StIconContainer>
-                <div>
-                  <StIconWrapper>
-                    <PiToilet />
-                  </StIconWrapper>
-                  <p>화장실</p>
-                </div>
-                <div>
-                  <StIconWrapper>
-                    <PiShower />
-                  </StIconWrapper>
-                  <p>샤워실</p>
-                </div>
-                <div>
-                  <StIconWrapper>
-                    <AiOutlineShop />
-                  </StIconWrapper>
-                  <p>매점</p>
-                </div>
-                <div>
-                  <StIconWrapper>
-                    <PiSignpost />
-                  </StIconWrapper>
-                  <p>산책로</p>
-                </div>
-                <div>
-                  <StIconWrapper>
-                    <PiDog />
-                  </StIconWrapper>
-                  <p>반려동물</p>
-                </div>
+                {FACILITIES_DATA.map(({ icon, label, index }) => (
+                  <FacilitiesIcons
+                    key={index}
+                    clicked={selectedSpot.facilities.includes(label)}
+                    icon={icon}
+                    label={label}
+                    disableCursor={true}
+                  />
+                ))}
               </StIconContainer>
             </div>
           </StInfoWrapper>
@@ -92,17 +81,7 @@ const SpotInfo = () => {
         <StDetailInfo>
           <h3>소개글</h3>
           <StHorizontalLine />
-          <p>
-            고지대 명소! 자연뷰 차박 맛집 :-)
-            <br />
-            고지대에 위치한 깨끗하고 뷰 좋은 차박 장소입니다.
-            <br />
-            대구 및 주변 지역에서 접근성이 좋습니다.
-            <br />
-            찾아주시는 모든분들이 안락한 휴식과
-            <br />
-            아름다운 추억을 가져가실 수 있는 공간입니다.
-          </p>
+          {selectedSpot.content}
         </StDetailInfo>
         <StMapWrapper>지도</StMapWrapper>
       </StSpotInfoContainer>
@@ -115,6 +94,19 @@ export default SpotInfo;
 const StHorizontalLine = styled.div`
   width: 100%;
   border-bottom: 1px solid gray;
+`;
+
+const StImageWrapper = styled.div`
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  & img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 
 const StSpotInfoContainer = styled.div`
@@ -133,21 +125,22 @@ const StTitle = styled.div`
   }
   & div {
     line-height: 1.5;
-  }
-  & span {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;
   }
+  & p {
+    font-size: 15px;
+  }
 `;
 
 const StSpotIcon = styled(FaMapMarkedAlt)`
-  color: #11998e;
+  color: #5eb470;
 `;
 
 const StLogIcon = styled(PiWechatLogoFill)`
-  color: #11998e;
+  color: #5eb470;
 `;
 
 const StDetailInfo = styled.div`
@@ -187,7 +180,7 @@ const StIconWrapper = styled.div`
 `;
 
 const StMapWrapper = styled.div`
-  width: 80%;
+  width: 100%;
   height: 300px;
   background-color: lightgray;
 `;

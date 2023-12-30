@@ -1,9 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 
-const FacilitiesIcons = ({ clicked, onClick, icon, label }) => {
+const FacilitiesIcons = ({ clicked, onClick, icon, label, disableCursor }) => {
   return (
-    <StIconWrapper clicked={clicked} onClick={onClick}>
+    <StIconWrapper
+      clicked={clicked}
+      onClick={onClick}
+      disableCursor={disableCursor}
+    >
       {icon}
       <p>{label}</p>
     </StIconWrapper>
@@ -19,7 +23,8 @@ const StIconWrapper = styled.div`
   align-items: center;
   font-size: 30px;
   gap: 0.7rem;
-  cursor: pointer;
+  cursor: ${(props) => (props.disableCursor ? "auto" : "pointer")};
+  user-select: none;
   color: ${(props) =>
     props.clicked === true || props.clicked === "true" ? "#5eb470" : "#999"};
 `;

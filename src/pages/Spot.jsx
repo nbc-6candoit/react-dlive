@@ -10,12 +10,6 @@ const Spot = () => {
 
   return (
     <StPageContainer>
-      <StImageWrapper>
-        <img
-          src="https://www.kkday.com/ko/blog/wp-content/uploads/chabak_camping_2.jpg"
-          alt="차박명소"
-        />
-      </StImageWrapper>
       <SpotInfo />
       <StSpotLogWrapper>
         <SpotLog />
@@ -35,17 +29,4 @@ const StSpotLogWrapper = styled.div`
   height: fit-content;
   margin-bottom: 50px;
   padding: 40px;
-`;
-
-const StImageWrapper = styled.div`
-  height: 300px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  & img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
 `;
