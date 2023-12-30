@@ -4,6 +4,9 @@ import { Slide } from "./slide/Slide";
 import dlivelogo from "assets/img/logo.png";
 import SpotLog from "components/SpotDetail/SpotLog";
 import { Map } from "./Map/Map";
+import mountains from "assets/img/산.png";
+import rivers from "assets/img/강.png";
+import seas from "assets/img/바다.png";
 
 const body = () => {
   return (
@@ -13,9 +16,9 @@ const body = () => {
           <Slide />
         </>
         <StcategoryContainer>
-          <StCategoryButton>마운틴뷰</StCategoryButton>
-          <StCategoryButton>리버뷰</StCategoryButton>
-          <StCategoryButton>오션뷰</StCategoryButton>
+          <StCategoryButton src={mountains} />
+          <StCategoryButton src={rivers} />
+          <StCategoryButton src={seas} />
         </StcategoryContainer>
         <Sth1>지금뜨는 차박명소</Sth1>
         <StHorizontalLine />
@@ -59,11 +62,11 @@ const StcategoryContainer = styled.div`
   padding: 30px;
   gap: 5px;
 `;
-const StCategoryButton = styled.button`
+const StCategoryButton = styled.img`
   width: 100px;
   height: 100px;
   border-radius: 60px;
-  background: #d9d9d9;
+
   margin: 20px auto 0 auto;
   gap: 5;
   cursor: pointer;
@@ -98,7 +101,6 @@ const Stbox = styled.img`
   border: 1px solid black;
   margin: 20px;
   border-radius: 13px;
-  background: #d9d9d9;
   cursor: pointer;
 `;
 
