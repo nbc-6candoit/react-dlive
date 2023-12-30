@@ -1,11 +1,10 @@
 import React from "react";
-import { useEffect, useState } from "react";
-import { db, auth } from "shared/firebase";
+import Button from "./common/Button";
+import { auth } from "shared/firebase";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import logo from "../assets/img/logo.png";
 import { useDispatch, useSelector } from "react-redux";
-import Login from "pages/Login";
 
 import swal from "sweetalert";
 import {
@@ -19,7 +18,7 @@ export const NavBar = () => {
   const dispatch = useDispatch();
   console.log(authState.isLogin);
 
-  const logoutHandler = async () => {
+  const handlerlogout = async () => {
     await signOut(auth);
 
     swal("로그아웃", "로그아웃 되었습니다.", "success");
@@ -41,7 +40,7 @@ export const NavBar = () => {
               <>
                 <Link to="/mypage">마이페이지</Link>
 
-                <button onClick={logoutHandler}>로그아웃</button>
+                <button onClick={handlerlogout}>로그아웃</button>
               </>
             ) : (
               <>
