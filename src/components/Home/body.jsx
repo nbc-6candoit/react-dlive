@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Slide } from "./slide/Slide";
 import dlivelogo from "assets/img/logo.png";
-import SpotLog from "components/spotDetail/SpotLog";
+import SpotLog from "../../components/spotDetail/SpotLog";
 import { Map } from "./Map/Map";
 function body() {
   return (
@@ -28,9 +28,7 @@ function body() {
           <Stbox src={dlivelogo}></Stbox>
         </StspotContainer>
         <>
-          <Sth1>
-            <SpotLog />
-          </Sth1>
+          <SpotLog />
         </>
         <Sth1>주변 차박명소</Sth1>
         <StHorizontalLine />
@@ -46,6 +44,7 @@ export default body;
 
 const StbodyContainer = styled.main`
   overflow-y: auto;
+  max-width: 530px;
   height: fit-content;
   margin-bottom: 50px;
 `;
@@ -74,17 +73,17 @@ const StspotContainer = styled.div`
   flex-direction: row;
   flex-grow: auto;
   grid-template-columns: repeat(3, 1fr);
-  margin: 40px;
   padding: 40px;
+  gap: 20px;
   flex: 3;
-  border: 2px;
 `;
-const Sth1 = styled.h3`
+const Sth1 = styled.div`
+  width: 100%;
+  max-width: 530px;
+  margin: 0 20px;
   color: #000;
   font-size: 20px;
   font-weight: 800;
-  margin-left: 85px;
-  margin-top: 100px;
   line-height: 1.7;
 `;
 
@@ -95,16 +94,14 @@ const Stbox = styled.img`
   width: 130px;
   height: 130px;
   border: 1px solid black;
-  margin: 20px;
   border-radius: 13px;
   background: #d9d9d9;
   cursor: pointer;
 `;
 
 const StHorizontalLine = styled.div`
-  width: 80%;
   border-bottom: 1px solid gray;
-  margin: 10px auto;
+  margin: 10px 20px;
 `;
 
 const StgpsContainer = styled.div`
