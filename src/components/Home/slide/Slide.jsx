@@ -27,7 +27,7 @@ export const Slide = () => {
 
   const settings = {
     dots: false,
-    speed: 3000,
+    speed: 1500,
     autoplay: true,
     autoplaySpeed: 1000,
     slidesToShow: 1,
