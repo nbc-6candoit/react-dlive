@@ -4,7 +4,6 @@ import { Slide } from "./slide/Slide";
 import dlivelogo from "assets/img/logo.png";
 import SpotLog from "components/SpotDetail/SpotLog";
 import { Map } from "./Map/Map";
-import "firebase/storage";
 
 const body = () => {
   return (
