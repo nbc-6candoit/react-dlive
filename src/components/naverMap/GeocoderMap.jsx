@@ -106,22 +106,24 @@ const GeocoderMap = () => {
   };
 
   return (
-    <StBox>
-      <input
-        type="text"
-        id="address"
-        value={location}
-        onChange={handleChangeSpotLocation}
-        placeholder="주소를 입력하세요"
-        onKeyDown={handleInputKeyDown}
-      />
-      <button type="button" onClick={handleCurrentLocationClick}>
-        현재위치
-      </button>
-      <button type="button" onClick={handleSearchAddressClick}>
-        검색
-      </button>
-    </StBox>
+    <>
+      <StMapWrapper id="map" />
+      <StBox>
+        <input
+          type="text"
+          value={location}
+          onChange={handleChangeSpotLocation}
+          placeholder="주소를 입력하세요"
+          onKeyDown={handleInputKeyDown}
+        />
+        <button type="button" onClick={handleCurrentLocationClick}>
+          현재위치
+        </button>
+        <button type="button" onClick={handleSearchAddressClick}>
+          검색
+        </button>
+      </StBox>
+    </>
   );
 };
 
@@ -130,4 +132,12 @@ export default GeocoderMap;
 const StBox = styled.div`
   display: flex;
   margin: 10px 0;
+`;
+
+const StMapWrapper = styled.div`
+  width: 100%;
+  height: 270px;
+  margin-top: 30px;
+  border-radius: 5px;
+  background-color: lightgray;
 `;

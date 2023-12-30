@@ -31,9 +31,7 @@ const AddSpot = () => {
     (state) => state.spot
   );
 
-  const { spotId } = useParams();
   const fileRef = useRef(null);
-  const mapElement = useRef(null);
 
   // 커스텀훅 사용
   const [name, handleChangeSpotName] = useInput();
@@ -172,7 +170,6 @@ const AddSpot = () => {
         </StBox>
         <StBox>
           <label htmlFor="address">차박명소 주소*</label>
-          <StMapWrapper id="map" ref={mapElement} />
           <GeocoderMap location={location} setLocation={setLocation} />
         </StBox>
         <StBox>
@@ -320,14 +317,6 @@ const StBox = styled.div`
       background: #5eb470;
     }
   }
-`;
-
-const StMapWrapper = styled.div`
-  width: 100%;
-  height: 270px;
-  margin-top: 30px;
-  border-radius: 5px;
-  background-color: lightgray;
 `;
 
 const StTextarea = styled.textarea`

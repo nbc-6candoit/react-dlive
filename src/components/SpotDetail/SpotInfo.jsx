@@ -1,10 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
-import { PiToilet } from "react-icons/pi";
-import { PiShower } from "react-icons/pi";
-import { AiOutlineShop } from "react-icons/ai";
-import { PiSignpost } from "react-icons/pi";
-import { PiDog } from "react-icons/pi";
 import { FaMapMarkedAlt } from "react-icons/fa";
 import { PiWechatLogoFill } from "react-icons/pi";
 import Tag from "components/common/Tag";
@@ -18,6 +13,8 @@ const SpotInfo = () => {
   const dispatch = useDispatch();
   const { spot, isLoading, isError } = useSelector((state) => state.spotData);
   const { spotId } = useParams();
+  const spotMap = useRef(null);
+  const { naver } = window;
 
   console.log(spot);
 
@@ -25,12 +22,42 @@ const SpotInfo = () => {
     dispatch(__getSpots());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (!spotMap.current) {
+      spotMap.current = new naver.maps.Map("map", {
+        mapTypeControl: true,
+      });
+    }
+  }, []);
+
   const selectedSpot = spot.find((spot) => spot.id === spotId);
   if (!selectedSpot) {
     return <div>일치하는 차박 명소가 없습니다.</div>;
   }
 
   const seasonsString = selectedSpot.seasons.join("/");
+
+  naver.maps.Service.geocode(
+    {
+      query: selectedSpot.location,
+    },
+    function (status, response) {
+      if (status !== naver.maps.Service.Status.OK) {
+        return alert("Something wrong!");
+      }
+
+      const items = response.v2.addresses;
+      const lat = items[0].x;
+      const lng = items[0].y;
+
+      const point = new naver.maps.Point(lat, lng);
+      spotMap.current.setCenter(point);
+      const marker = new naver.maps.Marker({
+        position: new naver.maps.LatLng(lat, lng),
+        spotMap: spotMap.current,
+      });
+    }
+  );
 
   return (
     <>
@@ -83,7 +110,9 @@ const SpotInfo = () => {
           <StHorizontalLine />
           {selectedSpot.content}
         </StDetailInfo>
-        <StMapWrapper>지도</StMapWrapper>
+        <StMapWrapper>
+          <StMapWrapper id="map" />
+        </StMapWrapper>
       </StSpotInfoContainer>
     </>
   );
