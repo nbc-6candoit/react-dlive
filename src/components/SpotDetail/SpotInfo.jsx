@@ -58,11 +58,10 @@ const SpotInfo = () => {
       });
     }
   );
-
   return (
     <>
       <StImageWrapper>
-        <img src={spot?.images?.[0]} alt={selectedSpot.name} />
+        <img src={selectedSpot.images[0].url} alt={selectedSpot.name} />
       </StImageWrapper>
       <StSpotInfoContainer>
         <StTitle>

@@ -93,13 +93,8 @@ const AddSpot = () => {
     } else {
       const filesArray = Array.from(files);
 
-      const selectedFiles = filesArray.map((file, index) => ({
-        id: uuid(),
-        url: URL.createObjectURL(file),
-        key: `${uuid()}_${index}`,
-      }));
-      // const selectedFiles = filesArray.map((file) => URL.createObjectURL(file));
-      // const updatedImages = images.concat(selectedFiles);
+      const selectedFiles = filesArray.map((file) => URL.createObjectURL(file));
+      const updatedImages = images.concat(selectedFiles);
       console.log("업데이트이미지", selectedFiles);
       dispatch(setImages(selectedFiles));
     }

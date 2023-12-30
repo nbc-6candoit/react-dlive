@@ -32,12 +32,10 @@ const spotSlice = createSlice({
         : [...state.seasons, tagName];
     },
     setFacilities: (state, action) => {
-      console.log("페이로드 :", action.payload);
       const tagName = action.payload;
       state.facilities = state.facilities.includes(tagName)
         ? state.facilities.filter((facility) => facility !== tagName)
         : [...state.facilities, tagName];
-      console.log("Updated facilities state:", state.facilities);
     },
     setSum: (state, action) => {
       state.sum = action.payload;
