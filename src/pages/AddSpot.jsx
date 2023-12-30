@@ -3,10 +3,7 @@ import Tag from "components/common/Tag";
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { addDoc, collection } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { db, storage } from "shared/firebase";
-import { v4 as uuid } from "uuid";
+
 import Button from "components/common/Button";
 import GeocoderMap from "components/naverMap/GeocoderMap";
 import {
@@ -16,6 +13,7 @@ import {
   setFacilities,
   setImages,
 } from "../redux/modules/spotSlice";
+import { __addSpot, addSpot } from "../redux/modules/spotDataSlice";
 
 import { FaToilet } from "react-icons/fa";
 import { FaShower } from "react-icons/fa";
@@ -116,19 +114,8 @@ const AddSpot = () => {
       facilities.length > 0
     ) {
       try {
-        // 스토리지에 먼저 사진 업로드
-        const imageUrls = [];
-        for (const image of images) {
-          const imageRef = ref(storage, `log_images/${image}`);
-          await uploadBytes(imageRef, image);
-
-          const imageUrl = await getDownloadURL(imageRef);
-          imageUrls.push(imageUrl);
-        }
-
         // 차박명소 업로드
-        const docRef = await addDoc(collection(db, "spot"), {
-          id: uuid(),
+        const newSpot = {
           name,
           location,
           view,
@@ -136,10 +123,11 @@ const AddSpot = () => {
           facilities,
           sum,
           content,
-          images: imageUrls,
-        });
-        console.log("Document written with ID: ", docRef.id);
-
+          images,
+        };
+        dispatch(__addSpot(newSpot));
+        dispatch(addSpot(newSpot));
+        console.log("데이터추가 성공 :", newSpot);
         navigate("/spot");
       } catch (error) {
         console.error("데이터 추가 에러", error.message);
