@@ -51,14 +51,7 @@ const SpotLog = () => {
                 <StHorizontalLine />
             </StDetailInfo>
             <StLogListWrapper>
-                {/* {logList.map((log, index) => {
-                    console.log('existingData.log', index, log);
-                    <Link key={log.docID} to={`/log/${log.docID}`}>
-                        <LogCard></LogCard>
-                    </Link>;
-                })} */}
                 {logList.map((log, index) => {
-                    console.log(index);
                     return (
                         <Link key={log.docID} to={`/log/${log.docID}`}>
                             <LogCard
@@ -71,7 +64,7 @@ const SpotLog = () => {
                     );
                 })}
             </StLogListWrapper>
-            <Button type='button' text='차박로그 더보기' onClick={handleMoreLogClick} width='80%' />
+            <Button type='button' text='차박로그 더보기' onClick={handleMoreLogClick} />
         </StSpotInfoContainer>
     );
 };
@@ -79,14 +72,13 @@ const SpotLog = () => {
 export default SpotLog;
 
 export const StHorizontalLine = styled.div`
-    width: 100%;
     border-bottom: 1px solid gray;
 `;
 
 const StSpotInfoContainer = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 2rem;
 `;
 
 const StDetailInfo = styled.div`
@@ -94,6 +86,7 @@ const StDetailInfo = styled.div`
     flex-direction: column;
     gap: 0.5rem;
     line-height: 1.7;
+    margin: 0 20px;
     & h3 {
         font-size: 20px;
     }
@@ -106,4 +99,5 @@ const StLogListWrapper = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
+    margin: 0 20px;
 `;

@@ -55,6 +55,7 @@ export default NavBar;
 
 const StNavContainer = styled.div`
     width: 100%;
+    max-width: 530px;
     height: 56px;
     display: flex;
     padding: 5px;

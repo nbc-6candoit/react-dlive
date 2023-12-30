@@ -12,12 +12,12 @@ const LogCard = ({ title, content, images, index }) => {
                 </StImgWrapper>
                 <StLogWrapper>
                     <StContent>
-                        <h3>{title}</h3>
+                        <h5>{title}</h5>
                         <p>{content}</p>
                     </StContent>
                     <div>
                         <Avatar />
-                        <h4>nickname</h4>
+                        <h6>nickname</h6>
                     </div>
                 </StLogWrapper>
             </StLogCard>
@@ -26,16 +26,18 @@ const LogCard = ({ title, content, images, index }) => {
 };
 
 const StLogCard = styled.div`
-    width: 80%;
+    width: 100%;
     display: flex;
     align-items: center;
-    gap: 1.2rem;
+    gap: 10px;
 `;
 
 const StImgWrapper = styled.div`
-    width: 128px;
+    max-width: 128px;
     height: 128px;
-    border-radius: 0.5rem;
+    width: 27%;
+    border-radius: 10px;
+    overflow: hidden;
     & img {
         width: 100%;
         height: 100%;
@@ -46,14 +48,14 @@ const StImgWrapper = styled.div`
 const StLogWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: calc(100% - 27% - 10px);
     gap: 0.5rem;
     overflow: hidden;
     & div {
         display: flex;
         gap: 0.5rem;
 
-        & h4 {
+        & h6 {
             font-size: 14px;
             font-weight: normal;
         }
@@ -72,8 +74,9 @@ const StContent = styled.div`
     display: flex;
     flex-direction: column;
 
-    & h3 {
+    & h5 {
         font-size: 16px;
+        font-weight: bold;
     }
     & p {
         font-weight: normal;

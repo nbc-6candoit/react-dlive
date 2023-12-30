@@ -2,9 +2,9 @@
 import React from "react";
 import styled from "styled-components";
 
-const Button = ({ text, onClick, width }) => {
+const Button = ({ text, onClick, width, type }) => {
   return (
-    <StButton onClick={onClick} width={width}>
+    <StButton onClick={onClick} width={width} type={type}>
       {text}
     </StButton>
   );
