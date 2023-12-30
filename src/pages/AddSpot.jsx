@@ -27,6 +27,7 @@ import { FaSink } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import useInput from "hooks/useInput";
 import useClickedState from "hooks/useClickedState";
+import Swal from "sweetalert2";
 
 const AddSpot = () => {
   const dispatch = useDispatch();
@@ -104,34 +105,52 @@ const AddSpot = () => {
 
   const handleSubmmit = async (e) => {
     e.preventDefault();
-    try {
-      // 스토리지에 먼저 사진 업로드
-      const imageUrls = [];
-      for (const image of images) {
-        const imageRef = ref(storage, `log_images/${image}`);
-        await uploadBytes(imageRef, image);
+    //  유효성 검사
+    if (
+      name !== "" &&
+      location !== "" &&
+      view !== "" &&
+      sum !== "" &&
+      content !== "" &&
+      seasons.length > 0 &&
+      facilities.length > 0
+    ) {
+      try {
+        // 스토리지에 먼저 사진 업로드
+        const imageUrls = [];
+        for (const image of images) {
+          const imageRef = ref(storage, `log_images/${image}`);
+          await uploadBytes(imageRef, image);
 
-        const imageUrl = await getDownloadURL(imageRef);
-        imageUrls.push(imageUrl);
+          const imageUrl = await getDownloadURL(imageRef);
+          imageUrls.push(imageUrl);
+        }
+
+        // 차박명소 업로드
+        const docRef = await addDoc(collection(db, "spot"), {
+          id: uuid(),
+          name,
+          location,
+          view,
+          seasons,
+          facilities,
+          sum,
+          content,
+          images: imageUrls,
+        });
+        console.log("Document written with ID: ", docRef.id);
+
+        navigate("/spot");
+      } catch (error) {
+        console.error("데이터 추가 에러", error.message);
       }
-
-      // 차박명소 업로드
-      const docRef = await addDoc(collection(db, "spot"), {
-        id: uuid(),
-        name,
-        location,
-        view,
-        seasons,
-        facilities,
-        sum,
-        content,
-        images: imageUrls,
+    } else {
+      Swal.fire({
+        text: "모든 항목을 입력하세요",
+        icon: "error",
+        confirmButtonText: "확인",
+        confirmButtonColor: "#5eb470",
       });
-      console.log("Document written with ID: ", docRef.id);
-
-      navigate("/spot");
-    } catch (error) {
-      console.error("데이터 추가 에러", error.message);
     }
   };
 
