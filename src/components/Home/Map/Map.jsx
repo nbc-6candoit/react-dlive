@@ -2,45 +2,49 @@ import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 
 export const Map = () => {
-  const Container = useRef(null);
+  const mapContainerRef = useRef(null);
 
   useEffect(() => {
     const { naver } = window;
 
-    const location = new naver.maps.LatLng({
-      lat: 37.5666102,
-      lng: 126.9783881,
-    });
+    // Geolocation API를 이용하여 현재 위치를 가져옵니다.
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const currentLocation = new naver.maps.LatLng({
+          lat: latitude,
+          lng: longitude,
+        });
 
-    const options = {
-      center: location,
-      zoom: 17,
-    };
+        // Naver 지도의 초기 위치를 현재 위치로 설정합니다.
+        const mapOptions = {
+          center: currentLocation,
+          zoom: 17,
+        };
 
-    const map = new naver.maps.Map(Container.current, options);
-    window.navermap_authFailure = function (error) {
-      return console.log("error :", error);
-    };
+        const map = new naver.maps.Map(mapContainerRef.current, mapOptions);
 
-    const markerPosition = new naver.maps.LatLng({
-      lat: 37.5666102,
-      lng: 126.9783881,
-    }); // 마커 위치
+        // 인증 실패 콜백
+        window.navermap_authFailure = function (error) {
+          console.error("인증 실패:", error);
+        };
 
-    new naver.maps.Marker({
-      position: markerPosition,
-      map,
-    });
+        // 마커 위치를 현재 위치로 설정합니다.
+        const marker = new naver.maps.Marker({
+          position: currentLocation,
+          map,
+        });
+      },
+      (error) => {
+        console.error("현재 위치를 가져오는 데 실패했습니다:", error);
+      }
+    );
   }, []);
 
-  return (
-    <StMapContainer ref={Container}>
-      {/* <NaverMap></NaverMap> */}
-    </StMapContainer>
-  );
+  return <StyledMapContainer ref={mapContainerRef}></StyledMapContainer>;
 };
 
-const StMapContainer = styled.div`
+const StyledMapContainer = styled.div`
   position: fixed;
   z-index: 1;
   width: 1000px;

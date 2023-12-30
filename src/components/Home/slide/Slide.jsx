@@ -5,12 +5,10 @@ import { useEffect, useState } from "react";
 import { getStorage, ref, getDownloadURL, list } from "firebase/storage";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { v4 as uuidv4 } from "uuid";
 
 export const Slide = () => {
   const [slideimage, setSlideImage] = useState([]);
   const storage = getStorage();
-  const id = uuidv4();
 
   const imageListRef = ref(
     storage,

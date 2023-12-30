@@ -6,7 +6,6 @@ import { Map } from "./Map/Map";
 import mountains from "assets/img/산.png";
 import rivers from "assets/img/강.png";
 import seas from "assets/img/바다.png";
-import { getFilterdPosts } from "api/post";
 import { useState } from "react";
 
 const Body = () => {
