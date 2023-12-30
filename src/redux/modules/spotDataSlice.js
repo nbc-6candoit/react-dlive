@@ -14,9 +14,11 @@ export const __getSpots = createAsyncThunk(
   async (payload, thunkAPI) => {
     try {
       const querySnapshop = await getDocs(collection(db, "spot"));
-      const spotsData = querySnapshop.docs.map((doc) => doc.data());
-
-      return thunkAPI.fulfillWithValue(spotsData);
+      const spotsData = querySnapshop.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      return spotsData;
     } catch (error) {
       console.log("error :", error);
       return thunkAPI.rejectWithValue(error);

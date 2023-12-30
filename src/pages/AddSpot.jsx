@@ -1,9 +1,8 @@
 // 차박명소 등록페이지(AddSpot)
-import Tag from "components/common/Tag";
 import React, { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-
+import { v4 as uuid } from "uuid";
 import Button from "components/common/Button";
 import GeocoderMap from "components/naverMap/GeocoderMap";
 import {
@@ -14,20 +13,16 @@ import {
   setImages,
 } from "../redux/modules/spotSlice";
 import { __addSpot, addSpot } from "../redux/modules/spotDataSlice";
-
-import { FaToilet } from "react-icons/fa";
-import { FaShower } from "react-icons/fa";
-import { AiFillShop } from "react-icons/ai";
-import { BsFillSignpost2Fill } from "react-icons/bs";
-import { MdOutlinePets } from "react-icons/md";
 import { FaPlus } from "react-icons/fa6";
-import { FaSink } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import useInput from "hooks/useInput";
 import useClickedState from "hooks/useClickedState";
 import Swal from "sweetalert2";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "shared/firebase";
+import FacilitiesIcons from "components/addSpot/FacilitiesIcons";
+import { FACILITIES_DATA, SEASONS, VIEWS } from "constants/spotOptions";
+import TagSelection from "components/addSpot/TagSelection";
 
 const AddSpot = () => {
   const dispatch = useDispatch();
@@ -36,6 +31,7 @@ const AddSpot = () => {
     (state) => state.spot
   );
 
+  const { spotId } = useParams();
   const fileRef = useRef(null);
   const mapElement = useRef(null);
 
@@ -128,6 +124,7 @@ const AddSpot = () => {
 
         // 차박명소 업로드
         const newSpot = {
+          id: uuid(),
           name,
           location,
           view,
@@ -139,8 +136,7 @@ const AddSpot = () => {
         };
         dispatch(__addSpot(newSpot));
         dispatch(addSpot(newSpot));
-        console.log("데이터추가 성공 :", newSpot);
-        navigate("/spot");
+        navigate("/");
       } catch (error) {
         console.error("데이터 추가 에러", error.message);
       }
@@ -159,14 +155,6 @@ const AddSpot = () => {
       e.preventDefault();
     }
   };
-
-  console.log(name);
-  console.log(location);
-  console.log(view);
-  console.log(seasons);
-  console.log(facilities);
-  console.log(sum);
-  console.log(content);
 
   return (
     <>
@@ -191,30 +179,17 @@ const AddSpot = () => {
           <StInfoWrapper>
             <p>뷰</p>
             <StTag>
-              <Tag
-                tagName="마운틴뷰"
-                category="view"
-                onClick={(tagName, category) =>
-                  handleTagClick(tagName, category)
-                }
-                clicked={clickedView["마운틴뷰"]}
-              />
-              <Tag
-                tagName="리버뷰"
-                category="view"
-                onClick={(tagName, category) =>
-                  handleTagClick(tagName, category)
-                }
-                clicked={clickedView["리버뷰"]}
-              />
-              <Tag
-                tagName="오션뷰"
-                category="view"
-                onClick={(tagName, category) =>
-                  handleTagClick(tagName, category)
-                }
-                clicked={clickedView["오션뷰"]}
-              />
+              {VIEWS.map((view) => (
+                <TagSelection
+                  key={view}
+                  tagName={view}
+                  category="view"
+                  onClick={(tagName, category) =>
+                    handleTagClick(tagName, category)
+                  }
+                  clicked={clickedView[view]}
+                />
+              ))}
             </StTag>
           </StInfoWrapper>
         </StBox>
@@ -222,92 +197,32 @@ const AddSpot = () => {
           <StInfoWrapper>
             <p>추천계절</p>
             <StTag>
-              <Tag
-                tagName="봄"
-                category="seasons"
-                onClick={(tagName, category) =>
-                  handleTagClick(tagName, category)
-                }
-                clicked={clickedSeasons["봄"]}
-              />
-              <Tag
-                tagName="여름"
-                category="seasons"
-                onClick={(tagName, category) =>
-                  handleTagClick(tagName, category)
-                }
-                clicked={clickedSeasons["여름"]}
-              />
-              <Tag
-                tagName="가을"
-                category="seasons"
-                onClick={(tagName, category) =>
-                  handleTagClick(tagName, category)
-                }
-                clicked={clickedSeasons["가을"]}
-              />
-              <Tag
-                tagName="겨울"
-                category="seasons"
-                onClick={(tagName, category) =>
-                  handleTagClick(tagName, category)
-                }
-                clicked={clickedSeasons["겨울"]}
-              />
+              {SEASONS.map((season) => (
+                <TagSelection
+                  key={season}
+                  tagName={season}
+                  category="seasons"
+                  onClick={(tagName, category) =>
+                    handleTagClick(tagName, category)
+                  }
+                  clicked={clickedSeasons[season]}
+                />
+              ))}
             </StTag>
           </StInfoWrapper>
         </StBox>
-        <StInfoWrapper>
+        <StIconContainer>
           <p>편의시설</p>
-          <StIconContainer>
-            <StIconWrapper
-              clicked={clickedFacilities["화장실"]}
-              onClick={() => handleFacilityClick("화장실")}
-            >
-              <FaToilet />
-              <p>화장실</p>
-            </StIconWrapper>
-
-            <StIconWrapper
-              clicked={clickedFacilities["샤워실"]}
-              onClick={() => handleFacilityClick("샤워실")}
-            >
-              <FaShower />
-              <p>샤워실</p>
-            </StIconWrapper>
-
-            <StIconWrapper
-              clicked={clickedFacilities["싱크대"]}
-              onClick={() => handleFacilityClick("싱크대")}
-            >
-              <FaSink />
-              <p>싱크대</p>
-            </StIconWrapper>
-
-            <StIconWrapper
-              clicked={clickedFacilities["매점"]}
-              onClick={() => handleFacilityClick("매점")}
-            >
-              <AiFillShop />
-              <p>매점</p>
-            </StIconWrapper>
-            <StIconWrapper
-              clicked={clickedFacilities["산책로"]}
-              onClick={() => handleFacilityClick("산책로")}
-            >
-              <BsFillSignpost2Fill />
-              <p>산책로</p>
-            </StIconWrapper>
-
-            <StIconWrapper
-              clicked={clickedFacilities["반려동물"]}
-              onClick={() => handleFacilityClick("반려동물")}
-            >
-              <MdOutlinePets />
-              <p>반려동물</p>
-            </StIconWrapper>
-          </StIconContainer>
-        </StInfoWrapper>
+          {FACILITIES_DATA.map(({ icon, label, index }) => (
+            <FacilitiesIcons
+              key={index}
+              clicked={clickedFacilities[label]}
+              onClick={() => handleFacilityClick(label)}
+              icon={icon}
+              label={label}
+            />
+          ))}
+        </StIconContainer>
         <StBox>
           <label htmlFor="spot_sum">차박명소 한줄소개*</label>
           <input
@@ -358,8 +273,8 @@ const AddSpot = () => {
 export default AddSpot;
 
 const StForm = styled.form`
-  max-width: 530px;
-  padding: 40px 20px;
+  max-width: 620px;
+  padding: 40px;
 
   & h2 {
     margin-bottom: 30px;
@@ -462,11 +377,6 @@ const StInfoWrapper = styled.div`
   align-items: center;
 `;
 
-const StTag = styled.div`
-  display: flex;
-  gap: 0.5rem;
-`;
-
 const StIconContainer = styled.div`
   display: flex;
   gap: 1.5rem;
@@ -475,14 +385,7 @@ const StIconContainer = styled.div`
   }
 `;
 
-const StIconWrapper = styled.div`
+const StTag = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-size: 30px;
-  gap: 0.7rem;
-  cursor: pointer;
-  color: ${(props) =>
-    props.clicked === true || props.clicked === "true" ? "#5eb470" : "#999"};
+  gap: 0.5rem;
 `;

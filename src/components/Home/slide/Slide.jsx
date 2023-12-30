@@ -58,7 +58,7 @@ const StyledSlider = styled.div`
   padding: 50px;
   background-color: #d9d9d9;
   width: 100%;
-  height: 100%;
+  height: 300px;
 `;
 const Stbox = styled.img`
   align-items: center;

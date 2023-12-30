@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { PiToilet } from "react-icons/pi";
 import { PiShower } from "react-icons/pi";
@@ -8,13 +8,26 @@ import { PiDog } from "react-icons/pi";
 import { FaMapMarkedAlt } from "react-icons/fa";
 import { PiWechatLogoFill } from "react-icons/pi";
 import Tag from "components/common/Tag";
+import { useDispatch, useSelector } from "react-redux";
+import { __getSpots } from "../../redux/modules/spotDataSlice";
+import { useParams } from "react-router-dom";
 
 const SpotInfo = () => {
+  const dispatch = useDispatch();
+  const { spot, isLoading, isError } = useSelector((state) => state.spotData);
+  const { spotId } = useParams();
+
+  useEffect(() => {
+    dispatch(__getSpots());
+  }, []);
+
+  console.log(spot);
+
   return (
     <>
       <StSpotInfoContainer>
         <StTitle>
-          <Tag tagName="마운틴뷰" />
+          <Tag tagName="마운틴뷰" clicked="true" />
           <h2>안반데기</h2>
           <div>
             <span>
@@ -100,7 +113,7 @@ const SpotInfo = () => {
 export default SpotInfo;
 
 const StHorizontalLine = styled.div`
-  width: 80%;
+  width: 100%;
   border-bottom: 1px solid gray;
 `;
 
