@@ -29,6 +29,7 @@ body {
 	min-height: 100vh;
 	font-size: 16px;
 	line-height: 1;
+
 }
 ol, ul, li {
 	list-style: none;
@@ -57,7 +58,7 @@ input, button, textarea{
 } 
 * { 
     box-sizing: border-box;
-	font-family: 'SCoreDream';
+	font-family: 'SCoreDream', sans-serif;
 }
 
 body::-webkit-scrollbar {

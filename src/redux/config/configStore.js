@@ -1,9 +1,9 @@
-import { configureStore } from "@reduxjs/toolkit";
-import logs from "../modules/logsSlice";
-import authSlice from "../modules/authSlice";
+import { configureStore } from '@reduxjs/toolkit';
+import authSlice from '../modules/authSlice';
+import logSlice from '../modules/logSlice';
 
 const store = configureStore({
-  reducer: { logs, authSlice },
+    reducer: { logSlice, authSlice },
 });
 
 export default store;

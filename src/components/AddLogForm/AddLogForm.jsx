@@ -8,20 +8,25 @@ import { db, storage } from 'shared/firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { addDoc, collection } from 'firebase/firestore';
 import { v4 as uuid } from 'uuid';
+import { useDispatch } from 'react-redux';
+import { addLog } from '../../redux/modules/logSlice';
 
 const AddLogForm = () => {
     const today = new Date();
     const [selectedDate, setSelectedDate] = useState(today);
     const [thumnailImages, setThumnailImages] = useState([]);
-    const [title, setTitle] = useState();
-    const [content, setContent] = useState();
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+
+    const dispatch = useDispatch();
 
     const handleTitle = (e) => {
         setTitle(e.target.value);
     };
 
     const handleContent = (e) => {
-        setContent(e.target.value);
+        const value = e.target.value.replace(/<br\s*\/?>/g, '\n');
+        setContent(value);
     };
 
     const fileRef = useRef(null);
@@ -38,50 +43,59 @@ const AddLogForm = () => {
         } else {
             const filesArray = Array.from(files);
             const selectedFiles = filesArray.map((file) => URL.createObjectURL(file));
-
             setThumnailImages([...thumnailImages, ...selectedFiles]);
         }
     };
 
+    const uploadImages = async (docID, images) => {
+        const imageUrls = [];
+        for (let i = 0; i < images.length; i++) {
+            const image = images[i];
+            const imageID = `image_${i + 1}`;
+            const imagePath = `log_images/${docID}/${imageID}`;
+            const imageRef = ref(storage, imagePath);
+            const file = await fetch(image).then((res) => res.blob());
+            await uploadBytes(imageRef, file);
+            const imageUrl = await getDownloadURL(imageRef);
+            imageUrls.push({
+                path: imagePath,
+                url: imageUrl,
+            });
+        }
+        return imageUrls;
+    };
+
     const handleSubmmit = async (e) => {
         e.preventDefault();
+        const docID = uuid();
         try {
             // 스토리지에 먼저 사진 업로드
-            const docID = uuid();
-            const imageUrls = [];
-            for (let i = 0; i < thumnailImages.length; i++) {
-                const image = thumnailImages[i];
-                const imageID = `image_${i + 1}`;
-                const imagePath = `log_images/${docID}/${imageID}`;
+            const imageUrls = await uploadImages(docID, thumnailImages);
 
-                const imageRef = ref(storage, imagePath);
-                // 이미지를 Firebase 저장소에 업로드하기 전에 blob으로 가져오기
-                const file = await fetch(image).then((res) => res.blob());
-                await uploadBytes(imageRef, file);
-
-                const imageUrl = await getDownloadURL(imageRef);
-
-                imageUrls.push({
-                    path: imagePath,
-                    url: imageUrl,
-                });
-            }
-
-            // 모든 이미지가 업로드되면 로그 업로드
-            const docRef = await addDoc(collection(db, 'log'), {
+            const newLog = {
                 id: uuid(),
                 title,
                 content,
-                date: selectedDate,
+                date: selectedDate.toISOString(),
                 images: imageUrls,
-            });
-            console.log('Document written with ID: ', docRef.id);
+            };
+            // 모든 이미지가 업로드되면 로그 업로드
+            const docRef = await addDoc(collection(db, 'log'), newLog);
 
-            // 데이터 업로드 이후 초기화
+            dispatch(
+                addLog({
+                    title,
+                    content,
+                    date: selectedDate.toISOString(), // Convert Date to string
+                    images: imageUrls,
+                })
+            );
             setTitle('');
             setContent('');
             setThumnailImages([]);
             setSelectedDate(today);
+
+            console.log('Document written with ID: ', docRef.id);
         } catch (error) {
             console.error('데이터 추가 에러', error.message);
         }
@@ -99,9 +113,9 @@ const AddLogForm = () => {
                 <StDate>
                     <StDatePicker
                         locale={ko}
-                        dateFormat='yyyy년 MM월 dd일' // 날짜 형태
-                        shouldCloseOnSelect // 날짜를 선택하면 datepicker가 자동으로 닫힘
-                        maxDate={today} // 현재 날짜 이후의 날짜를 선택할 수 없도록 설정
+                        dateFormat='yyyy년 MM월 dd일'
+                        shouldCloseOnSelect
+                        maxDate={today}
                         selected={selectedDate}
                         onChange={setSelectedDate}
                     />
