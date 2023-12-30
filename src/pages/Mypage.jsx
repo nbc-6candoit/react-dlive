@@ -9,7 +9,6 @@ import Button from "components/common/Button";
 import { Link } from "react-router-dom";
 const Mypage = () => {
   const [userProfile, setUserProfile] = useState(null);
-  // const { id } = useParams();
 
   useEffect(() => {
     const fetchProfileInfo = async () => {
@@ -44,26 +43,14 @@ const Mypage = () => {
 
   console.log(userProfile);
   return (
-    <div>
+    <Stcontainer>
       {userProfile && (
         <>
-          <div>UID: {userProfile.userId}</div>
-          <div>닉네임: {userProfile.name}</div>
-          <div>사용자 이메일: {userProfile.email}</div>
-          <div>프로필 사진 URL: {userProfile.photoUrl}</div>
-          {/* <div>
-            프로필 사진:
-            <img
-              src={userProfile.photoUrl}
-              alt={defaultphoto}
-              style={{ width: "100px", height: "100px" }}
-            />
-          </div> */}
-          <StLogCard>
-            <StLogWrapper>
+          <StlogCard>
+            <StlogWrapper>
               <div>
                 <Avatar />
-                <h4>{userProfile.name}</h4>
+                <Stdiv>{userProfile.name}</Stdiv>
                 <Link to="/InfoFix">
                   <Button
                     type="button"
@@ -72,17 +59,29 @@ const Mypage = () => {
                   ></Button>
                 </Link>
               </div>
-            </StLogWrapper>
-          </StLogCard>
+            </StlogWrapper>
+          </StlogCard>
         </>
       )}
-    </div>
+    </Stcontainer>
   );
 };
 
 export default Mypage;
 
-const StLogCard = styled.div`
+const Stdiv = styled.div`
+  margin: 20px 50px;
+  font-size: 20px;
+`;
+
+const Stcontainer = styled.div`
+  margin: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10%;
+`;
+const StlogCard = styled.div`
   width: 80%;
   max-height: 120px;
   display: flex;
@@ -90,9 +89,12 @@ const StLogCard = styled.div`
   gap: 1.2rem;
 `;
 
-const StLogWrapper = styled.div`
+const StlogWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  color: #5eb470;
+  border-radius: 5px;
+  border: 1px solid #5eb470;
   width: 100%;
   gap: 0.5rem;
   overflow: hidden;
@@ -100,15 +102,7 @@ const StLogWrapper = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0.5rem;
-  }
-  & p {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 14px;
-    line-height: 1.6;
+    gap: 3rem;
+    padding: 10px;
   }
 `;

@@ -17,7 +17,8 @@ export default function Signup() {
   const [signupNickname, setSignupNickname] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const defaultavatar = defaultphoto;
+  const defaultavatar =
+    "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Download-Image.png";
 
   const checkInputs = () => {
     if (

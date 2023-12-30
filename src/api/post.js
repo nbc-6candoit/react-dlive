@@ -8,7 +8,7 @@ export const getPosts = async () => {
 };
 // id로 'post'  게시물 검색
 export const getPost = async (postId) => {
-  const q = query(collection(db, "users"), where("id", "==", `${postId}`));
+  const q = query(collection(db, "post"), where("id", "==", `${postId}`));
   const querySnapshot = await getDocs(q);
   return querySnapshot.docs.map((doc) => doc.data())[0];
 };
