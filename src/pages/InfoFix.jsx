@@ -9,10 +9,12 @@ import { Link } from "react-router-dom";
 
 const InfoFix = () => {
   const [userProfile, setUserProfile] = useState(null);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     const fetchProfileInfo = async () => {
       try {
+        console.log(auth.currentUser);
         const user = auth.currentUser;
 
         if (user) {
@@ -49,10 +51,19 @@ const InfoFix = () => {
             <StLogWrapper>
               <div>
                 <Avatar />
-                <input type="text" placeholder="닉네임 수정"></input>
-                <h4>{userProfile.name}</h4>
+
+                <Stnameinput
+                  type="text"
+                  placeholder={`${userProfile.name}`}
+                  onChange={(e) => setUsername(e.target.value)}
+                ></Stnameinput>
+
                 <Link to="/Mypage">
-                  <Button type="button" text="수정완료" width="100%"></Button>
+                  <Button
+                    type="button"
+                    text="프로필 업데이트"
+                    width="100%"
+                  ></Button>
                 </Link>
               </div>
             </StLogWrapper>
@@ -64,6 +75,10 @@ const InfoFix = () => {
 };
 
 export default InfoFix;
+
+const Stnameinput = styled.input`
+  border: 1px solid red;
+`;
 
 const StLogCard = styled.div`
   width: 80%;
