@@ -1,8 +1,28 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
+import { db } from "shared/firebase";
+// import { updateCoordinates } from "../../redux/modules/homeSlice";
+const fetchData = async (documentId) => {
+  const documentRef = db.collection("spot").doc(documentId);
+  try {
+    const doc = await documentRef.get();
+    console.log("doc", doc);
+    if (doc.exists) {
+      return doc.data({ latitude: 37.5666102, longitude: 126.9783881 });
+    } else {
+      throw new Error("문서가 존재하지 않습니다.");
+    }
+  } catch (error) {
+    throw new Error(
+      `Firestore에서 문서를 가져오는 중 에러 발생: ${error.message}`
+    );
+  }
+};
 
-export const Map = () => {
+export const Map = ({ documentId }) => {
+  // Naver 지도 컨테이너에 대한 참조
   const mapContainerRef = useRef(null);
+  // Firestore에서 가져온 위치 정보 상태 변수
 
   useEffect(() => {
     const { naver } = window;
