@@ -6,61 +6,101 @@ import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "shared/firebase";
 import { v4 as uuid } from "uuid";
-import { PiToilet } from "react-icons/pi";
-import { PiShower } from "react-icons/pi";
-import { AiOutlineShop } from "react-icons/ai";
-import { PiSignpost } from "react-icons/pi";
-import { PiDog } from "react-icons/pi";
-import { FaPlus } from "react-icons/fa6";
-import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import Button from "components/common/Button";
+import GeocoderMap from "components/naverMap/GeocoderMap";
+
+import { FaToilet } from "react-icons/fa";
+import { FaShower } from "react-icons/fa";
+import { AiFillShop } from "react-icons/ai";
+import { BsFillSignpost2Fill } from "react-icons/bs";
+import { MdOutlinePets } from "react-icons/md";
+import { FaPlus } from "react-icons/fa6";
+import { FaSink } from "react-icons/fa";
 
 const AddSpot = () => {
-  const [name, setName] = useState();
-  const [content, setContent] = useState();
-  const [location, setLocation] = useState();
+  const [name, setName] = useState("");
+  const [content, setContent] = useState("");
+  const [location, setLocation] = useState("");
   const [sum, setSum] = useState("");
   const [thumnailImages, setThumnailImages] = useState([]);
-  const [mapCenter, setMapCenter] = useState(null);
+
+  const [selectedView, setSelectedView] = useState(null);
+  const [selectedSeasons, setSelectedSeasons] = useState([]);
+  const [selectedFacilities, setSelectedFacilities] = useState([]);
 
   const fileRef = useRef(null);
+  const mapElement = useRef(null);
+
+  const [clickedView, setClickedView] = useState({
+    마운틴뷰: false,
+    리버뷰: false,
+    오션뷰: false,
+  });
+
+  const [clickedSeasons, setClickedSeasons] = useState({
+    봄: false,
+    여름: false,
+    가을: false,
+    겨울: false,
+  });
+
+  const [clickedFacilities, setClickedFacilities] = useState({
+    toilet: false,
+    shower: false,
+    sink: false,
+    shop: false,
+    trail: false,
+    pets: false,
+  });
+
+  const handleFacilityClick = (facility) => {
+    setClickedFacilities((prev) => ({
+      ...prev,
+      [facility]: prev[facility] === true ? false : true,
+    }));
+  };
+
+  const handleTagClick = (tagName, category) => {
+    switch (category) {
+      case "view":
+        setSelectedView(tagName);
+        setClickedView((prev) => ({
+          마운틴뷰: false,
+          리버뷰: false,
+          오션뷰: false,
+          [tagName]: true,
+        }));
+        break;
+      case "seasons":
+        setSelectedSeasons((prev) =>
+          prev.includes(tagName)
+            ? prev.filter((season) => season !== tagName)
+            : [...prev, tagName]
+        );
+        setClickedSeasons((prev) => ({ ...prev, [tagName]: !prev[tagName] }));
+        break;
+      case "facilities":
+        setSelectedFacilities((prev) =>
+          prev.includes(tagName)
+            ? prev.filter((facilities) => facilities !== tagName)
+            : [...prev, tagName]
+        );
+        setClickedFacilities((prev) => ({
+          ...prev,
+          [tagName]: !prev[tagName],
+        }));
+        break;
+      default:
+        break;
+    }
+  };
 
   const handleChangeSpotName = (e) => {
     setName(e.target.value);
   };
 
-  const handleChangeSpotLocation = (e) => {
-    setLocation(e.target.value);
-  };
-
   const handleChangeSpotSum = (e) => {
     setSum(e.target.value);
-  };
-
-  window.google.maps.event.addDomListener(window, "load", () => {});
-
-  const handleLocationSeacrchButton = async (e) => {
-    e.preventDefault();
-
-    // Google Maps API를 이용한 주소 검색
-    const autoComplete = new window.google.maps.places.Autocomplete(
-      document.getElementById("spot_location")
-    );
-
-    autoComplete.addListener("place_changed", () => {
-      const place = autoComplete.getPlace();
-      if (!place.geomety) {
-        console.error("위치를 찾을 수 없습니다.");
-        return;
-      }
-      setLocation(place.formatted_address);
-
-      const newCenter = {
-        lat: place.geometry.location.lat(),
-        lng: place.geometry.location.lng(),
-      };
-      setMapCenter(newCenter);
-    });
   };
 
   const handleAddContent = (e) => {
@@ -89,7 +129,6 @@ const AddSpot = () => {
       // 스토리지에 먼저 사진 업로드
       const imageUrls = [];
       for (const image of thumnailImages) {
-        console.log("image는 무슨 주소", image);
         const imageRef = ref(storage, `log_images/${image}`);
         await uploadBytes(imageRef, image);
 
@@ -97,20 +136,64 @@ const AddSpot = () => {
         imageUrls.push(imageUrl);
       }
 
-      // 차박로그 업로드
-      const docRef = await addDoc(collection(db, "log"), {
+      // 차박명소 업로드
+      const docRef = await addDoc(collection(db, "spot"), {
         id: uuid(),
         name,
+        location,
+        view: selectedView,
+        seasons: selectedSeasons,
+        facilities: selectedFacilities,
+        sum,
         content,
         images: imageUrls,
       });
       console.log("Document written with ID: ", docRef.id);
 
       setName("");
+      setLocation("");
+      setSum("");
       setContent("");
-      setThumnailImages("");
+      setSelectedView(null);
+      setSelectedSeasons([]);
+      setSelectedFacilities([]);
+
+      setClickedView({
+        마운틴뷰: false,
+        리버뷰: false,
+        오션뷰: false,
+      });
+      setClickedSeasons({
+        봄: false,
+        여름: false,
+        가을: false,
+        겨울: false,
+      });
+      setClickedFacilities({
+        toilet: false,
+        shower: false,
+        sink: false,
+        shop: false,
+        trail: false,
+        pets: false,
+      });
+      setThumnailImages([]);
     } catch (error) {
       console.error("데이터 추가 에러", error.message);
+    }
+  };
+
+  console.log(name);
+  console.log(location);
+  console.log(selectedView);
+  console.log(selectedSeasons);
+  console.log(selectedFacilities);
+  console.log(sum);
+  console.log(content);
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
     }
   };
 
@@ -125,80 +208,133 @@ const AddSpot = () => {
             id="spot_name"
             value={name}
             onChange={handleChangeSpotName}
+            onKeyDown={handleKeyDown}
           />
         </StBox>
         <StBox>
-          <label htmlFor="spot_location">차박명소 주소*</label>
-          <div>
-            <input
-              type="text"
-              id="spot_location"
-              value={location}
-              onChange={handleChangeSpotLocation}
-            />
-            <button onClick={handleLocationSeacrchButton}>검색</button>
-          </div>
-          <StMapWrapper>
-            <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_API}>
-              <GoogleMap center={mapCenter} zoom={3}></GoogleMap>
-            </LoadScript>
-          </StMapWrapper>
+          <label htmlFor="address">차박명소 주소*</label>
+          <StMapWrapper id="map" ref={mapElement} />
+          <GeocoderMap location={location} setLocation={setLocation} />
         </StBox>
         <StBox>
           <StInfoWrapper>
-            <label>뷰</label>
+            <p>뷰</p>
             <StTag>
-              <Tag tagName="마운틴뷰" />
-              <Tag tagName="리버뷰" />
-              <Tag tagName="오션뷰" />
-              <Tag tagName="신설" />
+              <Tag
+                tagName="마운틴뷰"
+                category="view"
+                onClick={(tagName, category) =>
+                  handleTagClick(tagName, category)
+                }
+                clicked={clickedView["마운틴뷰"]}
+              />
+              <Tag
+                tagName="리버뷰"
+                category="view"
+                onClick={(tagName, category) =>
+                  handleTagClick(tagName, category)
+                }
+                clicked={clickedView["리버뷰"]}
+              />
+              <Tag
+                tagName="오션뷰"
+                category="view"
+                onClick={(tagName, category) =>
+                  handleTagClick(tagName, category)
+                }
+                clicked={clickedView["오션뷰"]}
+              />
             </StTag>
           </StInfoWrapper>
         </StBox>
         <StBox>
           <StInfoWrapper>
-            <label>추천계절</label>
+            <p>추천계절</p>
             <StTag>
-              <Tag tagName="봄" />
-              <Tag tagName="여름" />
-              <Tag tagName="가을" />
-              <Tag tagName="겨울" />
+              <Tag
+                tagName="봄"
+                category="seasons"
+                onClick={(tagName, category) =>
+                  handleTagClick(tagName, category)
+                }
+                clicked={clickedSeasons["봄"]}
+              />
+              <Tag
+                tagName="여름"
+                category="seasons"
+                onClick={(tagName, category) =>
+                  handleTagClick(tagName, category)
+                }
+                clicked={clickedSeasons["여름"]}
+              />
+              <Tag
+                tagName="가을"
+                category="seasons"
+                onClick={(tagName, category) =>
+                  handleTagClick(tagName, category)
+                }
+                clicked={clickedSeasons["가을"]}
+              />
+              <Tag
+                tagName="겨울"
+                category="seasons"
+                onClick={(tagName, category) =>
+                  handleTagClick(tagName, category)
+                }
+                clicked={clickedSeasons["겨울"]}
+              />
             </StTag>
           </StInfoWrapper>
         </StBox>
         <StInfoWrapper>
-          <label>편의시설</label>
+          <p>편의시설</p>
           <StIconContainer>
-            <div>
-              <StIconWrapper>
-                <PiToilet />
-                <p>화장실</p>
-              </StIconWrapper>
-            </div>
-            <div>
-              <StIconWrapper>
-                <PiShower />
-                <p>샤워실</p>
-              </StIconWrapper>
-            </div>
-            <div>
-              <StIconWrapper>
-                <AiOutlineShop />
-                <p>매점</p>
-              </StIconWrapper>
-            </div>
-            <div>
-              <StIconWrapper>
-                <PiSignpost />
-                <p>산책로</p>
-              </StIconWrapper>
-            </div>
-            <div>
-              <StIconWrapper>
-                <PiDog />
-                <p>반려동물</p>
-              </StIconWrapper>
-            </div>
+            <StIconWrapper
+              clicked={clickedFacilities.toilet}
+              onClick={() => handleFacilityClick("toilet")}
+            >
+              <FaToilet />
+              <p>화장실</p>
+            </StIconWrapper>
+
+            <StIconWrapper
+              clicked={clickedFacilities.shower}
+              onClick={() => handleFacilityClick("shower")}
+            >
+              <FaShower />
+              <p>샤워실</p>
+            </StIconWrapper>
+
+            <StIconWrapper
+              clicked={clickedFacilities.sink}
+              onClick={() => handleFacilityClick("sink")}
+            >
+              <FaSink />
+              <p>싱크대</p>
+            </StIconWrapper>
+
+            <StIconWrapper
+              clicked={clickedFacilities.shop}
+              onClick={() => handleFacilityClick("shop")}
+            >
+              <AiFillShop />
+              <p>매점</p>
+            </StIconWrapper>
+            <StIconWrapper
+              clicked={clickedFacilities.trail}
+              onClick={() => handleFacilityClick("trail")}
+            >
+              <BsFillSignpost2Fill />
+              <p>산책로</p>
+            </StIconWrapper>
+
+            <StIconWrapper
+              clicked={clickedFacilities.pets}
+              onClick={() => handleFacilityClick("pets")}
+            >
+              <MdOutlinePets />
+              <p>반려동물</p>
+            </StIconWrapper>
           </StIconContainer>
         </StInfoWrapper>
         <StBox>
@@ -208,6 +344,7 @@ const AddSpot = () => {
             id="spot_sum"
             value={sum}
             onChange={handleChangeSpotSum}
+            onKeyDown={handleKeyDown}
           />
         </StBox>
         <StBox>
@@ -228,12 +365,9 @@ const AddSpot = () => {
             </StImgSelect>
             {[...Array(4)].map((_, index) => (
               <StImgBox key={index}>
-                {/* {thumnailImages[index] && (
-                  <img
-                    src={thumnailImages[index]}
-                    alt={`image${index} 썸네일 이미지`}
-                  />
-                )} */}
+                {thumnailImages[index] && (
+                  <img src={thumnailImages[index]} alt="차박명소" />
+                )}
               </StImgBox>
             ))}
           </StImgWrap>
@@ -246,9 +380,7 @@ const AddSpot = () => {
             onChange={handleAddImages}
           />
         </StBox>
-
         <Button type="submit" text="차박명소 등록하기" />
-        {/* <StButton type="submit">차박명소 등록하기</StButton> */}
       </StForm>
     </>
   );
@@ -274,6 +406,7 @@ const StBox = styled.div`
       color: #999;
     }
   }
+
   & input {
     width: 100%;
     height: 48px;
@@ -290,12 +423,18 @@ const StBox = styled.div`
     align-items: center;
   }
   & button {
-    width: 80px;
+    width: 120px;
     height: 48px;
     border-radius: 5px;
     margin-left: 10px;
     margin-top: 12px;
     background-color: lightgray;
+    cursor: pointer;
+    transition: background 200ms;
+    &:hover {
+      color: #fff;
+      background: #5eb470;
+    }
   }
 `;
 
@@ -352,10 +491,6 @@ const StInfoWrapper = styled.div`
   display: flex;
   gap: 2rem;
   align-items: center;
-  & div {
-    display: flex;
-    gap: 0.5rem;
-  }
 `;
 
 const StTag = styled.div`
@@ -363,7 +498,7 @@ const StTag = styled.div`
   gap: 0.5rem;
 `;
 
-const StIconContainer = styled.p`
+const StIconContainer = styled.div`
   display: flex;
   gap: 1.5rem;
   & p {
@@ -377,5 +512,8 @@ const StIconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 30px;
-  gap: 1px;
+  gap: 0.7rem;
+  cursor: pointer;
+  color: ${(props) =>
+    props.clicked === true || props.clicked === "true" ? "#5eb470" : "#999"};
 `;
