@@ -80,7 +80,7 @@ export const StBtnInputWrapper = styled.div`
   align-items: center;
   gap: 50px;
 `;
-export const StHeaderButton = styled.button`
+export const StHeaderButton = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;

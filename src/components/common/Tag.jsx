@@ -1,18 +1,28 @@
 import React from "react";
 import styled from "styled-components";
 
-const Tag = ({ tagName, $fontSize }) => {
-  return <StTag>{tagName}</StTag>;
+const Tag = ({ tagName, onClick, category, clicked }) => {
+  const handleTagClick = () => {
+    onClick && onClick(tagName, category, !clicked);
+  };
+
+  return (
+    <StTag clicked={clicked} onClick={handleTagClick}>
+      {tagName}
+    </StTag>
+  );
 };
 
 export default Tag;
 
 const StTag = styled.p`
-  color: white;
-  background-color: #11998e;
+  color: ${(props) => (props.clicked ? "white" : "5eb470")};
+  background-color: ${(props) => (props.clicked ? "#5eb470" : "white")};
+  border: 1px solid #5eb470;
   padding: 0.4rem 1rem;
   width: fit-content;
   height: fit-content;
   border-radius: 0.25rem;
   font-size: 13px;
+  cursor: pointer;
 `;

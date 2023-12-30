@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import { NaverMap, Marker } from "react-naver-maps";
 import styled from "styled-components";
 
 export const Map = () => {
