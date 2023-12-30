@@ -40,7 +40,7 @@ export const NavBar = () => {
             {authState.isLogin === true ? (
               <>
                 <Link to="/mypage">마이페이지</Link>
-                ss
+                ㄴㄴ
                 <button onClick={logoutHandler}>로그아웃</button>
               </>
             ) : (

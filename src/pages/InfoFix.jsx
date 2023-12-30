@@ -1,4 +1,3 @@
-// 마이페이지(Mypage)
 import { useEffect, useState } from "react";
 import { auth } from "../shared/firebase";
 import React from "react";
@@ -7,7 +6,8 @@ import defaultphoto from "../assets/img/avatar.png";
 import Avatar from "components/common/Avatar";
 import Button from "components/common/Button";
 import { Link } from "react-router-dom";
-const Mypage = () => {
+
+const InfoFix = () => {
   const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
@@ -45,29 +45,14 @@ const Mypage = () => {
     <div>
       {userProfile && (
         <>
-          <div>UID: {userProfile.uid}</div>
-          <div>닉네임: {userProfile.name}</div>
-          <div>사용자 이메일: {userProfile.email}</div>
-          <div>프로필 사진 URL: {userProfile.photoUrl}</div>
-          {/* <div>
-            프로필 사진:
-            <img
-              src={userProfile.photoUrl}
-              alt={defaultphoto}
-              style={{ width: "100px", height: "100px" }}
-            />
-          </div> */}
           <StLogCard>
             <StLogWrapper>
               <div>
                 <Avatar />
+                <input type="text" placeholder="닉네임 수정"></input>
                 <h4>{userProfile.name}</h4>
-                <Link to="/InfoFix">
-                  <Button
-                    type="button"
-                    text="내정보 관리"
-                    width="100%"
-                  ></Button>
+                <Link to="/Mypage">
+                  <Button type="button" text="수정완료" width="100%"></Button>
                 </Link>
               </div>
             </StLogWrapper>
@@ -78,7 +63,7 @@ const Mypage = () => {
   );
 };
 
-export default Mypage;
+export default InfoFix;
 
 const StLogCard = styled.div`
   width: 80%;

@@ -13,6 +13,7 @@ import NavBar from "../components/NavBar";
 import Log from "../pages/Log";
 import styled from "styled-components";
 import Signup from "../pages/Signup";
+import InfoFix from "../pages/InfoFix";
 
 const Router = () => {
   return (
@@ -30,6 +31,7 @@ const Router = () => {
           <Route path="/addspot" element={<AddSpot />} />
           <Route path="/log" element={<Log />} />
           <Route path="/addlog" element={<AddLog />} />
+          <Route path="/infofix" element={<InfoFix />} />
         </Routes>
         <Footer />
       </StRouterContainer>
