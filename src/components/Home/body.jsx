@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import styled from "styled-components";
 import { Slide } from "./slide/Slide";
 import dlivelogo from "assets/img/logo.png";
@@ -7,8 +6,11 @@ import { Map } from "./Map/Map";
 import mountains from "assets/img/산.png";
 import rivers from "assets/img/강.png";
 import seas from "assets/img/바다.png";
+import { getFilterdPosts } from "api/post";
+import { useState } from "react";
 
-const body = () => {
+const Body = () => {
+  const [location, setLocation] = useState("");
   return (
     <>
       <StbodyContainer>
@@ -16,14 +18,16 @@ const body = () => {
           <Slide />
         </>
         <StcategoryContainer>
-          <StCategoryButton src={mountains} />
-          <StCategoryButton src={rivers} />
-          <StCategoryButton src={seas} />
+          <StCategory type="img" src={mountains} />
+          <StCategory type="img" src={rivers} />
+          <StCategory type="img" src={seas} />
         </StcategoryContainer>
         <Sth1>지금뜨는 차박명소</Sth1>
         <StHorizontalLine />
         <StspotContainer>
-          {/* 데이터 연결 예정 */}
+          {/* {spotImage.map(images,index)=>{
+
+          }} */}
           <Stbox src={dlivelogo}></Stbox>
           <Stbox src={dlivelogo}></Stbox>
           <Stbox src={dlivelogo}></Stbox>
@@ -39,18 +43,17 @@ const body = () => {
         <Sth1>주변 차박명소</Sth1>
         <StHorizontalLine />
         <StgpsContainer>
-          <Map />
+          <Map location={location} setLocation={setLocation} />
         </StgpsContainer>
       </StbodyContainer>
     </>
   );
 };
 
-export default body;
+export default Body;
 
 const StbodyContainer = styled.main`
   overflow-y: auto;
-  max-width: 530px;
   height: fit-content;
   margin-bottom: 50px;
 `;
@@ -63,11 +66,10 @@ const StcategoryContainer = styled.div`
   padding: 30px;
   gap: 5px;
 `;
-const StCategoryButton = styled.img`
+const StCategory = styled.img`
   width: 100px;
   height: 100px;
   border-radius: 60px;
-
   margin: 20px auto 0 auto;
   gap: 5;
   cursor: pointer;
@@ -75,11 +77,8 @@ const StCategoryButton = styled.img`
 
 const StspotContainer = styled.div`
   display: grid;
-  flex-wrap: wrap;
-  flex-direction: row;
-  flex-grow: auto;
   grid-template-columns: repeat(3, 1fr);
-  padding: 40px;
+  padding: 10px;
   gap: 20px;
   flex: 3;
 `;
@@ -100,7 +99,7 @@ const Stbox = styled.img`
   width: 130px;
   height: 130px;
   border: 1px solid black;
-  margin: 20px;
+  margin: 5px;
   border-radius: 13px;
   cursor: pointer;
 `;

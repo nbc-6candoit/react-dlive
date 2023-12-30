@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 
 export const Map = () => {
-  const mapContainer = useRef(null);
+  const Container = useRef(null);
 
   useEffect(() => {
     const { naver } = window;
@@ -17,7 +17,7 @@ export const Map = () => {
       zoom: 17,
     };
 
-    const map = new naver.maps.Map(mapContainer.current, options);
+    const map = new naver.maps.Map(Container.current, options);
     window.navermap_authFailure = function (error) {
       return console.log("error :", error);
     };
@@ -34,7 +34,7 @@ export const Map = () => {
   }, []);
 
   return (
-    <StMapContainer ref={mapContainer}>
+    <StMapContainer ref={Container}>
       {/* <NaverMap></NaverMap> */}
     </StMapContainer>
   );
