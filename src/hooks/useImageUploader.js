@@ -7,20 +7,27 @@ const useImageUploader = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const uploadImageURL = async (file) => {
+  const uploadImageURL = async (docID, images) => {
+    console.log("업로드 실행");
     try {
-      setLoading(true);
+      console.log("Console Log 2: 실행", images);
 
-      const filename = file.name;
-      const storageRef = ref(storage, `spot_images/${filename}`);
-
-      // 스토어에 업로드
-      await uploadBytes(storageRef, file);
-
-      // 다운로드 url 생성
-      const url = await getDownloadURL(storageRef);
-
-      return url;
+      const imageUrls = [];
+      for (let i = 0; i < images.length; i++) {
+        const image = images[i];
+        const imageID = `image_${i + 1}`;
+        const imagePath = `log_images/${docID}/${imageID}`;
+        const imageRef = ref(storage, imagePath);
+        const file = await fetch(image).then((res) => res.blob());
+        await uploadBytes(imageRef, file);
+        const imageUrl = await getDownloadURL(imageRef);
+        imageUrls.push({
+          path: imagePath,
+          url: imageUrl,
+        });
+      }
+      console.log("Console Log 1: Image URLs", imageUrls);
+      return imageUrls;
     } catch (error) {
       setError(error.message);
       return null;

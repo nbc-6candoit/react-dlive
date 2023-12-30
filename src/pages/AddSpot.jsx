@@ -18,11 +18,10 @@ import { useDispatch, useSelector } from "react-redux";
 import useInput from "hooks/useInput";
 import useClickedState from "hooks/useClickedState";
 import Swal from "sweetalert2";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { storage } from "shared/firebase";
 import FacilitiesIcons from "components/addSpot/FacilitiesIcons";
 import { FACILITIES_DATA, SEASONS, VIEWS } from "constants/spotOptions";
 import TagSelection from "components/addSpot/TagSelection";
+import useImageUploader from "hooks/useImageUploader";
 
 const AddSpot = () => {
   const dispatch = useDispatch();
@@ -30,6 +29,8 @@ const AddSpot = () => {
   const { location, view, seasons, facilities, images } = useSelector(
     (state) => state.spot
   );
+
+  const { uploadImageURL } = useImageUploader();
 
   const fileRef = useRef(null);
 
@@ -91,9 +92,16 @@ const AddSpot = () => {
       alert("최대 파일 4개만 선택해주세요");
     } else {
       const filesArray = Array.from(files);
-      const selectedFiles = filesArray.map((file) => URL.createObjectURL(file));
-      const updatedImages = images.concat(selectedFiles);
-      dispatch(setImages(updatedImages));
+
+      const selectedFiles = filesArray.map((file, index) => ({
+        id: uuid(),
+        url: URL.createObjectURL(file),
+        key: `${uuid()}_${index}`,
+      }));
+      // const selectedFiles = filesArray.map((file) => URL.createObjectURL(file));
+      // const updatedImages = images.concat(selectedFiles);
+      console.log("업데이트이미지", selectedFiles);
+      dispatch(setImages(selectedFiles));
     }
   };
 
@@ -111,30 +119,27 @@ const AddSpot = () => {
     ) {
       try {
         // 스토리지에 먼저 사진 업로드
-        const imageUrls = [];
-        for (const image of images) {
-          const imageRef = ref(storage, `spot_images/${image}`);
-          await uploadBytes(imageRef, image);
+        const docID = uuid();
+        const imageUrls = await uploadImageURL(docID, images);
 
-          const imageUrl = await getDownloadURL(imageRef);
-          imageUrls.push(imageUrl);
+        if (imageUrls) {
+          // 차박명소 업로드
+          const newSpot = {
+            id: docID,
+            name,
+            location,
+            view,
+            seasons,
+            facilities,
+            sum,
+            content,
+            images: imageUrls,
+          };
+          console.log("New Spot:", newSpot);
+          dispatch(__addSpot(newSpot));
+          dispatch(addSpot(newSpot));
+          navigate("/");
         }
-
-        // 차박명소 업로드
-        const newSpot = {
-          id: uuid(),
-          name,
-          location,
-          view,
-          seasons,
-          facilities,
-          sum,
-          content,
-          images,
-        };
-        dispatch(__addSpot(newSpot));
-        dispatch(addSpot(newSpot));
-        navigate("/");
       } catch (error) {
         console.error("데이터 추가 에러", error.message);
       }
@@ -176,11 +181,12 @@ const AddSpot = () => {
           <StInfoWrapper>
             <p>뷰</p>
             <StTag>
-              {VIEWS.map((view) => (
+              {VIEWS.map((view, index) => (
                 <TagSelection
-                  key={view}
+                  key={uuid()}
                   tagName={view}
                   category="view"
+                  uid={uuid()}
                   onClick={(tagName, category) =>
                     handleTagClick(tagName, category)
                   }
@@ -194,15 +200,16 @@ const AddSpot = () => {
           <StInfoWrapper>
             <p>추천계절</p>
             <StTag>
-              {SEASONS.map((season) => (
+              {SEASONS.map((season, index) => (
                 <TagSelection
-                  key={season}
+                  key={index}
                   tagName={season}
                   category="seasons"
                   onClick={(tagName, category) =>
                     handleTagClick(tagName, category)
                   }
                   clicked={clickedSeasons[season]}
+                  uid={uuid()}
                 />
               ))}
             </StTag>
@@ -217,6 +224,7 @@ const AddSpot = () => {
               onClick={() => handleFacilityClick(label)}
               icon={icon}
               label={label}
+              uid={uuid()}
             />
           ))}
         </StIconContainer>

@@ -13,16 +13,16 @@ const HotSpotList = () => {
     dispatch(__getSpots());
   }, []);
 
-  console.log(spot.images);
+  //   console.log(Object.values(spot.images));
 
   const recentSpots = spot.slice(0, 6);
 
   return (
     <StSpotContainer>
       {recentSpots.map((spot) => (
-        <Link to={`/spot/${spot.id}`}>
-          <Stbox key={spot.id}>
-            <img src={spot?.images?.[0]} alt={spot.name} />
+        <Link to={`/spot/${spot.id}`} key={spot.id}>
+          <Stbox>
+            <img src={spot.images[0].url} alt={spot.name} />
           </Stbox>
         </Link>
       ))}
@@ -45,4 +45,10 @@ const Stbox = styled.figure`
   background-color: lightcoral;
   border-radius: 13px;
   cursor: pointer;
+  overflow: hidden;
+  & img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;

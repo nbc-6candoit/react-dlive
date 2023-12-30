@@ -1,12 +1,20 @@
 import React from "react";
 import styled from "styled-components";
 
-const FacilitiesIcons = ({ clicked, onClick, icon, label, disableCursor }) => {
+const FacilitiesIcons = ({
+  clicked,
+  onClick,
+  icon,
+  label,
+  disableCursor,
+  uid,
+}) => {
   return (
     <StIconWrapper
       clicked={clicked}
       onClick={onClick}
       disableCursor={disableCursor}
+      key={uid}
     >
       {icon}
       <p>{label}</p>
