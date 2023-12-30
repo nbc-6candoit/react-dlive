@@ -39,8 +39,7 @@ export const NavBar = () => {
             {authState.isLogin === true ? (
               <>
                 <Link to="/mypage">마이페이지</Link>
-
-                <button onClick={handlerlogout}>로그아웃</button>
+                onClick={handlerlogout}로그아웃
               </>
             ) : (
               <>
@@ -58,6 +57,7 @@ export default NavBar;
 
 const StNavContainer = styled.div`
   width: 100%;
+  max-width: 530px;
   height: 56px;
   display: flex;
   padding: 5px;
@@ -79,7 +79,7 @@ export const StBtnInputWrapper = styled.div`
   align-items: center;
   gap: 50px;
 `;
-export const StHeaderButton = styled.div`
+export const StHeaderButton = styled.button`
   display: flex;
   flex-direction: row;
   align-items: center;

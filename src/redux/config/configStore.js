@@ -1,10 +1,10 @@
-import { configureStore } from "@reduxjs/toolkit";
-import logsSlice from "../modules/logsSlice";
-import authSlice from "../modules/authSlice";
-import currentLocationSlice from "../modules/currentLocationSlice";
+import { configureStore } from '@reduxjs/toolkit';
+import logSlice from '../modules/logSlice';
+import authSlice from '../modules/authSlice';
+import currentLocationSlice from '../modules/currentLocationSlice';
 
 const store = configureStore({
-  reducer: { logsSlice, authSlice, currentLocationSlice },
+    reducer: { logSlice, authSlice, currentLocationSlice },
 });
 
 export default store;
