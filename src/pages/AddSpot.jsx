@@ -26,6 +26,8 @@ import { useDispatch, useSelector } from "react-redux";
 import useInput from "hooks/useInput";
 import useClickedState from "hooks/useClickedState";
 import Swal from "sweetalert2";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "shared/firebase";
 
 const AddSpot = () => {
   const dispatch = useDispatch();
@@ -114,6 +116,16 @@ const AddSpot = () => {
       facilities.length > 0
     ) {
       try {
+        // 스토리지에 먼저 사진 업로드
+        const imageUrls = [];
+        for (const image of images) {
+          const imageRef = ref(storage, `spot_images/${image}`);
+          await uploadBytes(imageRef, image);
+
+          const imageUrl = await getDownloadURL(imageRef);
+          imageUrls.push(imageUrl);
+        }
+
         // 차박명소 업로드
         const newSpot = {
           name,

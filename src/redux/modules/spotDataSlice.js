@@ -1,8 +1,6 @@
-import { collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { v4 as uuid } from "uuid";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { db, storage } from "shared/firebase";
+import { db } from "shared/firebase";
 
 const initialState = {
   spot: [],
@@ -30,22 +28,8 @@ export const __addSpot = createAsyncThunk(
   "addSpot",
   async (newSpot, thunkAPI) => {
     try {
-      // 스토리지에 먼저 사진 업로드
-      const imageUrls = [];
-      for (const image of newSpot.images) {
-        const imageRef = ref(storage, `log_images/${image}`);
-        await uploadBytes(imageRef, image);
-
-        const imageUrl = await getDownloadURL(imageRef);
-        imageUrls.push(imageUrl);
-      }
-
-      const addedSpot = {
-        id: uuid(),
-        ...newSpot,
-        images: imageUrls,
-      };
-      return addedSpot;
+      const docRef = await addDoc(collection(db, "spot"), newSpot);
+      console.log("Document written with ID: ", docRef.id);
     } catch (error) {
       console.log("error :", error);
       return thunkAPI.rejectWithValue(error);
