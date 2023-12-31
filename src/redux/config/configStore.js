@@ -4,6 +4,7 @@ import authSlice from "../modules/authSlice";
 import currentLocationSlice from "../modules/currentLocationSlice";
 import spot from "../modules/spotSlice";
 import spotData from "../modules/spotDataSlice";
+import homeSlice from "../modules/homeSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     currentLocation: currentLocationSlice,
     spot,
     spotData,
+    homeSlice,
   },
 });
 

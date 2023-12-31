@@ -1,11 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import { Slide } from "./slide/Slide";
-import SpotLog from "../spotDetail/SpotLog";
+import SpotLog from "../SpotDetail/SpotLog";
 import { Map } from "./Map/Map";
 import HotSpotList from "./HotSpotList";
 import Button from "components/common/Button";
 import { Link, useNavigate } from "react-router-dom";
+import mountains from "assets/img/산.png";
+import rivers from "assets/img/강.png";
+import seas from "assets/img/바다.png";
 
 function Body() {
   const navigate = useNavigate();
@@ -21,10 +24,9 @@ function Body() {
         </>
         <StListContainer>
           <StcategoryContainer>
-            <StCategoryButton>마운틴뷰</StCategoryButton>
-            <StCategoryButton>리버뷰</StCategoryButton>
-            <StCategoryButton>오션뷰</StCategoryButton>
-            <StCategoryButton>신설</StCategoryButton>
+            <StCategory type="img" src={mountains} />
+            <StCategory type="img" src={rivers} />
+            <StCategory type="img" src={seas} />
           </StcategoryContainer>
           <Button
             type={"button"}
@@ -69,6 +71,9 @@ const StbodyContainer = styled.main`
   max-width: 620px;
   height: fit-content;
   margin-bottom: 50px;
+  overflow-y: auto;
+  height: fit-content;
+  margin-bottom: 50px;
 `;
 
 const StListContainer = styled.div`
@@ -93,24 +98,20 @@ const StcategoryContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  padding: 30px;
+  gap: 5px;
 `;
-const StCategoryButton = styled.button`
+const StCategory = styled.img`
   width: 100px;
   height: 100px;
   border-radius: 60px;
-  background: #d9d9d9;
   margin: 20px auto 0 auto;
   gap: 5;
   cursor: pointer;
-`;
-
-const Sth1 = styled.div`
-  width: 100%;
-  max-width: 530px;
-  margin: 0 20px;
-  font-size: 20px;
-  font-weight: 800;
-  line-height: 1.7;
 `;
 
 const StHorizontalLine = styled.div`
