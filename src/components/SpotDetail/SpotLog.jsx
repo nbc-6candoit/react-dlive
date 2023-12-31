@@ -7,13 +7,11 @@ import Button from "components/common/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { getQueryLogs } from "../../redux/modules/logSlice";
 import LogCard from "components/common/LogCard";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SpotLog = () => {
   const dispatch = useDispatch();
-  const handleMoreLogClick = () => {
-    alert("더보기");
-  };
+  const navigate = useNavigate();
 
   const logList = useSelector((state) => {
     return state.logSlice.snapshotLogs;
@@ -66,11 +64,6 @@ const SpotLog = () => {
           );
         })}
       </StLogListWrapper>
-      <Button
-        type="button"
-        text="차박로그 더보기"
-        onClick={handleMoreLogClick}
-      />
     </StSpotInfoContainer>
   );
 };

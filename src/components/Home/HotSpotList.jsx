@@ -23,6 +23,9 @@ const HotSpotList = () => {
         <Link to={`/spot/${spot.id}`} key={spot.id}>
           <Stbox>
             <img src={spot.images[0].url} alt={spot.name} />
+            <StText>
+              <h4>{spot.name}</h4>
+            </StText>
           </Stbox>
         </Link>
       ))}
@@ -40,15 +43,39 @@ const StSpotContainer = styled.div`
 `;
 
 const Stbox = styled.figure`
+  position: relative;
   width: 100%;
   height: 150px;
   background-color: lightcoral;
   border-radius: 13px;
   cursor: pointer;
+  display: flex;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   & img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+`;
+
+const StText = styled.div`
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ${Stbox}:hover & {
+    opacity: 1;
   }
 `;

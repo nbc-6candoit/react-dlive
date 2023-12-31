@@ -1,13 +1,21 @@
 import React from "react";
 import styled from "styled-components";
 import { Slide } from "./slide/Slide";
-import SpotLog from "../SpotDetail/SpotLog";
+import SpotLog from "../spotDetail/SpotLog";
 import { Map } from "./Map/Map";
 import HotSpotList from "./HotSpotList";
+import Button from "components/common/Button";
+import { Link, useNavigate } from "react-router-dom";
 import mountains from "assets/img/산.png";
 import rivers from "assets/img/강.png";
 import seas from "assets/img/바다.png";
+
 function Body() {
+  const navigate = useNavigate();
+  const handleMoreDetailButtonClick = (contentType) => {
+    navigate(`/spotdetail/${contentType}`);
+  };
+
   return (
     <>
       <StbodyContainer>
@@ -20,13 +28,28 @@ function Body() {
             <StCategory type="img" src={rivers} />
             <StCategory type="img" src={seas} />
           </StcategoryContainer>
+          <Button
+            type={"button"}
+            onClick={() => (window.location.href = "/addspot")}
+            text={"나만의 차박명소 등록하기"}
+          />
           <StDetailInfo>
             <h3>지금뜨는 차박명소</h3>
             <StHorizontalLine />
             <HotSpotList />
+            <Button
+              type={"button"}
+              onClick={() => handleMoreDetailButtonClick("spot")}
+              text={"차박명소 더보기"}
+            />
           </StDetailInfo>
           <>
-            etail <SpotLog />
+            <SpotLog />
+            <Button
+              type="button"
+              text="차박로그 더보기"
+              onClick={() => handleMoreDetailButtonClick("log")}
+            />
           </>
           <StDetailInfo>
             <h3>주변 차박명소</h3>
