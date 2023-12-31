@@ -54,7 +54,7 @@ const StyledSlider = styled.div`
   flex-direction: column;
   padding: 20px;
   width: 100%;
-  height: 100%;
+  height: 300px;
 `;
 const Stbox = styled.img`
   align-items: center;

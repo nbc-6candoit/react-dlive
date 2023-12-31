@@ -1,110 +1,84 @@
 // 차박명소 등록페이지(AddSpot)
-import Tag from "components/common/Tag";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { addDoc, collection } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { db, storage } from "shared/firebase";
 import { v4 as uuid } from "uuid";
 import Button from "components/common/Button";
 import GeocoderMap from "components/naverMap/GeocoderMap";
-
-import { FaToilet } from "react-icons/fa";
-import { FaShower } from "react-icons/fa";
-import { AiFillShop } from "react-icons/ai";
-import { BsFillSignpost2Fill } from "react-icons/bs";
-import { MdOutlinePets } from "react-icons/md";
+import {
+  setLocation,
+  setView,
+  setSeasons,
+  setFacilities,
+  setImages,
+} from "../redux/modules/spotSlice";
+import { __addSpot, addSpot } from "../redux/modules/spotDataSlice";
 import { FaPlus } from "react-icons/fa6";
-import { FaSink } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import useInput from "hooks/useInput";
+import useClickedState from "hooks/useClickedState";
+import Swal from "sweetalert2";
+import FacilitiesIcons from "components/addSpot/FacilitiesIcons";
+import { FACILITIES_DATA, SEASONS, VIEWS } from "constants/spotOptions";
+import TagSelection from "components/addSpot/TagSelection";
+import useImageUploader from "hooks/useImageUploader";
 
 const AddSpot = () => {
-  const [name, setName] = useState("");
-  const [content, setContent] = useState("");
-  const [location, setLocation] = useState("");
-  const [sum, setSum] = useState("");
-  const [thumnailImages, setThumnailImages] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { location, view, seasons, facilities, images } = useSelector(
+    (state) => state.spot
+  );
 
-  const [selectedView, setSelectedView] = useState(null);
-  const [selectedSeasons, setSelectedSeasons] = useState([]);
-  const [selectedFacilities, setSelectedFacilities] = useState([]);
+  const { uploadImageURL } = useImageUploader();
 
   const fileRef = useRef(null);
-  const mapElement = useRef(null);
 
-  const [clickedView, setClickedView] = useState({
+  // 커스텀훅 사용
+  const [name, handleChangeSpotName] = useInput();
+  const [sum, handleChangeSpotSum] = useInput();
+  const [content, handleAddContent] = useInput();
+
+  const [clickedView, toggleView] = useClickedState({
     마운틴뷰: false,
     리버뷰: false,
     오션뷰: false,
   });
 
-  const [clickedSeasons, setClickedSeasons] = useState({
+  const [clickedSeasons, toggleSeasons] = useClickedState({
     봄: false,
     여름: false,
     가을: false,
     겨울: false,
   });
 
-  const [clickedFacilities, setClickedFacilities] = useState({
-    toilet: false,
-    shower: false,
-    sink: false,
-    shop: false,
-    trail: false,
-    pets: false,
+  const [clickedFacilities, toggleFacilities] = useClickedState({
+    화장실: false,
+    샤워실: false,
+    싱크대: false,
+    매점: false,
+    산책로: false,
+    반려동물: false,
   });
 
-  const handleFacilityClick = (facility) => {
-    setClickedFacilities((prev) => ({
-      ...prev,
-      [facility]: prev[facility] === true ? false : true,
-    }));
+  const handleFacilityClick = (tagName) => {
+    dispatch(setFacilities(tagName));
+    toggleFacilities(tagName);
   };
 
   const handleTagClick = (tagName, category) => {
     switch (category) {
       case "view":
-        setSelectedView(tagName);
-        setClickedView((prev) => ({
-          마운틴뷰: false,
-          리버뷰: false,
-          오션뷰: false,
-          [tagName]: true,
-        }));
+        dispatch(setView(tagName));
+        toggleView(tagName, category);
         break;
       case "seasons":
-        setSelectedSeasons((prev) =>
-          prev.includes(tagName)
-            ? prev.filter((season) => season !== tagName)
-            : [...prev, tagName]
-        );
-        setClickedSeasons((prev) => ({ ...prev, [tagName]: !prev[tagName] }));
-        break;
-      case "facilities":
-        setSelectedFacilities((prev) =>
-          prev.includes(tagName)
-            ? prev.filter((facilities) => facilities !== tagName)
-            : [...prev, tagName]
-        );
-        setClickedFacilities((prev) => ({
-          ...prev,
-          [tagName]: !prev[tagName],
-        }));
+        dispatch(setSeasons(tagName));
+        toggleSeasons(tagName);
         break;
       default:
         break;
     }
-  };
-
-  const handleChangeSpotName = (e) => {
-    setName(e.target.value);
-  };
-
-  const handleChangeSpotSum = (e) => {
-    setSum(e.target.value);
-  };
-
-  const handleAddContent = (e) => {
-    setContent(e.target.value);
   };
 
   const handleAddImageClick = () => {
@@ -114,82 +88,65 @@ const AddSpot = () => {
   const handleAddImages = (e) => {
     const files = e.target.files;
     // 최대 4개까지만 선택할 수 있도록 설정
-    if (files.length > 4 || files.length + thumnailImages.length > 4) {
+    if (files.length > 4 || files.length + images.length > 4) {
       alert("최대 파일 4개만 선택해주세요");
     } else {
       const filesArray = Array.from(files);
+
       const selectedFiles = filesArray.map((file) => URL.createObjectURL(file));
-      setThumnailImages((prev) => prev.concat(selectedFiles));
+      const updatedImages = images.concat(selectedFiles);
+      console.log("업데이트이미지", selectedFiles);
+      dispatch(setImages(selectedFiles));
     }
   };
 
   const handleSubmmit = async (e) => {
     e.preventDefault();
-    try {
-      // 스토리지에 먼저 사진 업로드
-      const imageUrls = [];
-      for (const image of thumnailImages) {
-        const imageRef = ref(storage, `log_images/${image}`);
-        await uploadBytes(imageRef, image);
+    //  유효성 검사
+    if (
+      name !== "" &&
+      location !== "" &&
+      view !== "" &&
+      sum !== "" &&
+      content !== "" &&
+      seasons.length > 0 &&
+      facilities.length > 0
+    ) {
+      try {
+        // 스토리지에 먼저 사진 업로드
+        const docID = uuid();
+        const imageUrls = await uploadImageURL(docID, images);
 
-        const imageUrl = await getDownloadURL(imageRef);
-        imageUrls.push(imageUrl);
+        if (imageUrls) {
+          // 차박명소 업로드
+          const newSpot = {
+            id: docID,
+            name,
+            location,
+            view,
+            seasons,
+            facilities,
+            sum,
+            content,
+            images: imageUrls,
+          };
+          console.log("New Spot:", newSpot);
+          dispatch(__addSpot(newSpot));
+          dispatch(addSpot(newSpot));
+          navigate("/");
+        }
+      } catch (error) {
+        console.error("데이터 추가 에러", error.message);
       }
-
-      // 차박명소 업로드
-      const docRef = await addDoc(collection(db, "spot"), {
-        id: uuid(),
-        name,
-        location,
-        view: selectedView,
-        seasons: selectedSeasons,
-        facilities: selectedFacilities,
-        sum,
-        content,
-        images: imageUrls,
+    } else {
+      Swal.fire({
+        text: "모든 항목을 입력하세요",
+        icon: "error",
+        confirmButtonText: "확인",
+        confirmButtonColor: "#5eb470",
       });
-      console.log("Document written with ID: ", docRef.id);
-
-      setName("");
-      setLocation("");
-      setSum("");
-      setContent("");
-      setSelectedView(null);
-      setSelectedSeasons([]);
-      setSelectedFacilities([]);
-
-      setClickedView({
-        마운틴뷰: false,
-        리버뷰: false,
-        오션뷰: false,
-      });
-      setClickedSeasons({
-        봄: false,
-        여름: false,
-        가을: false,
-        겨울: false,
-      });
-      setClickedFacilities({
-        toilet: false,
-        shower: false,
-        sink: false,
-        shop: false,
-        trail: false,
-        pets: false,
-      });
-      setThumnailImages([]);
-    } catch (error) {
-      console.error("데이터 추가 에러", error.message);
     }
   };
-
-  console.log(name);
-  console.log(location);
-  console.log(selectedView);
-  console.log(selectedSeasons);
-  console.log(selectedFacilities);
-  console.log(sum);
-  console.log(content);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -213,37 +170,24 @@ const AddSpot = () => {
         </StBox>
         <StBox>
           <label htmlFor="address">차박명소 주소*</label>
-          <StMapWrapper id="map" ref={mapElement} />
           <GeocoderMap location={location} setLocation={setLocation} />
         </StBox>
         <StBox>
           <StInfoWrapper>
             <p>뷰</p>
             <StTag>
-              <Tag
-                tagName="마운틴뷰"
-                category="view"
-                onClick={(tagName, category) =>
-                  handleTagClick(tagName, category)
-                }
-                clicked={clickedView["마운틴뷰"]}
-              />
-              <Tag
-                tagName="리버뷰"
-                category="view"
-                onClick={(tagName, category) =>
-                  handleTagClick(tagName, category)
-                }
-                clicked={clickedView["리버뷰"]}
-              />
-              <Tag
-                tagName="오션뷰"
-                category="view"
-                onClick={(tagName, category) =>
-                  handleTagClick(tagName, category)
-                }
-                clicked={clickedView["오션뷰"]}
-              />
+              {VIEWS.map((view, index) => (
+                <TagSelection
+                  key={uuid()}
+                  tagName={view}
+                  category="view"
+                  uid={uuid()}
+                  onClick={(tagName, category) =>
+                    handleTagClick(tagName, category)
+                  }
+                  clicked={clickedView[view]}
+                />
+              ))}
             </StTag>
           </StInfoWrapper>
         </StBox>
@@ -251,92 +195,34 @@ const AddSpot = () => {
           <StInfoWrapper>
             <p>추천계절</p>
             <StTag>
-              <Tag
-                tagName="봄"
-                category="seasons"
-                onClick={(tagName, category) =>
-                  handleTagClick(tagName, category)
-                }
-                clicked={clickedSeasons["봄"]}
-              />
-              <Tag
-                tagName="여름"
-                category="seasons"
-                onClick={(tagName, category) =>
-                  handleTagClick(tagName, category)
-                }
-                clicked={clickedSeasons["여름"]}
-              />
-              <Tag
-                tagName="가을"
-                category="seasons"
-                onClick={(tagName, category) =>
-                  handleTagClick(tagName, category)
-                }
-                clicked={clickedSeasons["가을"]}
-              />
-              <Tag
-                tagName="겨울"
-                category="seasons"
-                onClick={(tagName, category) =>
-                  handleTagClick(tagName, category)
-                }
-                clicked={clickedSeasons["겨울"]}
-              />
+              {SEASONS.map((season, index) => (
+                <TagSelection
+                  key={index}
+                  tagName={season}
+                  category="seasons"
+                  onClick={(tagName, category) =>
+                    handleTagClick(tagName, category)
+                  }
+                  clicked={clickedSeasons[season]}
+                  uid={uuid()}
+                />
+              ))}
             </StTag>
           </StInfoWrapper>
         </StBox>
-        <StInfoWrapper>
+        <StIconContainer>
           <p>편의시설</p>
-          <StIconContainer>
-            <StIconWrapper
-              clicked={clickedFacilities.toilet}
-              onClick={() => handleFacilityClick("toilet")}
-            >
-              <FaToilet />
-              <p>화장실</p>
-            </StIconWrapper>
-
-            <StIconWrapper
-              clicked={clickedFacilities.shower}
-              onClick={() => handleFacilityClick("shower")}
-            >
-              <FaShower />
-              <p>샤워실</p>
-            </StIconWrapper>
-
-            <StIconWrapper
-              clicked={clickedFacilities.sink}
-              onClick={() => handleFacilityClick("sink")}
-            >
-              <FaSink />
-              <p>싱크대</p>
-            </StIconWrapper>
-
-            <StIconWrapper
-              clicked={clickedFacilities.shop}
-              onClick={() => handleFacilityClick("shop")}
-            >
-              <AiFillShop />
-              <p>매점</p>
-            </StIconWrapper>
-            <StIconWrapper
-              clicked={clickedFacilities.trail}
-              onClick={() => handleFacilityClick("trail")}
-            >
-              <BsFillSignpost2Fill />
-              <p>산책로</p>
-            </StIconWrapper>
-
-            <StIconWrapper
-              clicked={clickedFacilities.pets}
-              onClick={() => handleFacilityClick("pets")}
-            >
-              <MdOutlinePets />
-              <p>반려동물</p>
-            </StIconWrapper>
-          </StIconContainer>
-        </StInfoWrapper>
+          {FACILITIES_DATA.map(({ icon, label, index }) => (
+            <FacilitiesIcons
+              key={index}
+              clicked={clickedFacilities[label]}
+              onClick={() => handleFacilityClick(label)}
+              icon={icon}
+              label={label}
+              uid={uuid()}
+            />
+          ))}
+        </StIconContainer>
         <StBox>
           <label htmlFor="spot_sum">차박명소 한줄소개*</label>
           <input
@@ -365,9 +251,7 @@ const AddSpot = () => {
             </StImgSelect>
             {[...Array(4)].map((_, index) => (
               <StImgBox key={index}>
-                {thumnailImages[index] && (
-                  <img src={thumnailImages[index]} alt="차박명소" />
-                )}
+                {images[index] && <img src={images[index]} alt="차박명소" />}
               </StImgBox>
             ))}
           </StImgWrap>
@@ -389,8 +273,8 @@ const AddSpot = () => {
 export default AddSpot;
 
 const StForm = styled.form`
-  max-width: 530px;
-  padding: 40px 20px;
+  max-width: 620px;
+  padding: 40px;
 
   & h2 {
     margin-bottom: 30px;
@@ -436,14 +320,6 @@ const StBox = styled.div`
       background: #5eb470;
     }
   }
-`;
-
-const StMapWrapper = styled.div`
-  width: 100%;
-  height: 270px;
-  margin-top: 30px;
-  border-radius: 5px;
-  background-color: lightgray;
 `;
 
 const StTextarea = styled.textarea`
@@ -493,11 +369,6 @@ const StInfoWrapper = styled.div`
   align-items: center;
 `;
 
-const StTag = styled.div`
-  display: flex;
-  gap: 0.5rem;
-`;
-
 const StIconContainer = styled.div`
   display: flex;
   gap: 1.5rem;
@@ -506,14 +377,7 @@ const StIconContainer = styled.div`
   }
 `;
 
-const StIconWrapper = styled.div`
+const StTag = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-size: 30px;
-  gap: 0.7rem;
-  cursor: pointer;
-  color: ${(props) =>
-    props.clicked === true || props.clicked === "true" ? "#5eb470" : "#999"};
+  gap: 0.5rem;
 `;

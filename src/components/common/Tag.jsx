@@ -1,13 +1,17 @@
 import React from "react";
 import styled from "styled-components";
 
-const Tag = ({ tagName, onClick, category, clicked }) => {
+const Tag = ({ tagName, onClick, category, clicked, disableCursor }) => {
   const handleTagClick = () => {
     onClick && onClick(tagName, category, !clicked);
   };
 
   return (
-    <StTag clicked={clicked} onClick={handleTagClick}>
+    <StTag
+      clicked={clicked}
+      onClick={handleTagClick}
+      disableCursor={disableCursor}
+    >
       {tagName}
     </StTag>
   );
@@ -24,5 +28,6 @@ const StTag = styled.p`
   height: fit-content;
   border-radius: 0.25rem;
   font-size: 13px;
-  cursor: pointer;
+  cursor: ${(props) => (props.disableCursor ? "auto" : "pointer")};
+  user-select: none;
 `;

@@ -1,63 +1,80 @@
+import React from "react";
 import styled from "styled-components";
 import { Slide } from "./slide/Slide";
-import dlivelogo from "assets/img/logo.png";
-import SpotLog from "components/SpotDetail/SpotLog";
+import SpotLog from "../SpotDetail/SpotLog";
 import { Map } from "./Map/Map";
+import HotSpotList from "./HotSpotList";
 import mountains from "assets/img/산.png";
 import rivers from "assets/img/강.png";
 import seas from "assets/img/바다.png";
-import { useState } from "react";
-
-const Body = () => {
-  const [location, setLocation] = useState("");
+function Body() {
   return (
     <>
       <StbodyContainer>
         <>
           <Slide />
         </>
-        <StcategoryContainer>
-          <StCategory type="img" src={mountains} />
-          <StCategory type="img" src={rivers} />
-          <StCategory type="img" src={seas} />
-        </StcategoryContainer>
-        <Sth1>지금뜨는 차박명소</Sth1>
-        <StHorizontalLine />
-        <StspotContainer>
-          {/* {spotImage.map(images,index)=>{
-
-          }} */}
-          <Stbox src={dlivelogo}></Stbox>
-          <Stbox src={dlivelogo}></Stbox>
-          <Stbox src={dlivelogo}></Stbox>
-          <Stbox src={dlivelogo}></Stbox>
-          <Stbox src={dlivelogo}></Stbox>
-          <Stbox src={dlivelogo}></Stbox>
-        </StspotContainer>
-        <>
-          <Sth1>
-            <SpotLog />
-          </Sth1>
-        </>
-        <Sth1>주변 차박명소</Sth1>
-        <StHorizontalLine />
-        <StgpsContainer>
-          <Map location={location} setLocation={setLocation} />
-        </StgpsContainer>
+        <StListContainer>
+          <StcategoryContainer>
+            <StCategory type="img" src={mountains} />
+            <StCategory type="img" src={rivers} />
+            <StCategory type="img" src={seas} />
+          </StcategoryContainer>
+          <StDetailInfo>
+            <h3>지금뜨는 차박명소</h3>
+            <StHorizontalLine />
+            <HotSpotList />
+          </StDetailInfo>
+          <>
+            etail <SpotLog />
+          </>
+          <StDetailInfo>
+            <h3>주변 차박명소</h3>
+            <StHorizontalLine />
+            <StgpsContainer>
+              <Map />
+            </StgpsContainer>
+          </StDetailInfo>
+        </StListContainer>
       </StbodyContainer>
     </>
   );
-};
+}
 
 export default Body;
 
 const StbodyContainer = styled.main`
   overflow-y: auto;
+  max-width: 620px;
+  height: fit-content;
+  margin-bottom: 50px;
+  overflow-y: auto;
   height: fit-content;
   margin-bottom: 50px;
 `;
 
+const StListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+  gap: 3rem;
+`;
+
+const StDetailInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  line-height: 1.7;
+  & h3 {
+    font-size: 20px;
+  }
+`;
+
 const StcategoryContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -74,38 +91,9 @@ const StCategory = styled.img`
   cursor: pointer;
 `;
 
-const StspotContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  padding: 10px;
-  gap: 20px;
-  flex: 3;
-`;
-const Sth1 = styled.div`
-  width: 100%;
-  max-width: 530px;
-  margin: 0 20px;
-  color: #000;
-  font-size: 20px;
-  font-weight: 800;
-  line-height: 1.7;
-`;
-
-const Stbox = styled.img`
-  align-items: center;
-  text-align: center;
-  justify-content: space-between;
-  width: 130px;
-  height: 130px;
-  border: 1px solid black;
-  margin: 5px;
-  border-radius: 13px;
-  cursor: pointer;
-`;
-
 const StHorizontalLine = styled.div`
+  width: 100%;
   border-bottom: 1px solid gray;
-  margin: 10px 20px;
 `;
 
 const StgpsContainer = styled.div`
