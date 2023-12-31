@@ -1,42 +1,57 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { db } from "shared/firebase";
-// import { updateCoordinates } from "../../redux/modules/homeSlice";
-const fetchData = async (documentId) => {
-  const documentRef = db.collection("spot").doc(documentId);
-  try {
-    const doc = await documentRef.get();
-    console.log("doc", doc);
-    if (doc.exists) {
-      return doc.data({ latitude: 37.5666102, longitude: 126.9783881 });
-    } else {
-      throw new Error("문서가 존재하지 않습니다.");
-    }
-  } catch (error) {
-    throw new Error(
-      `Firestore에서 문서를 가져오는 중 에러 발생: ${error.message}`
-    );
-  }
-};
+import { addDoc, collection } from "firebase/firestore";
+import { db, storage } from "shared/firebase";
+import { useQuery } from "@tanstack/react-query";
+import { useDispatch, useSelector } from "react-redux";
 
+import {
+  updateCoordinates,
+  setCoordinatesLoading,
+  setCoordinatesError,
+} from "../../../redux/modules/homeSlice";
+import _ from "lodash";
 export const Map = ({ documentId }) => {
-  // Naver 지도 컨테이너에 대한 참조
   const mapContainerRef = useRef(null);
-  // Firestore에서 가져온 위치 정보 상태 변수
+  const dispatch = useDispatch();
+
+  // 좌표를 불러오는 React Query 훅 사용
+  // React Query를 사용하여 spot 데이터 가져오기
+
+  const {
+    data: spotData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["fetchSpotData", documentId],
+    queryFn: async () => {
+      try {
+        const documentRef = db.collection("spot").doc(documentId);
+        const doc = await documentRef.get();
+        if (doc.exists) {
+          return doc.data();
+        } else {
+          throw new Error("문서가 존재하지 않습니다.");
+        }
+      } catch (error) {
+        throw new Error(
+          `Firestore에서 문서를 가져오는 중 에러 발생: ${error.message}`
+        );
+      }
+    },
+  });
 
   useEffect(() => {
     const { naver } = window;
 
-    // Geolocation API를 이용하여 현재 위치를 가져옵니다.
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
+    const handleGeoLocationSuccess = (position) => {
+      try {
         const { latitude, longitude } = position.coords;
         const currentLocation = new naver.maps.LatLng({
           lat: latitude,
           lng: longitude,
         });
 
-        // Naver 지도의 초기 위치를 현재 위치로 설정합니다.
         const mapOptions = {
           center: currentLocation,
           zoom: 17,
@@ -44,22 +59,34 @@ export const Map = ({ documentId }) => {
 
         const map = new naver.maps.Map(mapContainerRef.current, mapOptions);
 
-        // 인증 실패 콜백
-        window.navermap_authFailure = function (error) {
-          console.error("인증 실패:", error);
-        };
+        // spotData가 있는지 확인
+        if (spotData) {
+          // spotData를 사용하여 좌표 업데이트 또는 다른 작업 수행
+          dispatch(updateCoordinates(spotData));
+        }
 
-        // 마커 위치를 현재 위치로 설정합니다.
         const marker = new naver.maps.Marker({
           position: currentLocation,
           map,
         });
-      },
-      (error) => {
-        console.error("현재 위치를 가져오는 데 실패했습니다:", error);
+      } catch (error) {
+        console.error("현재 위치를 설정하는 중에 오류가 발생했습니다:", error);
+        dispatch(
+          setCoordinatesError("현재 위치를 설정하는 중에 오류가 발생했습니다.")
+        );
       }
+    };
+
+    const handleGeoLocationError = (error) => {
+      console.error("현재 위치를 가져오는 데 실패했습니다:", error);
+      dispatch(setCoordinatesError("현재 위치를 가져오는 데 실패했습니다."));
+    };
+
+    navigator.geolocation.getCurrentPosition(
+      handleGeoLocationSuccess,
+      handleGeoLocationError
     );
-  }, []);
+  }, [dispatch, documentId, spotData]);
 
   return <StyledMapContainer ref={mapContainerRef}></StyledMapContainer>;
 };

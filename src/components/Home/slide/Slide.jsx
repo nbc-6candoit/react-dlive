@@ -1,47 +1,58 @@
 import styled from "styled-components";
 import Slider from "react-slick";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 // firestore의 메서드 import
-import { getStorage, ref, getDownloadURL, list } from "firebase/storage";
+
+import { collection, getDocs } from "firebase/firestore";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { db } from "shared/firebase";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+const __getSpots = createAsyncThunk("getSpots", async (payload, thunkAPI) => {
+  try {
+    const querySnapshop = await getDocs(collection(db, "spot"));
+    const spotsData = querySnapshop.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return spotsData;
+  } catch (error) {
+    console.log("error :", error);
+    return thunkAPI.rejectWithValue(error);
+  }
+});
 export const Slide = () => {
-  const [slideimage, setSlideImage] = useState([]);
-  const storage = getStorage();
+  const dispatch = useDispatch();
+  const { spot } = useSelector((state) => state.spotData);
 
-  const imageListRef = ref(
-    storage,
-    "gs://d-live-b6b1e.appspot.com/log_images/f4ebac4c-bbaa-4e6f-a83f-c7c6a85ea83b"
-  );
   useEffect(() => {
-    list(imageListRef).then((response) => {
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          setSlideImage((prev) => [...prev, url]);
-        });
-      });
-    });
+    dispatch(__getSpots([]));
   }, []);
-
+  const recentSpots = spot.slice([0, spot.length]);
+  console.log("recentSpots Array : ", recentSpots);
   const settings = {
-    dots: false,
+    dots: true,
     speed: 1500,
     autoplay: true,
+    infinite: true,
     autoplaySpeed: 1000,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: true,
     pauseOnHover: true,
     focusOnSelect: true,
     pauseOnDotsHover: true,
+    arrow: false,
   };
-
   return (
     <StyledSlider>
       <Slider {...settings}>
-        {slideimage.map((url, index) => (
-          <Stbox key={index} src={url} alt={`${index + 1}`} />
+        {recentSpots.map((spot) => (
+          <Link to={`/spot/${spot.id}`} key={spot.id}>
+            <Stbox src={spot.images[0].url} alt={spot.name} />
+          </Link>
         ))}
       </Slider>
     </StyledSlider>
@@ -61,7 +72,6 @@ const Stbox = styled.img`
   text-align: center;
   max-width: 560px;
   justify-content: center;
-
   width: 100%;
   height: 350px;
   border-radius: 40px;
