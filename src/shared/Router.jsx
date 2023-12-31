@@ -25,7 +25,7 @@ const Router = () => {
           <Route path="/mypage/:id" element={<Mypage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/spotdetail" element={<SpotDetail />} />
+          <Route path="/spotdetail/:type" element={<SpotDetail />} />
           <Route path="/spot/:spotId" element={<Spot />} />
           <Route path="/addspot" element={<AddSpot />} />
           <Route path="/log/:id" element={<Log />} />
