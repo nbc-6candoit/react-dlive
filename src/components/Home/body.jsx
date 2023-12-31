@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Slide } from "./slide/Slide";
-import SpotLog from "../spotDetail/SpotLog";
+import SpotLog from "../SpotDetail/SpotLog";
 import { Map } from "./Map/Map";
 import HotSpotList from "./HotSpotList";
 import Button from "components/common/Button";
