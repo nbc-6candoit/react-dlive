@@ -59,9 +59,9 @@ const StyledSlider = styled.div`
 const Stbox = styled.img`
   align-items: center;
   text-align: center;
-  max-width: 620;
+  max-width: 560px;
   justify-content: center;
-  margin-right: 20px;
+
   width: 100%;
   height: 350px;
   border-radius: 40px;
