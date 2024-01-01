@@ -4,12 +4,17 @@ import { auth, db } from "../shared/firebase";
 import React from "react";
 import styled from "styled-components";
 import Button from "components/common/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { query, collection, where, getDocs } from "firebase/firestore"; // Import necessary functions
 import Avatar from "components/common/Avatar";
+import HotSpotList from "components/Home/HotSpotList";
 
 const Mypage = () => {
   const [userData, setUserData] = useState(null);
+  const navigate = useNavigate();
+  const handleMoreDetailButtonClick = (contentType) => {
+    navigate(`/spotdetail/${contentType}`);
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -41,22 +46,38 @@ const Mypage = () => {
   console.log(userData);
 
   return (
-    <Stcontainer>
-      {userData && (
-        <>
-          <StlogCard>
-            <StlogWrapper>
-              <Avatar />
-              <Stdiv>{userData.nickname}</Stdiv>
+    <>
+      <Stcontainer>
+        {userData && (
+          <>
+            <StlogCard>
+              <StlogWrapper>
+                <Avatar />
+                <Stdiv>{userData.nickname}</Stdiv>
 
-              <Link to="/InfoFix">
-                <Button type="button" text="내정보 관리" width="100%"></Button>
-              </Link>
-            </StlogWrapper>
-          </StlogCard>
-        </>
-      )}
-    </Stcontainer>
+                <Link to="/InfoFix">
+                  <Button
+                    type="button"
+                    text="내정보 관리"
+                    width="100%"
+                  ></Button>
+                </Link>
+              </StlogWrapper>
+            </StlogCard>
+          </>
+        )}
+      </Stcontainer>
+      <StDetailInfo>
+        <h3>내가작성한 차박명소</h3>
+        <StHorizontalLine />
+        <HotSpotList />
+        <Button
+          type={"button"}
+          onClick={() => handleMoreDetailButtonClick("spot")}
+          text={"차박명소 더보기"}
+        />
+      </StDetailInfo>
+    </>
   );
 };
 
@@ -101,5 +122,19 @@ const StlogWrapper = styled.div`
 
   & ${Button} {
     width: 40%; // Reduced the width
+  }
+`;
+
+const StHorizontalLine = styled.div`
+  width: 100%;
+  border-bottom: 1px solid gray;
+`;
+const StDetailInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  line-height: 1.7;
+  & h3 {
+    font-size: 20px;
   }
 `;
