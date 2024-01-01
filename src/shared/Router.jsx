@@ -1,4 +1,3 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AddSpot from "../pages/AddSpot";
 import Login from "../pages/Login";
 import Main from "../pages/Main";
@@ -13,6 +12,8 @@ import NavBar from "../components/NavBar";
 import Log from "../pages/Log";
 import styled from "styled-components";
 import Signup from "../pages/Signup";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import InfoFix from "../pages/InfoFix";
 
 const Router = () => {
   return (
@@ -23,10 +24,11 @@ const Router = () => {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/mypage/:id" element={<Mypage />} />
+          <Route path="/infofix" element={<InfoFix />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/spotdetail" element={<SpotDetail />} />
-          <Route path="/spot" element={<Spot />} />
+          <Route path="/spotdetail/:type" element={<SpotDetail />} />
+          <Route path="/spot/:spotId" element={<Spot />} />
           <Route path="/addspot" element={<AddSpot />} />
           <Route path="/log/:id" element={<Log />} />
           <Route path="/addlog" element={<AddLog />} />

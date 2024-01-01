@@ -1,7 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setLocation } from "../../redux/modules/spotSlice";
 import styled from "styled-components";
+import Swal from "sweetalert2";
 
-const GeocoderMap = ({ location, setLocation }) => {
+const GeocoderMap = () => {
+  const dispatch = useDispatch();
+  const { location } = useSelector((state) => state.spot);
   const map = useRef(null);
   const { naver } = window;
 
@@ -28,7 +33,7 @@ const GeocoderMap = ({ location, setLocation }) => {
 
                 const result = response.v2; // 검색 결과의 컨테이너
                 const address = result.address.jibunAddress; // 검색 결과로 만든 주소
-                setLocation(address);
+                dispatch(setLocation(address));
               }
             );
 
@@ -48,24 +53,46 @@ const GeocoderMap = ({ location, setLocation }) => {
     } else {
       console.error("지도를 표시할 수 없습니다.");
     }
-  }, [naver, map, setLocation]);
+  }, [naver, map, dispatch]);
 
   const handleSearchAddressClick = (e) => {
     e.preventDefault();
+
     // 작성된 주소를 좌표로 반환
     naver.maps.Service.geocode(
       {
         query: location,
       },
       function (status, response) {
-        if (status !== naver.maps.Service.Status.OK) {
-          return alert("Something wrong!");
+        console.log(naver.maps.Service.Status);
+        if (
+          status !== naver.maps.Service.Status.OK ||
+          !response.v2 ||
+          !response.v2.addresses ||
+          response.v2.addresses.length === 0
+        ) {
+          Swal.fire({
+            text: "검색 결과가 없습니다. 주소를 확인하세요",
+            icon: "error",
+            confirmButtonText: "확인",
+            confirmButtonColor: "#5eb470",
+          });
+          return;
         }
 
         const items = response.v2.addresses; // 검색 결과의 배열
         const newAddress = items[0].jibunAddress;
         const lat = items[0].x;
         const lng = items[0].y;
+
+        // if (!newAddress) {
+        //   Swal.fire({
+        //     text: "올바른 주소를 검색하세요.",
+        //     icon: "error",
+        //     confirmButtonText: "확인",
+        //     confirmButtonColor: "#5eb470",
+        //   });
+        // }
 
         const point = new naver.maps.Point(lat, lng);
 
@@ -76,7 +103,7 @@ const GeocoderMap = ({ location, setLocation }) => {
           map: map.current,
         });
 
-        setLocation(newAddress);
+        dispatch(setLocation(newAddress));
       }
     );
   };
@@ -92,7 +119,7 @@ const GeocoderMap = ({ location, setLocation }) => {
 
   const handleChangeSpotLocation = (e) => {
     e.preventDefault();
-    setLocation(e.target.value);
+    dispatch(setLocation(e.target.value));
   };
 
   const handleInputKeyDown = (e) => {
@@ -102,22 +129,24 @@ const GeocoderMap = ({ location, setLocation }) => {
   };
 
   return (
-    <StBox>
-      <input
-        type="text"
-        id="address"
-        value={location}
-        onChange={handleChangeSpotLocation}
-        placeholder="주소를 입력하세요"
-        onKeyDown={handleInputKeyDown}
-      />
-      <button type="button" onClick={handleCurrentLocationClick}>
-        현재위치
-      </button>
-      <button type="button" onClick={handleSearchAddressClick}>
-        검색
-      </button>
-    </StBox>
+    <>
+      <StMapWrapper id="map" />
+      <StBox>
+        <input
+          type="text"
+          value={location}
+          onChange={handleChangeSpotLocation}
+          placeholder="주소를 입력하세요"
+          onKeyDown={handleInputKeyDown}
+        />
+        <button type="button" onClick={handleCurrentLocationClick}>
+          현재위치
+        </button>
+        <button type="button" onClick={handleSearchAddressClick}>
+          검색
+        </button>
+      </StBox>
+    </>
   );
 };
 
@@ -126,4 +155,12 @@ export default GeocoderMap;
 const StBox = styled.div`
   display: flex;
   margin: 10px 0;
+`;
+
+const StMapWrapper = styled.div`
+  width: 100%;
+  height: 270px;
+  margin-top: 30px;
+  border-radius: 5px;
+  background-color: lightgray;
 `;

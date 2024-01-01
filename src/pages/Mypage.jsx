@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { auth } from "../shared/firebase";
 import React from "react";
 import styled from "styled-components";
-import defaultphoto from "../assets/img/avatar.png";
-import Avatar from "components/common/Avatar";
+// import defaultphoto from "../assets/img/avatar.png";
+// import Avatar from "components/common/Avatar";
 import Button from "components/common/Button";
 import { Link } from "react-router-dom";
 const Mypage = () => {
@@ -14,24 +14,38 @@ const Mypage = () => {
     const fetchProfileInfo = async () => {
       try {
         const user = auth.currentUser;
+        console.log(auth.currentUser);
 
+        // if (user) {
+        //   // 사용자의 제공자 데이터를 반복
+        //   // user.providerData.forEach((profile)
+        //   user.forEach((profile) => {
+        //     console.log(profile);
+        //     // 제공자의 ID (예: google.com)
+        //     // const providerId = profile.providerId;
+
+        //     // 제공자에 특정한 UID
+        //     const uid = profile.uid;
+        //     console.log(uid);
+        //     // 이름, 이메일 주소 및 프로필 사진 URL
+        //     const nickname = profile.auth.displayName;
+        //     console.log(nickname);
+        //     const email = profile.auth.email;
+        //     console.log(email);
+        //     const photoUrl = profile.reloadUserInfo.photoUrl;
+        //     console.log(photoUrl);
+        //     // 사용자 프로필 정보 상태 업데이트
+        //     setUserProfile({ uid, nickname, email, photoUrl });
+        //   });
+        // }
         if (user) {
-          // 사용자의 제공자 데이터를 반복
-          user.providerData.forEach((profile) => {
-            // 제공자의 ID (예: google.com)
-            const providerId = profile.providerId;
+          console.log(user);
+          const uid = user.uid;
+          const nickname = user.displayName;
+          const email = user.email;
+          const photoUrl = user.photoURL;
 
-            // 제공자에 특정한 UID
-            const uid = profile.uid;
-
-            // 이름, 이메일 주소 및 프로필 사진 URL
-            const name = profile.displayName;
-            const email = profile.email;
-            const photoUrl = profile.photoURL;
-
-            // 사용자 프로필 정보 상태 업데이트
-            setUserProfile({ providerId, uid, name, email, photoUrl });
-          });
+          setUserProfile({ uid, nickname, email, photoUrl });
         }
       } catch (error) {
         console.error("프로필 정보 가져오기 오류:", error);
@@ -42,6 +56,7 @@ const Mypage = () => {
   }, []);
 
   console.log(userProfile);
+
   return (
     <Stcontainer>
       {userProfile && (
@@ -49,8 +64,14 @@ const Mypage = () => {
           <StlogCard>
             <StlogWrapper>
               <div>
-                <Avatar />
-                <Stdiv>{userProfile.name}</Stdiv>
+                {/* <Avatar /> */}
+                {/* <img
+                  src={
+                    "https://static.wikia.nocookie.net/shinchan/images/d/d8/Shinnoske.jpg/revision/latest?cb=20131020030755&path-prefix=ko"
+                  }
+                ></img> */}
+                <Stdiv>{userProfile.nickname}</Stdiv>
+
                 <Link to="/InfoFix">
                   <Button
                     type="button"

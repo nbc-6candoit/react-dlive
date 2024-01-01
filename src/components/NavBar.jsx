@@ -17,6 +17,8 @@ export const NavBar = () => {
   const authState = useSelector((state) => state.authSlice);
   const dispatch = useDispatch();
   console.log(authState.isLogin);
+  // const dispatch = useDispatch();
+  // const isLogin = useSelector((state) => state.authSlice.isLogin);
 
   const handlerlogout = async () => {
     await signOut(auth);
@@ -35,11 +37,11 @@ export const NavBar = () => {
       <StBtnInputWrapper>
         <StHeaderButton>
           <div>
-            <></>
             {authState.isLogin === true ? (
               <>
-                <Link to="/mypage">마이페이지</Link>
-                onClick={handlerlogout}로그아웃
+                <Link to={`/mypage/:${authState.uid}`}>마이페이지</Link>
+
+                <button onClick={handlerlogout}>로그아웃</button>
               </>
             ) : (
               <>
@@ -57,7 +59,7 @@ export default NavBar;
 
 const StNavContainer = styled.div`
   width: 100%;
-  max-width: 530px;
+  max-width: 620px;
   height: 56px;
   display: flex;
   padding: 5px;
@@ -72,8 +74,19 @@ const StNavLogo = styled.img`
   width: 110px;
   height: 44px;
   cursor: pointer;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  width: 110px;
+  height: 44px;
+  cursor: pointer;
 `;
 export const StBtnInputWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -84,7 +97,21 @@ export const StHeaderButton = styled.button`
   flex-direction: row;
   align-items: center;
   gap: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 30px;
 
+  margin: 0 auto 5 30px;
+  cursor: pointer;
+  & button {
+    color: #5eb470;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
   margin: 0 auto 5 30px;
   cursor: pointer;
   & button {

@@ -99,7 +99,8 @@ const InfoFix = () => {
                   text="프로필 업데이트"
                   width="20%"
                 ></Button>
-                <Link to="/Mypage">
+                <Link to={`/mypage/:`}>
+                  {/* ${authState.uid} */}
                   <Button
                     type="button"
                     text="mypage돌아가기"
