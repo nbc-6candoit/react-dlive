@@ -11,7 +11,9 @@ import HotSpotList from "components/Home/HotSpotList";
 
 const Mypage = () => {
   const [userData, setUserData] = useState(null);
+  const [userSpots, setUserSpots] = useState([]);
   const navigate = useNavigate();
+
   const handleMoreDetailButtonClick = (contentType) => {
     navigate(`/spotdetail/${contentType}`);
   };
@@ -22,6 +24,7 @@ const Mypage = () => {
         const user = auth.currentUser;
 
         if (user) {
+          // 사용자 데이터 가져오기
           const userQuery = query(
             collection(db, "users"),
             where("userId", "==", user.uid)
@@ -34,12 +37,25 @@ const Mypage = () => {
               ...userSnapshot.docs[0].data(),
             };
             setUserData(userData);
+
+            // 사용자가 작성한 차박 명소 가져오기
+            const spotsQuery = query(
+              collection(db, "spots"),
+              where("userId", "==", user.uid)
+            );
+            const spotsSnapshot = await getDocs(spotsQuery);
+            const userSpotsData = spotsSnapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
+            setUserSpots(userSpotsData);
           }
         }
       } catch (error) {
         console.error("Error fetching user data:", error.message);
       }
     };
+
     fetchUserData();
   }, []);
 
@@ -68,14 +84,13 @@ const Mypage = () => {
         )}
       </Stcontainer>
       <StDetailInfo>
-        <h3>내가작성한 차박명소</h3>
+        <h3>내가 작성한 차박명소</h3>
         <StHorizontalLine />
-        <HotSpotList />
-        <Button
-          type={"button"}
-          onClick={() => handleMoreDetailButtonClick("spot")}
-          text={"차박명소 더보기"}
-        />
+        {userSpots.length > 0 ? (
+          <HotSpotList spots={userSpots} />
+        ) : (
+          <p>작성한 차박명소가 없습니다.</p>
+        )}
       </StDetailInfo>
     </>
   );
