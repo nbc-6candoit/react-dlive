@@ -74,5 +74,4 @@ const Stbox = styled.img`
   justify-content: center;
   width: 100%;
   height: 350px;
-  border-radius: 40px;
 `;
