@@ -19,7 +19,7 @@ const Mypage = () => {
         if (user) {
           const userQuery = query(
             collection(db, "users"),
-            where("userId", "==", user.uid) // Change 'user' to 'user.uid' to use the user's ID for comparison
+            where("userId", "==", user.uid)
           );
           const userSnapshot = await getDocs(userQuery);
 
@@ -47,7 +47,6 @@ const Mypage = () => {
           <StlogCard>
             <StlogWrapper>
               <Avatar />
-
               <Stdiv>{userData.nickname}</Stdiv>
 
               <Link to="/InfoFix">
@@ -64,41 +63,43 @@ const Mypage = () => {
 export default Mypage;
 
 const Stdiv = styled.div`
-  margin: 20px 50px;
   font-size: 20px;
 `;
 
 const Stcontainer = styled.div`
+  width: 100%;
   margin: 30px;
+  padding: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 10%;
 `;
 const StlogCard = styled.div`
-  width: 80%;
+  width: 60%;
   max-height: 120px;
   display: flex;
   align-items: center;
   gap: 1.2rem;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #5eb470;
 `;
 
 const StlogWrapper = styled.div`
   display: flex;
-  flex-direction: row; // Change to row to align items horizontally
   align-items: center;
   color: #5eb470;
-  border-radius: 5px;
-  border: 1px solid #5eb470;
   width: 100%;
-  gap: 0.5rem;
+  gap: 1rem; // Increased the gap for better spacing
   overflow: hidden;
 
   & ${Stdiv} {
     font-size: 20px;
+    margin-right: auto; // Aligns the div to the left
   }
 
   & ${Button} {
-    width: 100%;
+    width: 40%; // Reduced the width
   }
 `;
