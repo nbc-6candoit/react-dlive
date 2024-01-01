@@ -59,12 +59,13 @@ export default NavBar;
 
 const StNavContainer = styled.div`
   width: 100%;
-  max-width: 620px;
+  max-width: 565px;
   height: 56px;
   display: flex;
   padding: 5px;
+  margin-left: 34px;
   justify-content: space-between;
-  background: #ebebeb;
+  background: #5eb470;
 `;
 const StNavLogo = styled.img`
   display: flex;
