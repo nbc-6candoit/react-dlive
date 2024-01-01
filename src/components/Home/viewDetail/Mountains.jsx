@@ -66,6 +66,7 @@ const StImage = styled.img`
   width: 540px;
   height: 235px;
   margin: 30px 2px;
+  border-radius: 12px;
 `;
 const StInfoBox = styled.div`
   width: 540px;
