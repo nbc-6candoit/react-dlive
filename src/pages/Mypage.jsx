@@ -46,19 +46,13 @@ const Mypage = () => {
         <>
           <StlogCard>
             <StlogWrapper>
-              <div>
-                <Avatar />
+              <Avatar />
 
-                <Stdiv>{userData.nickname}</Stdiv>
+              <Stdiv>{userData.nickname}</Stdiv>
 
-                <Link to="/InfoFix">
-                  <Button
-                    type="button"
-                    text="내정보 관리"
-                    width="100%"
-                  ></Button>
-                </Link>
-              </div>
+              <Link to="/InfoFix">
+                <Button type="button" text="내정보 관리" width="100%"></Button>
+              </Link>
             </StlogWrapper>
           </StlogCard>
         </>
@@ -91,18 +85,20 @@ const StlogCard = styled.div`
 
 const StlogWrapper = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row; // Change to row to align items horizontally
+  align-items: center;
   color: #5eb470;
   border-radius: 5px;
   border: 1px solid #5eb470;
   width: 100%;
   gap: 0.5rem;
   overflow: hidden;
-  & div {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 3rem;
-    padding: 10px;
+
+  & ${Stdiv} {
+    font-size: 20px;
+  }
+
+  & ${Button} {
+    width: 100%;
   }
 `;

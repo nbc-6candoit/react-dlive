@@ -40,7 +40,6 @@ export const NavBar = () => {
             {authState.isLogin === true ? (
               <>
                 <Link to={`/mypage/:${authState.uid}`}>마이페이지</Link>
-
                 <button onClick={handlerlogout}>로그아웃</button>
               </>
             ) : (
@@ -59,13 +58,12 @@ export default NavBar;
 
 const StNavContainer = styled.div`
   width: 100%;
-  max-width: 565px;
+  max-width: 620px;
   height: 56px;
   display: flex;
   padding: 5px;
-  margin-left: 34px;
   justify-content: space-between;
-  background: #5eb470;
+  background: #ebebeb;
 `;
 const StNavLogo = styled.img`
   display: flex;
