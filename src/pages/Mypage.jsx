@@ -1,76 +1,54 @@
 // 마이페이지(Mypage)
 import { useEffect, useState } from "react";
-import { auth } from "../shared/firebase";
+import { auth, db } from "../shared/firebase";
 import React from "react";
 import styled from "styled-components";
-// import defaultphoto from "../assets/img/avatar.png";
-// import Avatar from "components/common/Avatar";
 import Button from "components/common/Button";
 import { Link } from "react-router-dom";
+import { query, collection, where, getDocs } from "firebase/firestore"; // Import necessary functions
+
 const Mypage = () => {
-  const [userProfile, setUserProfile] = useState(null);
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const fetchProfileInfo = async () => {
+    const fetchUserData = async () => {
       try {
         const user = auth.currentUser;
-        console.log(auth.currentUser);
 
-        // if (user) {
-        //   // 사용자의 제공자 데이터를 반복
-        //   // user.providerData.forEach((profile)
-        //   user.forEach((profile) => {
-        //     console.log(profile);
-        //     // 제공자의 ID (예: google.com)
-        //     // const providerId = profile.providerId;
-
-        //     // 제공자에 특정한 UID
-        //     const uid = profile.uid;
-        //     console.log(uid);
-        //     // 이름, 이메일 주소 및 프로필 사진 URL
-        //     const nickname = profile.auth.displayName;
-        //     console.log(nickname);
-        //     const email = profile.auth.email;
-        //     console.log(email);
-        //     const photoUrl = profile.reloadUserInfo.photoUrl;
-        //     console.log(photoUrl);
-        //     // 사용자 프로필 정보 상태 업데이트
-        //     setUserProfile({ uid, nickname, email, photoUrl });
-        //   });
-        // }
         if (user) {
-          console.log(user);
-          const uid = user.uid;
-          const nickname = user.displayName;
-          const email = user.email;
-          const photoUrl = user.photoURL;
+          const userQuery = query(
+            collection(db, "users"),
+            where("userId", "==", user.uid) // Change 'user' to 'user.uid' to use the user's ID for comparison
+          );
+          const userSnapshot = await getDocs(userQuery);
 
-          setUserProfile({ uid, nickname, email, photoUrl });
+          if (userSnapshot.docs.length > 0) {
+            const userData = {
+              id: userSnapshot.docs[0].id,
+              ...userSnapshot.docs[0].data(),
+            };
+            setUserData(userData);
+          }
         }
       } catch (error) {
-        console.error("프로필 정보 가져오기 오류:", error);
+        console.error("Error fetching user data:", error.message);
       }
     };
-
-    fetchProfileInfo();
+    fetchUserData();
   }, []);
 
-  console.log(userProfile);
+  console.log(userData);
 
   return (
     <Stcontainer>
-      {userProfile && (
+      {userData && (
         <>
           <StlogCard>
             <StlogWrapper>
               <div>
-                {/* <Avatar /> */}
-                {/* <img
-                  src={
-                    "https://static.wikia.nocookie.net/shinchan/images/d/d8/Shinnoske.jpg/revision/latest?cb=20131020030755&path-prefix=ko"
-                  }
-                ></img> */}
-                <Stdiv>{userProfile.nickname}</Stdiv>
+                <img src={userData.avatar} alt="Avatar" />
+
+                <Stdiv>{userData.nickname}</Stdiv>
 
                 <Link to="/InfoFix">
                   <Button
