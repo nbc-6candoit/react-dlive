@@ -6,6 +6,7 @@ import styled from "styled-components";
 import Button from "components/common/Button";
 import { Link } from "react-router-dom";
 import { query, collection, where, getDocs } from "firebase/firestore"; // Import necessary functions
+import Avatar from "components/common/Avatar";
 
 const Mypage = () => {
   const [userData, setUserData] = useState(null);
@@ -46,7 +47,7 @@ const Mypage = () => {
           <StlogCard>
             <StlogWrapper>
               <div>
-                <img src={userData.avatar} alt="Avatar" />
+                <Avatar />
 
                 <Stdiv>{userData.nickname}</Stdiv>
 

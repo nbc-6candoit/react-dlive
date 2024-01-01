@@ -1,11 +1,44 @@
 import styled, { css } from "styled-components";
 import avatar from "assets/img/avatar.png";
+import { useEffect, useState } from "react";
+import { auth, db } from "shared/firebase";
+import React from "react";
 
-export default function Avatar({ src, size }) {
+import { query, collection, where, getDocs } from "firebase/firestore";
+
+export default function Avatar({ size }) {
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const user = auth.currentUser;
+
+        if (user) {
+          const userQuery = query(
+            collection(db, "users"),
+            where("userId", "==", user.uid)
+          );
+          const userSnapshot = await getDocs(userQuery);
+
+          if (userSnapshot.docs.length > 0) {
+            const fetchedUserData = {
+              id: userSnapshot.docs[0].id,
+              ...userSnapshot.docs[0].data(),
+            };
+            setUserData(fetchedUserData);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error.message);
+      }
+    };
+    fetchUserData();
+  }, []);
+
   return (
     <AvatarFigure size={size}>
-      <img src={src ?? avatar} alt="아바타이미지" />
-      {/* <img src={src ?? avatar} alt='아바타이미지' /> */}
+      {userData && <img src={userData.avatar ?? avatar} alt="아바타이미지" />}
     </AvatarFigure>
   );
 }
