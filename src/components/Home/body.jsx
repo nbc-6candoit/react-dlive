@@ -5,7 +5,7 @@ import SpotLog from "../SpotDetail/SpotLog";
 import { Map } from "./Map/Map";
 import HotSpotList from "./HotSpotList";
 import Button from "components/common/Button";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import mountains from "assets/img/산.png";
 import rivers from "assets/img/강.png";
 import seas from "assets/img/바다.png";
@@ -14,6 +14,16 @@ function Body() {
   const navigate = useNavigate();
   const handleMoreDetailButtonClick = (contentType) => {
     navigate(`/spotdetail/${contentType}`);
+  };
+  const handleMountainsClick = () => {
+    navigate("/viewDetail/mountains");
+  };
+
+  const handleRiverClick = () => {
+    navigate("/viewDetail/river");
+  };
+  const handleOceanClick = () => {
+    navigate("/viewDetail/Ocean");
   };
 
   return (
@@ -24,9 +34,13 @@ function Body() {
         </>
         <StListContainer>
           <StcategoryContainer>
-            <StCategory type="img" src={mountains} />
-            <StCategory type="img" src={rivers} />
-            <StCategory type="img" src={seas} />
+            <StCategory
+              onClick={handleMountainsClick}
+              type="img"
+              src={mountains}
+            />
+            <StCategory onClick={handleRiverClick} type="img" src={rivers} />
+            <StCategory onClick={handleOceanClick} type="img" src={seas} />
           </StcategoryContainer>
           <Button
             type={"button"}
@@ -69,9 +83,6 @@ export default Body;
 const StbodyContainer = styled.main`
   overflow-y: auto;
   max-width: 620px;
-  height: fit-content;
-  margin-bottom: 50px;
-  overflow-y: auto;
   height: fit-content;
   margin-bottom: 50px;
 `;
@@ -122,7 +133,7 @@ const StHorizontalLine = styled.div`
 const StgpsContainer = styled.div`
   display: flex;
   & div {
-    width: 435px;
+    width: 100%;
     height: 455px;
     margin: auto;
   }

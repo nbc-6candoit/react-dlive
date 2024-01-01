@@ -58,10 +58,11 @@ export default NavBar;
 
 const StNavContainer = styled.div`
   width: 100%;
-  max-width: 600px;
+  max-width: 565px;
   height: 56px;
   display: flex;
   padding: 5px;
+  margin-left: 34px;
   justify-content: space-between;
   background: #5eb470;
 `;

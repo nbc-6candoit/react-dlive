@@ -1,10 +1,8 @@
 import styled from "styled-components";
 import Slider from "react-slick";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-// firestore의 메서드 import
-
 import { collection, getDocs } from "firebase/firestore";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from "shared/firebase";
@@ -66,12 +64,11 @@ const StyledSlider = styled.div`
   padding: 20px;
   width: 100%;
   height: 300px;
+  margin: 17px;
 `;
 const Stbox = styled.img`
-  align-items: center;
-  text-align: center;
   max-width: 560px;
-  justify-content: center;
+  display: grid;
   width: 100%;
   height: 350px;
 `;

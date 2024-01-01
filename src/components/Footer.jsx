@@ -17,6 +17,8 @@ const StyledDiv = styled.div`
   background-color: #5eb470;
   padding: 20px;
   display: flex;
+  max-width: 100%;
+
   justify-content: space-between;
 `;
 

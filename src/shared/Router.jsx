@@ -13,6 +13,9 @@ import NavBar from "../components/NavBar";
 import Log from "../pages/Log";
 import styled from "styled-components";
 import Signup from "../pages/Signup";
+import Mountains from "components/Home/viewDetail/Mountains";
+import Ocean from "components/Home/viewDetail/Ocean";
+import River from "components/Home/viewDetail/River";
 
 const Router = () => {
   return (
@@ -22,6 +25,9 @@ const Router = () => {
         <NavBar />
         <Routes>
           <Route path="/" element={<Main />} />
+          <Route path="/viewDetail/Mountains/" element={<Mountains />} />
+          <Route path="/viewDetail/Ocean" element={<Ocean />} />
+          <Route path="/viewDetail/River" element={<River />} />
           <Route path="/mypage/:id" element={<Mypage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
