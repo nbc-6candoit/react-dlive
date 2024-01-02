@@ -48,7 +48,6 @@ const SpotLog = () => {
         <StSpotInfoContainer>
             <StDetailInfo>
                 <h3>차박로그</h3>
-                <StHorizontalLine />
             </StDetailInfo>
             <StLogListWrapper>
                 {logList.slice(0, 3).map((log, index) => {
@@ -69,11 +68,6 @@ const SpotLog = () => {
 };
 
 export default SpotLog;
-
-export const StHorizontalLine = styled.div`
-    width: 100%;
-    border-bottom: 1px solid gray;
-`;
 
 const StSpotInfoContainer = styled.div`
     display: flex;

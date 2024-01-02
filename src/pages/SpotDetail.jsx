@@ -83,5 +83,5 @@ const StDetailInfo = styled.div`
 
 export const StHorizontalLine = styled.div`
     width: 100%;
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid #dedede;
 `;

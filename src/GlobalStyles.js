@@ -1,5 +1,4 @@
 import { createGlobalStyle } from 'styled-components';
-import 'fonts.css';
 
 const GlobalStyles = createGlobalStyle`
 
@@ -60,10 +59,6 @@ input, button, textarea{
 * { 
     box-sizing: border-box;
 	font-family: 'Pretendard', sans-serif;
-}
-
-h1, h2, h3, h4 {
-    font-family: 'S-CoreDream', sans-serif;
 }
 
 body::-webkit-scrollbar {
