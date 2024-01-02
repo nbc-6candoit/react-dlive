@@ -16,7 +16,7 @@ const Spot = () => {
       <StButton>
         <Button
           text={"차박로그 등록하기"}
-          onClick={() => (window.location.href = `/addlog/${spotId}/${spotId}`)}
+          onClick={() => (window.location.href = `/addlog/${spotId}`)}
         />
       </StButton>
       <StSpotLogWrapper>
