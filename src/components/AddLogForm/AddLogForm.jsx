@@ -10,40 +10,29 @@ import { addDoc, collection } from 'firebase/firestore';
 import { v4 as uuid } from 'uuid';
 import { useDispatch } from 'react-redux';
 import { addLog } from '../../redux/modules/logSlice';
+import { Controller, useForm } from 'react-hook-form';
+import { TextField, createTheme } from '@mui/material';
 
 const AddLogForm = () => {
+    const { handleSubmit, control, register, reset } = useForm({ mode: 'onChange' });
+
     const today = new Date();
     const [selectedDate, setSelectedDate] = useState(today);
-    const [thumnailImages, setThumnailImages] = useState([]);
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-
-    const dispatch = useDispatch();
-
-    const handleTitle = (e) => {
-        setTitle(e.target.value);
-    };
-
-    const handleContent = (e) => {
-        const value = e.target.value.replace(/<br\s*\/?>/g, '\n');
-        setContent(value);
-    };
-
+    const [thumbnailImages, setThumbnailImages] = useState([]);
     const fileRef = useRef(null);
+    const dispatch = useDispatch();
 
     const handleImageClick = () => {
         fileRef.current?.click();
     };
 
-    const handleAddImages = (e) => {
-        const files = e.target.files;
-        // 최대 4개까지만 선택할 수 있도록 설정
-        if (files.length > 4 || files.length + thumnailImages.length > 4) {
+    const handleAddImages = (files) => {
+        if (files.length > 4 || files.length + thumbnailImages.length > 4) {
             alert('최대 파일 4개만 선택해주세요');
         } else {
             const filesArray = Array.from(files);
             const selectedFiles = filesArray.map((file) => URL.createObjectURL(file));
-            setThumnailImages([...thumnailImages, ...selectedFiles]);
+            setThumbnailImages([...thumbnailImages, ...selectedFiles]);
         }
     };
 
@@ -65,65 +54,116 @@ const AddLogForm = () => {
         return imageUrls;
     };
 
-    const handleSubmmit = async (e) => {
-        e.preventDefault();
+    const onSubmit = async (data) => {
         const docID = uuid();
         try {
             // 스토리지에 먼저 사진 업로드
-            const imageUrls = await uploadImages(docID, thumnailImages);
+            const imageUrls = await uploadImages(docID, thumbnailImages);
 
             const newLog = {
                 id: uuid(),
-                title,
-                content,
+                title: data.title,
+                content: data.content,
                 date: selectedDate.toISOString(),
                 images: imageUrls,
             };
+
             // 모든 이미지가 업로드되면 로그 업로드
             const docRef = await addDoc(collection(db, 'log'), newLog);
 
             dispatch(
                 addLog({
-                    title,
-                    content,
+                    title: data.title,
+                    content: data.content,
                     date: selectedDate.toISOString(), // Convert Date to string
                     images: imageUrls,
                 })
             );
-            setTitle('');
-            setContent('');
-            setThumnailImages([]);
+
+            reset();
+
+            setThumbnailImages([]);
             setSelectedDate(today);
 
-            console.log('Document written with ID: ', docRef.id);
+            // console.log('Document written with ID: ', docRef.id);
         } catch (error) {
             console.error('데이터 추가 에러', error.message);
         }
     };
 
     return (
-        <StForm onSubmit={handleSubmmit}>
+        <StForm onSubmit={handleSubmit(onSubmit)}>
             <h2>차박로그 등록하기</h2>
             <StBox>
                 <label htmlFor='log_title'>차박로그 제목*</label>
-                <input type='text' id='log_title' value={title} onChange={handleTitle} />
+
+                <Controller
+                    name='title'
+                    control={control}
+                    defaultValue={''}
+                    rules={{ required: '차박로그 제목을 입력해주세요' }}
+                    render={({ field, fieldState }) => (
+                        <StyledTextField
+                            value={field.value}
+                            multiline
+                            onChange={field.onChange}
+                            error={fieldState.error !== undefined}
+                            helperText={fieldState.error && fieldState.error.message}
+                            InputLabelProps={{ shrink: false }}
+                            InputProps={{
+                                placeholder: '차박로그 제목을 입력해주세요',
+                            }}
+                        />
+                    )}
+                />
+                {/* <input type='text' id='log_title' {...register('title', { required: true })} /> */}
             </StBox>
             <StBox>
                 <label>방문 일시*</label>
                 <StDate>
-                    <StDatePicker
-                        locale={ko}
-                        dateFormat='yyyy년 MM월 dd일'
-                        shouldCloseOnSelect
-                        maxDate={today}
-                        selected={selectedDate}
-                        onChange={setSelectedDate}
+                    <Controller
+                        name='date'
+                        control={control}
+                        defaultValue={today}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                            <StDatePicker
+                                locale={ko}
+                                dateFormat='yyyy년 MM월 dd일'
+                                shouldCloseOnSelect
+                                maxDate={today}
+                                selected={field.value}
+                                onChange={(date) => {
+                                    field.onChange(date);
+                                    setSelectedDate(date);
+                                }}
+                            />
+                        )}
                     />
                 </StDate>
             </StBox>
             <StBox>
                 <label>차박로그 내용*</label>
-                <StTextarea value={content} onChange={handleContent} placeholder='차박 장소를 소개해주세요!' />
+
+                <Controller
+                    name='content'
+                    control={control}
+                    defaultValue={''}
+                    rules={{ required: '차박로그 내용을 입력해주세요' }}
+                    render={({ field, fieldState }) => (
+                        <StyledTextAreaField
+                            value={field.value}
+                            multiline
+                            onChange={field.onChange}
+                            error={fieldState.error !== undefined}
+                            helperText={fieldState.error && fieldState.error.message}
+                            InputLabelProps={{ shrink: false }}
+                            InputProps={{
+                                placeholder: '차박로그 내용을 입력해주세요',
+                            }}
+                        />
+                    )}
+                />
             </StBox>
             <StBox>
                 <label htmlFor='file'>
@@ -135,8 +175,8 @@ const AddLogForm = () => {
                     </StImgSelect>
                     {[...Array(4)].map((_, index) => (
                         <StImgBox key={index}>
-                            {thumnailImages[index] && (
-                                <img src={thumnailImages[index]} alt={`image${index} 썸네일 이미지`} />
+                            {thumbnailImages[index] && (
+                                <img src={thumbnailImages[index]} alt={`image${index} 썸네일 이미지`} />
                             )}
                         </StImgBox>
                     ))}
@@ -147,17 +187,32 @@ const AddLogForm = () => {
                     type='file'
                     accept='image/jpeg, image/jpg, image/png, image/webp'
                     multiple
-                    onChange={handleAddImages}
+                    onChange={(e) => handleAddImages(e.target.files)}
                 />
             </StBox>
             <StBox>
                 <label>차박 장소*</label>
-                <input type='text' placeholder='차박 장소 리스트 중에서 선택?' />
+                <input type='text' {...register('location')} placeholder='차박 장소 리스트 중 자동으로 들어가기' />
             </StBox>
             <StButton type='submit'>차박로그 등록하기</StButton>
         </StForm>
     );
 };
+
+const StyledTextField = styled(TextField)({
+    '& .MuiOutlinedInput-root': {
+        borderColor: '#5eb470',
+
+        minHeight: '48px',
+        marginTop: '12px',
+        padding: '20px',
+        background: '#f1f1f1',
+        borderRadius: '5px',
+        whiteSpace: 'pre-wrap',
+        resize: 'none',
+        alignItems: 'baseline',
+    },
+});
 
 const StForm = styled.form`
     max-width: 530px;
@@ -207,15 +262,20 @@ const StDatePicker = styled(DatePicker)`
     }
 `;
 
-const StTextarea = styled.textarea`
-    min-height: 200px;
-    margin-top: 12px;
-    padding: 20px;
-    background: #f1f1f1;
-    border-radius: 5px;
-    white-space: pre-wrap;
-    resize: none;
-`;
+const StyledTextAreaField = styled(TextField)({
+    '& .MuiOutlinedInput-root': {
+        borderColor: '#5eb470',
+
+        minHeight: '200px',
+        marginTop: '12px',
+        padding: '20px',
+        background: '#f1f1f1',
+        borderRadius: '5px',
+        whiteSpace: 'pre-wrap',
+        resize: 'none',
+        alignItems: 'baseline',
+    },
+});
 
 const StImgWrap = styled.div`
     display: flex;

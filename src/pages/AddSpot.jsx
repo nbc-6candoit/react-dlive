@@ -41,9 +41,6 @@ const AddSpot = () => {
     fetchData();
   }, [dispatch]);
 
-  console.log(isLogin);
-  console.log(isAuthChecked);
-
   // if (!isAuthChecked) {
   //   return null; // or loading spinner
   // }
