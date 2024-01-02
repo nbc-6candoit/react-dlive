@@ -22,6 +22,7 @@ import FacilitiesIcons from "components/addSpot/FacilitiesIcons";
 import { FACILITIES_DATA, SEASONS, VIEWS } from "constants/spotOptions";
 import TagSelection from "components/addSpot/TagSelection";
 import useImageUploader from "hooks/useImageUploader";
+import { auth } from "shared/firebase";
 
 const AddSpot = () => {
   const dispatch = useDispatch();
@@ -31,6 +32,7 @@ const AddSpot = () => {
   );
 
   const { uploadImageURL } = useImageUploader();
+  const { currentUser } = auth;
 
   const fileRef = useRef(null);
 
@@ -129,6 +131,7 @@ const AddSpot = () => {
             sum,
             content,
             images: imageUrls,
+            userId: currentUser.uid,
           };
           console.log("New Spot:", newSpot);
           dispatch(__addSpot(newSpot));

@@ -71,4 +71,5 @@ const Stbox = styled.img`
   display: grid;
   width: 100%;
   height: 350px;
+  border-radius: 12px;
 `;
