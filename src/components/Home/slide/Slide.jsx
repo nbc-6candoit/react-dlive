@@ -2,10 +2,6 @@ import styled from "styled-components";
 import Slider from "react-slick";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
-import { collection, getDocs } from "firebase/firestore";
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { db } from "shared/firebase";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { __getSpots } from "../../../redux/modules/spotDataSlice";
@@ -17,7 +13,7 @@ export const Slide = () => {
   useEffect(() => {
     dispatch(__getSpots([]));
   }, []);
-  const recentSpots = spot.slice([0, spot.length]);
+  const recentSpots = spot.slice([0, 4]);
   // console.log("recentSpots Array : ", recentSpots);
   const settings = {
     dots: true,
@@ -36,9 +32,7 @@ export const Slide = () => {
     <StyledSlider>
       <Slider {...settings}>
         {recentSpots.map((spot) => (
-          <Link to={`/spot/${spot.id}`} key={spot.id}>
-            <Stbox src={spot.images[0].url} alt={spot.name} />
-          </Link>
+          <Stbox src={spot.images[0].url} alt={spot.name} />
         ))}
       </Slider>
     </StyledSlider>
