@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { __getSpots } from "../../../redux/modules/spotDataSlice";
 import { setCoordinatesError } from "../../../redux/modules/homeSlice";
 
-export const Map = ({ documentId }) => {
+export const Map = () => {
   const [viewportWidth, setViewportWidth] = useState(window.innerWidth); //마커 지도
   const mapContainerRef = useRef(null);
   const dispatch = useDispatch();
@@ -15,12 +15,7 @@ export const Map = ({ documentId }) => {
     const handleResize = () => {
       setViewportWidth(window.innerWidth);
     };
-
     window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
   }, []);
 
   useEffect(() => {

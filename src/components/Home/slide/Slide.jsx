@@ -30,7 +30,7 @@ export const Slide = () => {
     pauseOnHover: true,
     focusOnSelect: true,
     pauseOnDotsHover: true,
-    arrow: false,
+    arrow: true,
   };
   return (
     <StyledSlider>
