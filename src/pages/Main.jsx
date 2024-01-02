@@ -1,5 +1,5 @@
 // 메인페이지(Main)
-import Body from "components/Home/Body";
+import Body from "components/Home/body";
 import React from "react";
 
 const Main = () => {
