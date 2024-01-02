@@ -64,6 +64,7 @@ const StLogWrapper = styled.div`
     margin-top: 10px;
     & div {
         display: flex;
+        align-items: center;
         gap: 0.5rem;
 
         & h6 {
