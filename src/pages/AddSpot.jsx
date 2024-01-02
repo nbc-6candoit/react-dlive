@@ -1,5 +1,5 @@
 // 차박명소 등록페이지(AddSpot)
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { v4 as uuid } from "uuid";
@@ -23,6 +23,7 @@ import { FACILITIES_DATA, SEASONS, VIEWS } from "constants/spotOptions";
 import TagSelection from "components/addSpot/TagSelection";
 import useImageUploader from "hooks/useImageUploader";
 import { auth } from "shared/firebase";
+import { checkAuthState } from "../redux/modules/authSlice";
 
 const AddSpot = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,31 @@ const AddSpot = () => {
   const { location, view, seasons, facilities, images } = useSelector(
     (state) => state.spot
   );
+  const { isLogin, isAuthChecked } = useSelector((state) => state.authSlice);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(checkAuthState());
+    };
+
+    fetchData();
+  }, [dispatch]);
+
+  console.log(isLogin);
+  console.log(isAuthChecked);
+
+  // if (!isAuthChecked) {
+  //   return null; // or loading spinner
+  // }
+
+  // if (!isLogin) {
+  //   navigate("/login");
+  //   return null;
+  // }
+
+  // if (!isAuthChecked) {
+  //   return null;
+  // }
 
   const { uploadImageURL } = useImageUploader();
   const { currentUser } = auth;

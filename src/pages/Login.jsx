@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import {
   changeLoginStatus,
   changeMemberStatus,
+  setAuthChecked,
 } from "../redux/modules/authSlice";
 import swal from "sweetalert";
 import { Await, Link, useNavigate } from "react-router-dom";
@@ -32,6 +33,7 @@ export default function Login() {
       setLoginEmail("");
       setLoginPassword("");
       dispatch(changeLoginStatus(true));
+      dispatch(setAuthChecked(true));
 
       await swal("로그인 완료 🏕️", "어서오세요!", "success");
 
@@ -59,6 +61,7 @@ export default function Login() {
       swal("로그인 완료 🏕️", "어서오세요!", "success");
 
       dispatch(changeLoginStatus(true));
+      dispatch(setAuthChecked(true));
       navigate("/");
     } catch (error) {
       const errorCode = error.code;
