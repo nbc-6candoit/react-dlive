@@ -154,7 +154,7 @@ const StSlider = styled(Slider)`
         width: 8px;
         height: 8px;
         background: unset;
-        border-radius: 10px;
+        border-radius: 8px;
         content: '';
     }
     .slick-dots li.slick-active button:before {

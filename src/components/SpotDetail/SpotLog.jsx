@@ -73,7 +73,8 @@ const StSpotInfoContainer = styled.div`
     display: flex;
     width: 100%;
     flex-direction: column;
-    gap: 2rem;
+    gap: 12px;
+    margin-top: 40px;
 `;
 
 const StDetailInfo = styled.div`

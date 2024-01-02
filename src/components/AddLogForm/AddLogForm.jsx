@@ -236,7 +236,7 @@ const StBox = styled.div`
         height: 48px;
         margin-top: 12px;
         padding: 20px;
-        border-radius: 5px;
+        border-radius: 8px;
         background: #f1f1f1;
     }
     & input[type='file'] {
@@ -253,7 +253,7 @@ const StDatePicker = styled(DatePicker)`
     height: 46px;
     text-align: center;
     background: #f1f1f1;
-    border-radius: 4px;
+    border-radius: 8px;
     box-sizing: border-box;
     cursor: pointer;
     &:active,
@@ -291,13 +291,13 @@ const StImgSelect = styled.div`
     width: 90px;
     height: 90px;
     background: #f1f1f1;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
 `;
 const StImgBox = styled.div`
     width: 90px;
     height: 90px;
-    border-radius: 5px;
+    border-radius: 8px;
     background: #f1f1f1;
     overflow: hidden;
 
@@ -313,7 +313,7 @@ const StButton = styled.button`
     height: 48px;
     font-size: 16px;
     color: #5eb470;
-    border-radius: 5px;
+    border-radius: 8px;
     border: 1px solid #5eb470;
     cursor: pointer;
     transition: background 200ms;

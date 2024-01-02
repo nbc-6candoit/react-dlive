@@ -12,15 +12,15 @@ const LogCard = ({ title, content, images, index }) => {
                 <StLogWrapper>
                     <StTitle>
                         <h5>{title}</h5>
-                        <div>
-                            <h6>nickname</h6>
-                            <FaUserCircle className='user' size='24' fill='#dddddd' />
-                        </div>
                     </StTitle>
 
                     <StContent>
                         <p>{content}</p>
                     </StContent>
+                    <div>
+                        <FaUserCircle className='user' size='18' fill='#dddddd' />
+                        <h6>nickname</h6>
+                    </div>
                 </StLogWrapper>
             </StLogCard>
         </>
@@ -36,7 +36,7 @@ const StLogCard = styled.div`
 const StImgWrapper = styled.div`
     height: 120px;
     width: 120px;
-    border-radius: 10px;
+    border-radius: 8px;
     overflow: hidden;
     & img {
         width: 100%;
@@ -61,7 +61,7 @@ const StLogWrapper = styled.div`
     width: calc(100% - 27% - 10px);
     gap: 0.5rem;
     overflow: hidden;
-    margin-top: 10px;
+    /* margin-top: 10px; */
     & div {
         display: flex;
         align-items: center;

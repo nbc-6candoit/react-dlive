@@ -40,12 +40,11 @@ export const NavBar = () => {
                         {authState.isLogin === true ? (
                             <>
                                 <MypageLink to={`/mypage/:${authState.uid}`}>마이페이지</MypageLink>
-                                <StBorder></StBorder>
                                 <button onClick={handlerlogout}>로그아웃</button>
                             </>
                         ) : (
                             <>
-                                <Link to='/login'>로그인</Link>
+                                <StLoginLink to='/login'>로그인</StLoginLink>
                             </>
                         )}
                     </div>
@@ -93,6 +92,9 @@ export const StHeaderButton = styled.button`
     & button {
         padding: 0 10px;
         font-size: 15px;
+        border: 1px solid #fff;
+        padding: 8px 16px;
+        border-radius: 8px;
     }
     & div {
         display: flex;
@@ -110,8 +112,8 @@ const MypageLink = styled(Link)`
     padding: 0 10px;
 `;
 
-const StBorder = styled.div`
-    width: 1px;
-    height: 10px;
-    background-color: rgba(255, 255, 255, 0.6);
+const StLoginLink = styled(Link)`
+    border: 1px solid #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
 `;

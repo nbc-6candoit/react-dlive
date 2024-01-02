@@ -102,7 +102,7 @@ const StThumnail = styled.div`
         width: 100%;
         height: 100%;
         object-fit: cover;
-        border-radius: 5px;
+        border-radius: 8px;
     }
 `;
 const StLink = styled(Link)`
@@ -111,7 +111,7 @@ const StLink = styled(Link)`
     padding: 20px 10px;
     margin: 20px 0;
     /* border-bottom: 1px solid #efefef; */
-    border-radius: 10px;
+    border-radius: 8px;
     border: 1px solid #d3e9d8;
     & svg {
     }

@@ -1,29 +1,27 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 function Footer() {
-  return (
-    <StyledDiv>
-      <StyledAnchor>개인정보처리방침</StyledAnchor>
-      <StyledAnchor>서비스 이용약관</StyledAnchor>
-      <StyledAnchor>고객센터</StyledAnchor>
-    </StyledDiv>
-  );
+    return (
+        <StyledDiv>
+            <StCopyright>ⓒ 2023. D:Live. All rights reserved.</StCopyright>
+        </StyledDiv>
+    );
 }
 
 export default Footer;
 
 const StyledDiv = styled.div`
-  background-color: #5eb470;
-  padding: 20px;
-  display: flex;
-  max-width: 100%;
-
-  justify-content: space-between;
+    background-color: #5eb470;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 620px;
+    width: 100%;
 `;
 
-const StyledAnchor = styled.a`
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 13px;
+const StCopyright = styled.p`
+    font-weight: 500;
+    font-size: 13px;
 `;

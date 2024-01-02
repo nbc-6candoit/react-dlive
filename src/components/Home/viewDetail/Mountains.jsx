@@ -1,105 +1,105 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { __getSpots } from "../../../redux/modules/spotDataSlice";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { __getSpots } from '../../../redux/modules/spotDataSlice';
 
 const Mountains = () => {
-  const [viewName] = useState(["마운틴뷰"]);
-  const dispatch = useDispatch();
-  const { spot } = useSelector((state) => state.spotData);
+    const [viewName] = useState(['마운틴뷰']);
+    const dispatch = useDispatch();
+    const { spot } = useSelector((state) => state.spotData);
 
-  useEffect(() => {
-    dispatch(__getSpots([]));
-  }, []);
+    useEffect(() => {
+        dispatch(__getSpots([]));
+    }, []);
 
-  const viewSpots = spot.filter((spot) => spot.view === "마운틴뷰") ?? [];
+    const viewSpots = spot.filter((spot) => spot.view === '마운틴뷰') ?? [];
 
-  return (
-    <StbodyContainer>
-      <h1>{viewName}</h1>
+    return (
+        <StbodyContainer>
+            <h1>{viewName}</h1>
 
-      {viewSpots.map((spot) => (
-        <React.Fragment key={spot.id}>
-          <Link to={`/spot/${spot.id}`} key={spot.id}>
-            <StImage key={spot.id} src={spot.images[0]?.url} alt={spot.name} />
-            <StInfoBox key={spot.id}>
-              <StviewStyle>{spot.view}</StviewStyle>
-              <h1>{spot.name}</h1>
-              <p>{spot.location}</p>
-              {spot.facilities.map((facility, index) => (
-                <React.Fragment key={index}>
-                  <span>{facility}</span>
-                  {index < spot.facilities.length - 1 && <Separator />}
+            {viewSpots.map((spot) => (
+                <React.Fragment key={spot.id}>
+                    <Link to={`/spot/${spot.id}`} key={spot.id}>
+                        <StImage key={spot.id} src={spot.images[0]?.url} alt={spot.name} />
+                        <StInfoBox key={spot.id}>
+                            <StviewStyle>{spot.view}</StviewStyle>
+                            <h1>{spot.name}</h1>
+                            <p>{spot.location}</p>
+                            {spot.facilities.map((facility, index) => (
+                                <React.Fragment key={index}>
+                                    <span>{facility}</span>
+                                    {index < spot.facilities.length - 1 && <Separator />}
+                                </React.Fragment>
+                            ))}
+                        </StInfoBox>
+                    </Link>
                 </React.Fragment>
-              ))}
-            </StInfoBox>
-          </Link>
-        </React.Fragment>
-      ))}
-    </StbodyContainer>
-  );
+            ))}
+        </StbodyContainer>
+    );
 };
 
 const Separator = styled.span`
-  color: #888;
+    color: #888;
 `;
 
 const StbodyContainer = styled.main`
-  max-width: 500px;
-  margin: 18px 33px;
-  padding: 20px;
+    max-width: 500px;
+    margin: 18px 33px;
+    padding: 20px;
 `;
 
 const StImage = styled.img`
-  width: 540px;
-  height: 235px;
-  margin: 30px 2px;
-  border-radius: 12px;
-  cursor: pointer;
+    width: 540px;
+    height: 235px;
+    margin: 30px 2px;
+    border-radius: 8px;
+    cursor: pointer;
 `;
 
 const StInfoBox = styled.div`
-  width: 540px;
-  border-radius: 0px 0px 10px 10px;
-  background: #fff;
-  label {
-    margin: 2px;
-    color: #797979;
-  }
-  h1 {
-    color: #000;
-    font-family: Inter;
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    margin: 4px 1px;
-  }
-  span {
-    color: #797979;
-    font-family: Inter;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    margin-left: 4px;
-    border: 1px solid #f2f2f2ca;
-    background-color: #f2f2f2ca;
-    border-radius: 8px;
-  }
+    width: 540px;
+    border-radius: 0px 0px 10px 10px;
+    background: #fff;
+    label {
+        margin: 2px;
+        color: #797979;
+    }
+    h1 {
+        color: #000;
+        font-family: Inter;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        margin: 4px 1px;
+    }
+    span {
+        color: #797979;
+        font-family: Inter;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        margin-left: 4px;
+        border: 1px solid #f2f2f2ca;
+        background-color: #f2f2f2ca;
+        border-radius: 8px;
+    }
 `;
 const StviewStyle = styled.p`
-  color: white;
-  background-color: #5eb470;
-  border: 1px solid #5eb470;
-  padding: 0.4rem 1rem;
-  width: fit-content;
-  height: fit-content;
-  border-radius: 0.25rem;
-  font-size: 13px;
-  cursor: auto;
-  user-select: none;
+    color: white;
+    background-color: #5eb470;
+    border: 1px solid #5eb470;
+    padding: 0.4rem 1rem;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 0.25rem;
+    font-size: 13px;
+    cursor: auto;
+    user-select: none;
 `;
 
 export default Mountains;

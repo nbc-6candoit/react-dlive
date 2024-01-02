@@ -36,16 +36,16 @@ function Body() {
                     <StcategoryContainer>
                         <h3>뷰 카테고리</h3>
                         <StWrapper>
-                            <StBox>
-                                <StCategory onClick={handleMountainsClick} type='img' src={mountains} />
+                            <StBox onClick={handleMountainsClick}>
+                                <StCategory type='img' src={mountains} />
                                 <span>마운틴뷰</span>
                             </StBox>
-                            <StBox>
-                                <StCategory onClick={handleRiverClick} type='img' src={rivers} />
+                            <StBox onClick={handleRiverClick}>
+                                <StCategory type='img' src={rivers} />
                                 <span>리버뷰</span>
                             </StBox>
-                            <StBox>
-                                <StCategory onClick={handleOceanClick} type='img' src={seas} />
+                            <StBox onClick={handleOceanClick}>
+                                <StCategory type='img' src={seas} />
                                 <span>오션뷰</span>
                             </StBox>
                         </StWrapper>
@@ -97,13 +97,13 @@ const StListContainer = styled.div`
     display: flex;
     flex-direction: column;
     padding: 40px;
-    gap: 3rem;
 `;
 
 const StDetailInfo = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 12px;
+    margin-top: 40px;
     line-height: 1.7;
     & h3 {
         font-size: 20px;
@@ -113,6 +113,7 @@ const StDetailInfo = styled.div`
 const StcategoryContainer = styled.div`
     & h3 {
         font-size: 20px;
+        margin-bottom: 12px;
     }
 `;
 
@@ -121,9 +122,9 @@ const StWrapper = styled.div`
     align-items: center;
     justify-content: space-between;
     text-align: center;
-    max-width: 400px;
-    padding: 30px;
-    gap: 5px;
+    max-width: 320px;
+    width: 100%;
+    gap: 20px;
 `;
 
 const StBox = styled.div`
@@ -131,6 +132,7 @@ const StBox = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    cursor: pointer;
 
     & span {
         font-size: 15px;
@@ -144,7 +146,6 @@ const StCategory = styled.img`
     border-radius: 60px;
     margin: 20px auto 0 auto;
     gap: 5;
-    cursor: pointer;
 `;
 
 const StgpsContainer = styled.div`

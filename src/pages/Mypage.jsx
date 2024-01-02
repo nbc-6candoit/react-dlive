@@ -104,7 +104,7 @@ const StlogCard = styled.div`
     align-items: center;
     gap: 1.2rem;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 8px;
     border: 1px solid #5eb470;
 `;
 
