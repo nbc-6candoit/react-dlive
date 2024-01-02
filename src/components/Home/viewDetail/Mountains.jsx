@@ -28,18 +28,18 @@ const Mountains = () => {
     dispatch(__getSpots([]));
   }, []);
 
-  const oceanViewSpots = spot.filter((spot) => spot.view === "마운틴뷰") ?? [];
+  const viewSpots = spot.filter((spot) => spot.view === "마운틴뷰") ?? [];
 
   return (
     <StbodyContainer>
-      <h3>{viewName}</h3>
-      {oceanViewSpots.map((spot) => (
-        <React.Fragment>
+      <h1>{viewName}</h1>
+      {viewSpots.map((spot) => (
+        <React.Fragment key={spot.id}>
           <StImage key={spot.id} src={spot.images[0]?.url} alt={spot.name} />
-          <StInfoBox>
-            <p>{spot.view}</p>
+          <StInfoBox key={spot.id}>
+            <StviewStyle>{spot.view}</StviewStyle>
             <h1>{spot.name}</h1>
-            <p> {spot.location}</p>
+            <p>{spot.location}</p>
             {spot.facilities.map((facility, index) => (
               <React.Fragment key={index}>
                 <span>{facility}</span>
@@ -52,8 +52,9 @@ const Mountains = () => {
     </StbodyContainer>
   );
 };
+
 const Separator = styled.span`
-  color: #888; // Adjust color as needed
+  color: #888;
 `;
 
 const StbodyContainer = styled.main`
@@ -68,11 +69,12 @@ const StImage = styled.img`
   margin: 30px 2px;
   border-radius: 12px;
 `;
+
 const StInfoBox = styled.div`
   width: 540px;
   border-radius: 0px 0px 10px 10px;
   background: #fff;
-  p {
+  label {
     margin: 2px;
     color: #797979;
   }
@@ -97,6 +99,18 @@ const StInfoBox = styled.div`
     background-color: #f2f2f2ca;
     border-radius: 8px;
   }
+`;
+const StviewStyle = styled.p`
+  color: white;
+  background-color: #5eb470;
+  border: 1px solid #5eb470;
+  padding: 0.4rem 1rem;
+  width: fit-content;
+  height: fit-content;
+  border-radius: 0.25rem;
+  font-size: 13px;
+  cursor: auto;
+  user-select: none;
 `;
 
 export default Mountains;
