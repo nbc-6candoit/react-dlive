@@ -34,22 +34,23 @@ const Mountains = () => {
   return (
     <StbodyContainer>
       <h1>{viewName}</h1>
+
       {viewSpots.map((spot) => (
         <React.Fragment key={spot.id}>
           <Link to={`/spot/${spot.id}`} key={spot.id}>
             <StImage key={spot.id} src={spot.images[0]?.url} alt={spot.name} />
+            <StInfoBox key={spot.id}>
+              <StviewStyle>{spot.view}</StviewStyle>
+              <h1>{spot.name}</h1>
+              <p>{spot.location}</p>
+              {spot.facilities.map((facility, index) => (
+                <React.Fragment key={index}>
+                  <span>{facility}</span>
+                  {index < spot.facilities.length - 1 && <Separator />}
+                </React.Fragment>
+              ))}
+            </StInfoBox>
           </Link>
-          <StInfoBox key={spot.id}>
-            <StviewStyle>{spot.view}</StviewStyle>
-            <h1>{spot.name}</h1>
-            <p>{spot.location}</p>
-            {spot.facilities.map((facility, index) => (
-              <React.Fragment key={index}>
-                <span>{facility}</span>
-                {index < spot.facilities.length - 1 && <Separator />}
-              </React.Fragment>
-            ))}
-          </StInfoBox>
         </React.Fragment>
       ))}
     </StbodyContainer>
