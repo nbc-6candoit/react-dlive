@@ -11,12 +11,11 @@ import { v4 as uuid } from 'uuid';
 import { useDispatch } from 'react-redux';
 import { addLog } from '../../redux/modules/logSlice';
 import { Controller, useForm } from 'react-hook-form';
+import { TextField, createTheme } from '@mui/material';
 
 const AddLogForm = () => {
-    const { handleSubmit, control, formState, register, reset, errors } = useForm({ mode: 'onChange' });
-    const wtf = (value) => value === '111' || value === 'WTF!';
+    const { handleSubmit, control, register, reset } = useForm({ mode: 'onChange' });
 
-    console.log('errors~~~~~~~~~~~~~~~~~~~~~~~~', errors);
     const today = new Date();
     const [selectedDate, setSelectedDate] = useState(today);
     const [thumbnailImages, setThumbnailImages] = useState([]);
@@ -56,7 +55,6 @@ const AddLogForm = () => {
     };
 
     const onSubmit = async (data) => {
-        console.log('data는 뭐가', data);
         const docID = uuid();
         try {
             // 스토리지에 먼저 사진 업로드
@@ -98,7 +96,27 @@ const AddLogForm = () => {
             <h2>차박로그 등록하기</h2>
             <StBox>
                 <label htmlFor='log_title'>차박로그 제목*</label>
-                <input type='text' id='log_title' {...register('title', { required: true })} />
+
+                <Controller
+                    name='title'
+                    control={control}
+                    defaultValue={''}
+                    rules={{ required: '차박로그 제목을 입력해주세요' }}
+                    render={({ field, fieldState }) => (
+                        <StyledTextField
+                            value={field.value}
+                            multiline
+                            onChange={field.onChange}
+                            error={fieldState.error !== undefined}
+                            helperText={fieldState.error && fieldState.error.message}
+                            InputLabelProps={{ shrink: false }}
+                            InputProps={{
+                                placeholder: '차박로그 제목을 입력해주세요',
+                            }}
+                        />
+                    )}
+                />
+                {/* <input type='text' id='log_title' {...register('title', { required: true })} /> */}
             </StBox>
             <StBox>
                 <label>방문 일시*</label>
@@ -107,6 +125,7 @@ const AddLogForm = () => {
                         name='date'
                         control={control}
                         defaultValue={today}
+                        rules={{ required: true }}
                         render={({ field }) => (
                             <StDatePicker
                                 locale={ko}
@@ -125,37 +144,26 @@ const AddLogForm = () => {
             </StBox>
             <StBox>
                 <label>차박로그 내용*</label>
+
                 <Controller
                     name='content'
                     control={control}
                     defaultValue={''}
-                    rules={{
-                        minLength: {
-                            value: 3,
-                            message: 'Minimum length is 3',
-                        },
-                        validate: { wtf },
-                    }}
-                    render={({ field, fieldState: { error } }) => {
-                        return (
-                            <StTextarea
-                                {...field}
-                                label='content'
-                                value={field.value}
-                                onChange={field.onChange}
-                                helperText={formState?.errors?.content?.message}
-                                error={error !== undefined}
-                                placeholder='차박 장소를 소개해주세요!'
-                            ></StTextarea>
-                        );
-                    }}
+                    rules={{ required: '차박로그 내용을 입력해주세요' }}
+                    render={({ field, fieldState }) => (
+                        <StyledTextAreaField
+                            value={field.value}
+                            multiline
+                            onChange={field.onChange}
+                            error={fieldState.error !== undefined}
+                            helperText={fieldState.error && fieldState.error.message}
+                            InputLabelProps={{ shrink: false }}
+                            InputProps={{
+                                placeholder: '차박로그 내용을 입력해주세요',
+                            }}
+                        />
+                    )}
                 />
-                {/* <StTextarea
-                    label='content'
-                    {...register('content', { required: '차박로그 내용은 필수입니다' })}
-                    placeholder='차박 장소를 소개해주세요!'
-                ></StTextarea> */}
-                {/* {errors && <span>{errors.content.message}</span>} */}
             </StBox>
             <StBox>
                 <label htmlFor='file'>
@@ -190,6 +198,21 @@ const AddLogForm = () => {
         </StForm>
     );
 };
+
+const StyledTextField = styled(TextField)({
+    '& .MuiOutlinedInput-root': {
+        borderColor: '#5eb470',
+
+        minHeight: '48px',
+        marginTop: '12px',
+        padding: '20px',
+        background: '#f1f1f1',
+        borderRadius: '5px',
+        whiteSpace: 'pre-wrap',
+        resize: 'none',
+        alignItems: 'baseline',
+    },
+});
 
 const StForm = styled.form`
     max-width: 530px;
@@ -239,17 +262,20 @@ const StDatePicker = styled(DatePicker)`
     }
 `;
 
-const StTextarea = styled.textarea`
-    min-height: 200px;
-    margin-top: 12px;
-    padding: 20px;
-    background: #f1f1f1;
-    border-radius: 5px;
-    white-space: pre-wrap;
-    resize: none;
-    border: 1px solid ${({ error }) => (error ? 'red' : '#5eb470')};
-    /* border: ${({ rules }) => (rules ? '1px solid red' : '1px solid #5eb470')}; */
-`;
+const StyledTextAreaField = styled(TextField)({
+    '& .MuiOutlinedInput-root': {
+        borderColor: '#5eb470',
+
+        minHeight: '200px',
+        marginTop: '12px',
+        padding: '20px',
+        background: '#f1f1f1',
+        borderRadius: '5px',
+        whiteSpace: 'pre-wrap',
+        resize: 'none',
+        alignItems: 'baseline',
+    },
+});
 
 const StImgWrap = styled.div`
     display: flex;
