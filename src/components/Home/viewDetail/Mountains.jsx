@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "shared/firebase";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { Link } from "react-router-dom";
 
 const __getSpots = createAsyncThunk("getSpots", async (payload, thunkAPI) => {
   try {
@@ -28,32 +29,36 @@ const Mountains = () => {
     dispatch(__getSpots([]));
   }, []);
 
-  const oceanViewSpots = spot.filter((spot) => spot.view === "마운틴뷰") ?? [];
+  const viewSpots = spot.filter((spot) => spot.view === "마운틴뷰") ?? [];
 
   return (
     <StbodyContainer>
-      <h3>{viewName}</h3>
-      {oceanViewSpots.map((spot) => (
-        <React.Fragment>
-          <StImage key={spot.id} src={spot.images[0]?.url} alt={spot.name} />
-          <StInfoBox>
-            <p>{spot.view}</p>
-            <h1>{spot.name}</h1>
-            <p> {spot.location}</p>
-            {spot.facilities.map((facility, index) => (
-              <React.Fragment key={index}>
-                <span>{facility}</span>
-                {index < spot.facilities.length - 1 && <Separator />}
-              </React.Fragment>
-            ))}
-          </StInfoBox>
+      <h1>{viewName}</h1>
+
+      {viewSpots.map((spot) => (
+        <React.Fragment key={spot.id}>
+          <Link to={`/spot/${spot.id}`} key={spot.id}>
+            <StImage key={spot.id} src={spot.images[0]?.url} alt={spot.name} />
+            <StInfoBox key={spot.id}>
+              <StviewStyle>{spot.view}</StviewStyle>
+              <h1>{spot.name}</h1>
+              <p>{spot.location}</p>
+              {spot.facilities.map((facility, index) => (
+                <React.Fragment key={index}>
+                  <span>{facility}</span>
+                  {index < spot.facilities.length - 1 && <Separator />}
+                </React.Fragment>
+              ))}
+            </StInfoBox>
+          </Link>
         </React.Fragment>
       ))}
     </StbodyContainer>
   );
 };
+
 const Separator = styled.span`
-  color: #888; // Adjust color as needed
+  color: #888;
 `;
 
 const StbodyContainer = styled.main`
@@ -66,12 +71,15 @@ const StImage = styled.img`
   width: 540px;
   height: 235px;
   margin: 30px 2px;
+  border-radius: 12px;
+  cursor: pointer;
 `;
+
 const StInfoBox = styled.div`
   width: 540px;
   border-radius: 0px 0px 10px 10px;
   background: #fff;
-  p {
+  label {
     margin: 2px;
     color: #797979;
   }
@@ -96,6 +104,18 @@ const StInfoBox = styled.div`
     background-color: #f2f2f2ca;
     border-radius: 8px;
   }
+`;
+const StviewStyle = styled.p`
+  color: white;
+  background-color: #5eb470;
+  border: 1px solid #5eb470;
+  padding: 0.4rem 1rem;
+  width: fit-content;
+  height: fit-content;
+  border-radius: 0.25rem;
+  font-size: 13px;
+  cursor: auto;
+  user-select: none;
 `;
 
 export default Mountains;

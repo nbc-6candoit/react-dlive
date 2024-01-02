@@ -62,12 +62,12 @@ const StyledSlider = styled.div`
   justify-content: center;
   flex-direction: column;
   padding: 20px;
-  width: 100%;
+  max-width: 620px;
   height: 300px;
   margin: 17px;
 `;
 const Stbox = styled.img`
-  max-width: 560px;
+  max-width: 620px;
   display: grid;
   width: 100%;
   height: 350px;
