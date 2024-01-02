@@ -117,8 +117,8 @@ const StcategoryContainer = styled.div`
   gap: 5px;
 `;
 const StCategory = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 110px;
+  height: 110px;
   border-radius: 60px;
   margin: 20px auto 0 auto;
   gap: 5;
