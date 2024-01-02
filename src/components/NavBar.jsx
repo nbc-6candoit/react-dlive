@@ -5,24 +5,35 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import logo from "../assets/img/logo.png";
 import { useDispatch, useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 
 import swal from "sweetalert";
 import {
   changeLoginStatus,
   changeMemberStatus,
 } from "../redux/modules/authSlice";
-import { signOut } from "firebase/auth";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 
 export const NavBar = () => {
   const authState = useSelector((state) => state.authSlice);
   const dispatch = useDispatch();
+  const [currentUser, setCurrentUser] = useState(null);
+
   console.log(authState.isLogin);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log(user);
+      setCurrentUser(user?.email);
+    });
+  }, []);
 
   const handlerlogout = async () => {
     await signOut(auth);
 
     swal("로그아웃", "로그아웃 되었습니다.", "success");
 
+    setCurrentUser(null);
     dispatch(changeLoginStatus(false));
     console.log(authState.isLogin);
   };
@@ -35,7 +46,8 @@ export const NavBar = () => {
       <StBtnInputWrapper>
         <StHeaderButton>
           <div>
-            {authState.isLogin === true ? (
+            {/* {authState.isLogin === true ? ( */}
+            {currentUser ? (
               <>
                 <Link to={`/mypage/:${auth.currentUser.uid}`}>마이페이지</Link>
                 <button onClick={handlerlogout}>로그아웃</button>
