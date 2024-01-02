@@ -8,12 +8,13 @@ const PrivateRoute = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const delayRedirect = setTimeout(() => {
-            if (!isLogin) {
-                navigate('/login');
-            }
-        }, 1000);
+  useEffect(() => {
+    const delayRedirect = setTimeout(() => {
+      if (!isLogin) {
+        navigate("/login");
+      }
+    }, 1500);
+
 
         return () => clearTimeout(delayRedirect);
     }, [dispatch, isLogin, navigate]);

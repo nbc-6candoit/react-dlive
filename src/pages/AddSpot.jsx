@@ -41,19 +41,6 @@ const AddSpot = () => {
     fetchData();
   }, [dispatch]);
 
-  // if (!isAuthChecked) {
-  //   return null; // or loading spinner
-  // }
-
-  // if (!isLogin) {
-  //   navigate("/login");
-  //   return null;
-  // }
-
-  // if (!isAuthChecked) {
-  //   return null;
-  // }
-
   const { uploadImageURL } = useImageUploader();
   const { currentUser } = auth;
 
@@ -159,7 +146,7 @@ const AddSpot = () => {
           console.log("New Spot:", newSpot);
           dispatch(__addSpot(newSpot));
           dispatch(addSpot(newSpot));
-          navigate("/");
+          navigate(`/`);
         }
       } catch (error) {
         console.error("데이터 추가 에러", error.message);
