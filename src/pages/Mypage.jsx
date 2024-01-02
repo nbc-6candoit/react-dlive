@@ -5,14 +5,17 @@ import React from "react";
 import styled from "styled-components";
 import Button from "components/common/Button";
 import { Link, useNavigate } from "react-router-dom";
-import { query, collection, where, getDocs } from "firebase/firestore"; // Import necessary functions
+import { query, collection, where, getDocs } from "firebase/firestore";
 import Avatar from "components/common/Avatar";
 import HotSpotList from "components/Home/HotSpotList";
+import { useLocation } from "react-router-dom";
 
 const Mypage = () => {
   const [userData, setUserData] = useState(null);
   const [userSpots, setUserSpots] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const userId = new URLSearchParams(location.search).get("userId");
 
   const handleMoreDetailButtonClick = (contentType) => {
     navigate(`/spotdetail/${contentType}`);
@@ -71,7 +74,7 @@ const Mypage = () => {
                 <Avatar />
                 <Stdiv>{userData.nickname}</Stdiv>
 
-                <Link to="/InfoFix">
+                <Link to={`/InfoFix?userId=${auth.currentUser.uid}`}>
                   <Button
                     type="button"
                     text="내정보 관리"
