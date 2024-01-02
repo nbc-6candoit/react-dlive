@@ -1,74 +1,125 @@
-import React, { useEffect, useRef } from "react";
-import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavermaps } from "react-naver-maps";
+import { useSelector, useDispatch } from "react-redux";
 import { __getSpots } from "../../../redux/modules/spotDataSlice";
-import { useParams } from "react-router-dom";
 
 export const Map = () => {
+  const navermaps = useNavermaps();
+  const { location } = useSelector((state) => state.spot);
   const dispatch = useDispatch();
-  const { spot } = useSelector((state) => state.spotData);
-  const { spotId } = useParams();
+  const [userMarker, setUserMarker] = useState(null);
+  const [otherMarkers, setOtherMarkers] = useState([]);
+  const [zoomLevel, setZoomLevel] = useState(15);
   const spotMap = useRef(null);
-  const { naver } = window;
 
   useEffect(() => {
-    // Initialize the map when the component mounts
     if (!spotMap.current) {
-      spotMap.current = new naver.maps.Map("map", {
-        mapTypeControl: true,
-      });
+      initializeMap();
+    }
+
+    if (navigator.geolocation) {
+      getUserLocation();
     }
   }, []);
 
   useEffect(() => {
-    // Fetch spot data when the component mounts
-    dispatch(__getSpots());
-  }, [dispatch]);
+    dispatch(__getSpots([]));
+  }, []);
+  const initializeMap = () => {
+    spotMap.current = new navermaps.Map("map", {
+      center: new navermaps.LatLng(location.latitude, location.longitude),
+      zoom: zoomLevel,
+    });
+  };
+
+  const getUserLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const userLocation = new navermaps.LatLng(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+
+        const userMarker = new navermaps.Marker({
+          position: userLocation,
+          map: spotMap.current,
+          title: "Your Location",
+          draggable: false,
+          animation: navermaps.Animation.NONE,
+        });
+
+        setUserMarker(userMarker);
+
+        spotMap.current.setCenter(userLocation);
+        spotMap.current.setZoom(zoomLevel);
+
+        createOtherMarkers(userLocation);
+      },
+      (error) => {
+        console.error("Error getting user's location:", error);
+      }
+    );
+  };
+
+  const createOtherMarkers = (userLocation) => {
+    const otherMarkersArray = [];
+    const radius = 0.01;
+
+    for (let i = 0; i < 10; i++) {
+      const angle = (i * 360) / 10;
+      const markerPosition = new navermaps.LatLng(
+        userLocation.lat() + radius * Math.cos(angle),
+        userLocation.lng() + radius * Math.sin(angle)
+      );
+
+      const otherMarker = new navermaps.Marker({
+        position: markerPosition,
+        map: spotMap.current,
+        title: `Marker ${i + 1}`,
+        animation: navermaps.Animation.NONE,
+      });
+
+      addInfoWindowToMarker(otherMarker);
+
+      otherMarkersArray.push(otherMarker);
+    }
+
+    setOtherMarkers(otherMarkersArray);
+  };
+
+  const addInfoWindowToMarker = (marker) => {
+    const contentString = `<div style="text-align: center;"><b>차박위치 제목</b></div>`;
+    const infowindow = new navermaps.InfoWindow({
+      content: contentString,
+      maxWidth: 200,
+    });
+
+    navermaps.Event.addListener(marker, "click", () => {
+      infowindow.open(spotMap.current, marker);
+    });
+  };
+
+  const handleZoomChange = () => {
+    setZoomLevel(spotMap.current.getZoom());
+  };
 
   useEffect(() => {
-    // Perform geocoding and marker creation when selectedSpot changes
-    const selectedSpot = spot.find((spot) => spot.id === spotId);
+    const map = spotMap.current;
 
-    if (selectedSpot) {
-      naver.maps.Service.geocode(
-        {
-          query: selectedSpot.location,
-        },
-        function (status, response) {
-          if (status !== naver.maps.Service.Status.OK) {
-            return alert("Something wrong!");
-          }
-
-          const items = response.v2.addresses;
-          const lat = items[0].x;
-          const lng = items[0].y;
-
-          const point = new naver.maps.Point(lat, lng);
-          spotMap.current.setCenter(point);
-
-          // Remove existing markers before adding a new one
-          spotMap.current.markers &&
-            spotMap.current.markers.forEach((marker) => marker.setMap(null));
-
-          // Create a new marker for the selected spot
-          const marker = new naver.maps.Marker({
-            position: new naver.maps.LatLng(lat, lng),
-            map: spotMap.current,
-          });
-
-          // Save the markers on the map for future reference
-          spotMap.current.markers = [marker];
-        }
-      );
+    if (map) {
+      navermaps.Event.addListener(map, "zoom_changed", handleZoomChange);
     }
-  }, [spotId, spot, naver]);
 
-  // 지도를 표시하는 div 컨테이너
-  return <StMapWrapper id="map" />;
+    return () => {
+      if (map) {
+        navermaps.Event.removeListener(map, "zoom_changed", handleZoomChange);
+      }
+    };
+  }, [navermaps.Event, spotMap]);
+
+  return (
+    <div>
+      <div id="map" style={{ width: "100%", height: "400px" }}></div>
+    </div>
+  );
 };
-
-const StMapWrapper = styled.div`
-  width: 100%;
-  height: 300px;
-  background-color: lightgray;
-`;
