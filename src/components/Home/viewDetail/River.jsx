@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "shared/firebase";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { Link } from "react-router-dom";
 
 const __getSpots = createAsyncThunk("getSpots", async (payload, thunkAPI) => {
   try {
@@ -35,7 +36,9 @@ const River = () => {
       <h3>{viewName}</h3>
       {viewSpots.map((spot) => (
         <React.Fragment key={spot.id}>
-          <StImage key={spot.id} src={spot.images[0]?.url} alt={spot.name} />
+          <Link to={`/spot/${spot.id}`} key={spot.id}>
+            <StImage key={spot.id} src={spot.images[0]?.url} alt={spot.name} />
+          </Link>
           <StInfoBox key={spot.id}>
             <StviewStyle>{spot.view}</StviewStyle>
             <h1>{spot.name}</h1>
@@ -67,6 +70,7 @@ const StImage = styled.img`
   height: 235px;
   margin: 30px 2px;
   border-radius: 12px;
+  cursor: pointer;
 `;
 
 const StInfoBox = styled.div`
