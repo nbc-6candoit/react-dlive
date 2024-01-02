@@ -30,7 +30,7 @@ const Router = () => {
           <Route path="/viewDetail/Ocean" element={<Ocean />} />
           <Route path="/viewDetail/River" element={<River />} />
           <Route path="/mypage/:id" element={<Mypage />} />
-          <Route path="/infofix" element={<InfoFix />} />
+          <Route path="/infofix/:id" element={<InfoFix />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/spotdetail/:type" element={<SpotDetail />} />

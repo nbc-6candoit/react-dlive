@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "./common/Button";
-import { auth } from "shared/firebase";
+import { auth, db } from "shared/firebase";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import logo from "../assets/img/logo.png";
@@ -17,8 +17,6 @@ export const NavBar = () => {
   const authState = useSelector((state) => state.authSlice);
   const dispatch = useDispatch();
   console.log(authState.isLogin);
-  // const dispatch = useDispatch();
-  // const isLogin = useSelector((state) => state.authSlice.isLogin);
 
   const handlerlogout = async () => {
     await signOut(auth);
@@ -39,7 +37,7 @@ export const NavBar = () => {
           <div>
             {authState.isLogin === true ? (
               <>
-                <Link to={`/mypage/:${authState.uid}`}>마이페이지</Link>
+                <Link to={`/mypage/:${auth.currentUser.uid}`}>마이페이지</Link>
                 <button onClick={handlerlogout}>로그아웃</button>
               </>
             ) : (

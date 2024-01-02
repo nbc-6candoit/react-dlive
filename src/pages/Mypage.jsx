@@ -71,7 +71,7 @@ const Mypage = () => {
                 <Avatar />
                 <Stdiv>{userData.nickname}</Stdiv>
 
-                <Link to="/InfoFix">
+                <Link to={`/InfoFix:${auth.currentUser.uid}`}>
                   <Button
                     type="button"
                     text="내정보 관리"
