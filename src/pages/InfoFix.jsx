@@ -68,6 +68,14 @@ const InfoFix = () => {
     const fetchUserData = async () => {
       try {
         const user = auth.currentUser;
+        const userId = new URLSearchParams(window.location.search).get(
+          "userId"
+        );
+        const userQuery = query(
+          collection(db, "users"),
+          where("userId", "==", userId)
+        );
+        const userSnapshot = await getDocs(userQuery);
 
         if (user) {
           const userQuery = query(
