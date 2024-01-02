@@ -7,7 +7,7 @@ const LogCard = ({ title, content, images, index }) => {
         <>
             <StLogCard key={index}>
                 <StImgWrapper>
-                    <img src={images[0].url} alt={`img ${index}`} />
+                    <img src={images?.[0]?.url} alt={`img ${index}`} />
                 </StImgWrapper>
                 <StLogWrapper>
                     <StTitle>
