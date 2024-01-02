@@ -1,5 +1,5 @@
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { useState } from 'react';
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, onAuthStateChanged } from 'firebase/auth';
+import { useState, useEffect } from 'react';
 import { auth } from '../shared/firebase';
 import Glogo from '../assets/img/g-logo.png';
 import styled from 'styled-components';
@@ -12,8 +12,16 @@ import { Await, Link, useNavigate } from 'react-router-dom';
 export default function Login() {
     const [loginEmail, setLoginEmail] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
+    const [currentUser, setCurrentUser] = useState(null);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            console.log(user);
+            setCurrentUser(user?.email);
+        });
+    }, []);
 
     const handlerlogin = async () => {
         try {
@@ -24,6 +32,7 @@ export default function Login() {
             dispatch(setAuthChecked(true));
 
             await swal('로그인 완료 🏕️', '어서오세요!', 'success');
+            setCurrentUser(userCredential.user.email);
 
             console.log('일반 로그인 성공!');
             navigate('/');
@@ -122,7 +131,7 @@ const StstyledGoogleButton = styled.button`
     height: 48px;
     font-size: 16px;
     color: #5eb470;
-    border-radius: 8px;
+    border-radius: 5px;
     border: 1px solid #5eb470;
     margin-top: 30px;
     cursor: pointer;

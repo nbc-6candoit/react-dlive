@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { auth, db, storage } from '../shared/firebase';
 import styled from 'styled-components';
 import Button from 'components/common/Button';
-
 import { query, collection, where, getDocs, updateDoc, doc } from 'firebase/firestore';
-import Avatar from 'components/common/Avatar';
+import { FaUserCircle } from 'react-icons/fa';
 import swal from 'sweetalert';
 
 const InfoFix = () => {
     const [userData, setUserData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [nickname, setNickname] = useState('');
+    const [profileImage, setProfileImage] = useState(null);
 
     const handleProfilePictureChange = () => {
         const fileInput = document.getElementById('profilePictureInput');
@@ -22,7 +22,7 @@ const InfoFix = () => {
 
         if (file) {
             try {
-                const avatarRef = storage.ref().child(`avatars/${auth.currentUser.uid}`);
+                const avatarRef = storage.ref().child(`avatars/${auth.currentUser.uid}/${file.name}`);
                 await avatarRef.put(file);
                 const avatarUrl = await avatarRef.getDownloadURL();
 
@@ -30,6 +30,7 @@ const InfoFix = () => {
                 await updateDoc(userDoc, { avatar: avatarUrl });
 
                 setUserData({ ...userData, avatar: avatarUrl });
+                setProfileImage(avatarUrl);
 
                 swal('Good Job!', 'Profile picture has been updated!', 'success');
             } catch (error) {
@@ -49,7 +50,7 @@ const InfoFix = () => {
             await updateDoc(userDoc, { nickname: nickname });
             setUserData({ ...userData, nickname: nickname });
             setIsEditing(false);
-            swal('Good Job!', 'Nickname has been updated!', 'success');
+            swal('변경 완료', '닉네임이 변경되었습니다', 'success');
         } catch (error) {
             console.error('Error updating nickname:', error);
         }
@@ -59,6 +60,9 @@ const InfoFix = () => {
         const fetchUserData = async () => {
             try {
                 const user = auth.currentUser;
+                const userId = new URLSearchParams(window.location.search).get('userId');
+                const userQuery = query(collection(db, 'users'), where('userId', '==', userId));
+                const userSnapshot = await getDocs(userQuery);
 
                 if (user) {
                     const userQuery = query(collection(db, 'users'), where('userId', '==', user.uid));
@@ -70,6 +74,7 @@ const InfoFix = () => {
                             ...userSnapshot.docs[0].data(),
                         };
                         setUserData(userData);
+                        setProfileImage(userData.avatar);
                     }
                 }
             } catch (error) {
@@ -85,7 +90,9 @@ const InfoFix = () => {
                 <>
                     <StlogCard>
                         <StlogWrapper>
-                            {!isEditing && <Avatar imageUrl={userData.avatar} />}
+                            {!isEditing && (
+                                <FaUserCircle className='user' size='40' fill='#dddddd' imageUrl={profileImage} />
+                            )}
                             {isEditing ? (
                                 <input
                                     type='text'
@@ -100,17 +107,12 @@ const InfoFix = () => {
 
                             {isEditing ? (
                                 <>
-                                    <Button type='button' text='Save' onClick={handleNicknameSave} />
-                                    <Button type='button' text='Cancel' onClick={() => setIsEditing(false)} />
+                                    <Button type='button' text='저장하기' onClick={handleNicknameSave} />
+                                    <Button type='button' text='취소하기' onClick={() => setIsEditing(false)} />
                                 </>
                             ) : (
                                 <>
-                                    <Button
-                                        type='button'
-                                        text='닉네임  변경'
-                                        onClick={handleNicknameEdit}
-                                        width='20%'
-                                    />
+                                    <Button type='button' text='닉네임 변경' onClick={handleNicknameEdit} width='20%' />
 
                                     <input
                                         type='file'
@@ -123,7 +125,7 @@ const InfoFix = () => {
                                         type='button'
                                         text='프로필 이미지 변경'
                                         onClick={handleProfilePictureChange}
-                                        width='20%'
+                                        width='30%'
                                     />
                                 </>
                             )}
@@ -145,12 +147,13 @@ const Stdiv = styled.div`
 `;
 
 const Stcontainer = styled.div`
-    width: 110%;
-    margin: 30px;
+    width: 100%;
+    max-width: 620px;
+    margin: 40px 0;
+    padding: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 20%;
 `;
 
 const StlogCard = styled.div`
@@ -159,17 +162,15 @@ const StlogCard = styled.div`
     display: flex;
     align-items: center;
     gap: 1.2rem;
-    margin-right: 35px;
 `;
 
 const StlogWrapper = styled.div`
-    padding-left: 30px;
-    padding-bottom: 5px;
+    padding: 40px 20px;
     display: flex;
-    flex-direction: row;
     align-items: center;
+    justify-content: center;
     color: #5eb470;
-    border-radius: 8px;
+    border-radius: 5px;
     border: 1px solid #5eb470;
     width: 100%;
     gap: 2rem;
@@ -183,7 +184,7 @@ const StlogWrapper = styled.div`
         border: ${(props) => (props.isEditing ? '1px solid red' : '1px solid #5eb470')};
         width: 100%;
         height: 30px;
-        border-radius: 8px;
+        border-radius: 10px;
         &:focus {
             outline: 1px solid #5eb470;
         }

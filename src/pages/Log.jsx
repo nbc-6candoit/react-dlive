@@ -11,8 +11,12 @@ import { db } from 'shared/firebase';
 import { fetchLog } from '../redux/modules/logSlice';
 
 const Log = () => {
-    const { id } = useParams();
+    const { id, spotId } = useParams();
+    const { spot } = useSelector((state) => state.spotData);
     const dispatch = useDispatch();
+
+    const filteredSpot = spot.filter((spot) => spot.id === spotId);
+    const selectedSpot = filteredSpot[0];
 
     const targetLog = useSelector((state) => state.logSlice.targetLog);
 
@@ -49,15 +53,15 @@ const Log = () => {
             </StUser>
 
             {/* 차박명소 정보 */}
-            <StLink to={`Spot/:id`}>
+            <StLink to={`/spot/${spotId}`}>
                 <StThumnail>
                     <img src={spotThumnail} alt='명소 썸네일 이미지' />
                 </StThumnail>
                 <StSpotInpo>
-                    <p>강원 영월군</p>
-                    <h3>차박명소 - 무릉도원</h3>
+                    <p>{selectedSpot.location}</p>
+                    <h3>차박명소 - {selectedSpot.name}</h3>
                 </StSpotInpo>
-                <StTag>마운틴뷰</StTag>
+                <StTag>{selectedSpot.view}</StTag>
                 <SlArrowRight fill='#5eb470' size='18' />
             </StLink>
 
@@ -113,8 +117,6 @@ const StLink = styled(Link)`
     /* border-bottom: 1px solid #efefef; */
     border-radius: 8px;
     border: 1px solid #d3e9d8;
-    & svg {
-    }
 `;
 const StSpotInpo = styled.div`
     display: flex;

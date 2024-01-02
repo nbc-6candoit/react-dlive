@@ -1,22 +1,30 @@
 import React from 'react';
 import Button from './common/Button';
-import { auth } from 'shared/firebase';
+import { auth, db } from 'shared/firebase';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/img/logo.png';
 import { useDispatch, useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
 
 import swal from 'sweetalert';
 import { changeLoginStatus, changeMemberStatus, setAuthChecked } from '../redux/modules/authSlice';
-import { signOut } from 'firebase/auth';
+import { signOut, onAuthStateChanged } from 'firebase/auth';
 
 export const NavBar = () => {
     const authState = useSelector((state) => state.authSlice);
     const dispatch = useDispatch();
+    const [currentUser, setCurrentUser] = useState(null);
+
     const navigate = useNavigate();
     console.log(authState.isLogin);
-    // const dispatch = useDispatch();
-    // const isLogin = useSelector((state) => state.authSlice.isLogin);
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            console.log(user);
+            setCurrentUser(user?.email);
+        });
+    }, []);
 
     const handlerlogout = async () => {
         await signOut(auth);
@@ -24,6 +32,7 @@ export const NavBar = () => {
         swal('로그아웃', '로그아웃 되었습니다.', 'success');
         navigate('/');
 
+        setCurrentUser(null);
         dispatch(changeLoginStatus(false));
         dispatch(setAuthChecked(false));
         console.log(authState.isLogin);
@@ -36,18 +45,17 @@ export const NavBar = () => {
             </Link>
             <StBtnInputWrapper>
                 <StHeaderButton>
-                    <div>
-                        {authState.isLogin === true ? (
-                            <>
-                                <MypageLink to={`/mypage/:${authState.uid}`}>마이페이지</MypageLink>
-                                <button onClick={handlerlogout}>로그아웃</button>
-                            </>
-                        ) : (
-                            <>
-                                <StLoginLink to='/login'>로그인</StLoginLink>
-                            </>
-                        )}
-                    </div>
+                    {/* {authState.isLogin === true ? ( */}
+                    {currentUser ? (
+                        <>
+                            <Link to={`/mypage/:${auth.currentUser.uid}`}>마이페이지</Link>
+                            <button onClick={handlerlogout}>로그아웃</button>
+                        </>
+                    ) : (
+                        <>
+                            <StLoginLink to='/login'>로그인</StLoginLink>
+                        </>
+                    )}
                 </StHeaderButton>
             </StBtnInputWrapper>
         </StNavContainer>
@@ -72,7 +80,6 @@ const StNavLogo = styled.img`
     justify-content: center;
     align-items: center;
     width: 80px;
-    height: auto;
     cursor: pointer;
 `;
 export const StBtnInputWrapper = styled.div`
@@ -85,35 +92,19 @@ export const StHeaderButton = styled.button`
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 30px;
+    gap: 12px;
 
-    margin: 0 auto 5 30px;
+    color: #fff;
     cursor: pointer;
     & button {
-        padding: 0 10px;
-        font-size: 15px;
+        padding: 8px 12px;
         border: 1px solid #fff;
-        padding: 8px 16px;
         border-radius: 8px;
     }
-    & div {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        font-size: 15px;
-        color: #fff;
-    }
-`;
-
-const MypageLink = styled(Link)`
-    display: flex;
-    align-items: center;
-    height: 40px;
-    padding: 0 10px;
 `;
 
 const StLoginLink = styled(Link)`
+    padding: 8px 12px;
     border: 1px solid #fff;
-    padding: 8px 16px;
     border-radius: 8px;
 `;

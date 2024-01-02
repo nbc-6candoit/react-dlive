@@ -170,8 +170,13 @@ const StDetailInfo = styled.div`
     flex-direction: column;
     gap: 0.5rem;
     line-height: 1.7;
+    color: #777;
     & h3 {
         font-size: 20px;
+        color: #000;
+    }
+    & h4 {
+        color: #000;
     }
 `;
 

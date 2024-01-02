@@ -125,6 +125,7 @@ const StWrapper = styled.div`
     max-width: 320px;
     width: 100%;
     gap: 20px;
+    margin-bottom: 40px;
 `;
 
 const StBox = styled.div`

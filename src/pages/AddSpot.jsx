@@ -33,19 +33,6 @@ const AddSpot = () => {
         fetchData();
     }, [dispatch]);
 
-    // if (!isAuthChecked) {
-    //   return null; // or loading spinner
-    // }
-
-    // if (!isLogin) {
-    //   navigate("/login");
-    //   return null;
-    // }
-
-    // if (!isAuthChecked) {
-    //   return null;
-    // }
-
     const { uploadImageURL } = useImageUploader();
     const { currentUser } = auth;
 
@@ -151,7 +138,7 @@ const AddSpot = () => {
                     console.log('New Spot:', newSpot);
                     dispatch(__addSpot(newSpot));
                     dispatch(addSpot(newSpot));
-                    navigate('/');
+                    navigate(`/`);
                 }
             } catch (error) {
                 console.error('데이터 추가 에러', error.message);
@@ -306,7 +293,7 @@ const StBox = styled.div`
         height: 48px;
         margin-top: 12px;
         padding: 20px;
-        border-radius: 8px;
+        border-radius: 5px;
         background: #f1f1f1;
     }
     & input[type='file'] {
@@ -319,7 +306,7 @@ const StBox = styled.div`
     & button {
         width: 120px;
         height: 48px;
-        border-radius: 8px;
+        border-radius: 5px;
         margin-left: 10px;
         margin-top: 12px;
         background-color: lightgray;
@@ -337,7 +324,7 @@ const StTextarea = styled.textarea`
     margin-top: 12px;
     padding: 20px;
     background: #f1f1f1;
-    border-radius: 8px;
+    border-radius: 5px;
     white-space: pre-wrap;
     resize: none;
 `;
@@ -353,16 +340,16 @@ const StImgSelect = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 90px;
-    height: 90px;
+    width: 100px;
+    height: 100px;
     background: #f1f1f1;
-    border-radius: 8px;
+    border-radius: 5px;
     cursor: pointer;
 `;
 const StImgBox = styled.div`
-    width: 90px;
-    height: 90px;
-    border-radius: 8px;
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
     background: #f1f1f1;
     overflow: hidden;
 

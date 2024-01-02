@@ -5,14 +5,17 @@ import React from 'react';
 import styled from 'styled-components';
 import Button from 'components/common/Button';
 import { Link, useNavigate } from 'react-router-dom';
-import { query, collection, where, getDocs } from 'firebase/firestore'; // Import necessary functions
-import Avatar from 'components/common/Avatar';
+import { query, collection, where, getDocs } from 'firebase/firestore';
+import { FaUserCircle } from 'react-icons/fa';
 import HotSpotList from 'components/Home/HotSpotList';
+import { useLocation } from 'react-router-dom';
 
 const Mypage = () => {
     const [userData, setUserData] = useState(null);
     const [userSpots, setUserSpots] = useState([]);
     const navigate = useNavigate();
+    const location = useLocation();
+    const userId = new URLSearchParams(location.search).get('userId');
 
     const handleMoreDetailButtonClick = (contentType) => {
         navigate(`/spotdetail/${contentType}`);
@@ -62,10 +65,10 @@ const Mypage = () => {
                     <>
                         <StlogCard>
                             <StlogWrapper>
-                                <Avatar />
+                                <FaUserCircle className='user' size='40' fill='#dddddd' />
                                 <Stdiv>{userData.nickname}</Stdiv>
 
-                                <Link to='/InfoFix'>
+                                <Link to={`/InfoFix?userId=${auth.currentUser.uid}`}>
                                     <Button type='button' text='내정보 관리' width='100%'></Button>
                                 </Link>
                             </StlogWrapper>
@@ -75,7 +78,6 @@ const Mypage = () => {
             </Stcontainer>
             <StDetailInfo>
                 <h3>내가 작성한 차박명소</h3>
-                <StHorizontalLine />
                 {userSpots.length > 0 ? <HotSpotList spots={userSpots} /> : <p>작성한 차박명소가 없습니다.</p>}
             </StDetailInfo>
         </>
@@ -90,21 +92,21 @@ const Stdiv = styled.div`
 
 const Stcontainer = styled.div`
     width: 100%;
-    margin: 30px;
+    max-width: 620px;
+    margin: 40px 0;
     padding: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 10%;
 `;
 const StlogCard = styled.div`
-    width: 60%;
+    width: 100%;
     max-height: 120px;
     display: flex;
     align-items: center;
     gap: 1.2rem;
     padding: 10px;
-    border-radius: 8px;
+    border-radius: 5px;
     border: 1px solid #5eb470;
 `;
 
@@ -126,11 +128,10 @@ const StlogWrapper = styled.div`
     }
 `;
 
-const StHorizontalLine = styled.div`
-    width: 100%;
-    border-bottom: 1px solid #dedede;
-`;
 const StDetailInfo = styled.div`
+    max-width: 620px;
+    padding: 0 20px;
+    margin-bottom: 40px;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;

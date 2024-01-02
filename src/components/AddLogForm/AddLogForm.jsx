@@ -1,5 +1,5 @@
 import { ko } from 'date-fns/locale';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
@@ -8,19 +8,39 @@ import { db, storage } from 'shared/firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { addDoc, collection } from 'firebase/firestore';
 import { v4 as uuid } from 'uuid';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addLog } from '../../redux/modules/logSlice';
 import { Controller, useForm } from 'react-hook-form';
 import { TextField, createTheme } from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
+import { setLocation } from '../../redux/modules/spotSlice';
+import { __getSpots } from '../../redux/modules/spotDataSlice';
 
 const AddLogForm = () => {
-    const { handleSubmit, control, register, reset } = useForm({ mode: 'onChange' });
+    const { handleSubmit, control, register, reset } = useForm({
+        mode: 'onChange',
+    });
 
     const today = new Date();
     const [selectedDate, setSelectedDate] = useState(today);
     const [thumbnailImages, setThumbnailImages] = useState([]);
     const fileRef = useRef(null);
     const dispatch = useDispatch();
+    const { spotId } = useParams();
+    const { id } = useParams();
+    const { location } = useSelector((state) => state.spot);
+    const { spot } = useSelector((state) => state.spotData);
+    const navigate = useNavigate();
+
+    console.log(location);
+
+    useEffect(() => {
+        dispatch(__getSpots());
+    }, [dispatch]);
+
+    const selectedSpot = spot.find((spot) => spot.id === spotId);
+    const selectedSpotName = selectedSpot ? selectedSpot.name : null;
+    console.log(selectedSpotName);
 
     const handleImageClick = () => {
         fileRef.current?.click();
@@ -66,6 +86,8 @@ const AddLogForm = () => {
                 content: data.content,
                 date: selectedDate.toISOString(),
                 images: imageUrls,
+                spotId,
+                spotName: selectedSpotName,
             };
 
             // 모든 이미지가 업로드되면 로그 업로드
@@ -77,6 +99,8 @@ const AddLogForm = () => {
                     content: data.content,
                     date: selectedDate.toISOString(), // Convert Date to string
                     images: imageUrls,
+                    spotId,
+                    spotName: selectedSpotName,
                 })
             );
 
@@ -84,6 +108,7 @@ const AddLogForm = () => {
 
             setThumbnailImages([]);
             setSelectedDate(today);
+            navigate(`/spot/${spotId}`);
 
             // console.log('Document written with ID: ', docRef.id);
         } catch (error) {
@@ -91,11 +116,16 @@ const AddLogForm = () => {
         }
     };
 
+    const handleSpotLocationChange = (e) => {
+        e.preventDefault();
+        dispatch(setLocation(e.target.value));
+    };
+
     return (
         <StForm onSubmit={handleSubmit(onSubmit)}>
             <h2>차박로그 등록하기</h2>
             <StBox>
-                <label htmlFor='log_title'>차박로그 제목*</label>
+                <label htmlFor='log_title'>차박로그 제목</label>
 
                 <Controller
                     name='title'
@@ -119,7 +149,7 @@ const AddLogForm = () => {
                 {/* <input type='text' id='log_title' {...register('title', { required: true })} /> */}
             </StBox>
             <StBox>
-                <label>방문 일시*</label>
+                <label>방문 일시</label>
                 <StDate>
                     <Controller
                         name='date'
@@ -143,7 +173,7 @@ const AddLogForm = () => {
                 </StDate>
             </StBox>
             <StBox>
-                <label>차박로그 내용*</label>
+                <label>차박로그 내용</label>
 
                 <Controller
                     name='content'
@@ -161,6 +191,7 @@ const AddLogForm = () => {
                             InputProps={{
                                 placeholder: '차박로그 내용을 입력해주세요',
                             }}
+                            maxHeight='200px' // Set the maximum height in pixels or any CSS units
                         />
                     )}
                 />
@@ -191,8 +222,13 @@ const AddLogForm = () => {
                 />
             </StBox>
             <StBox>
-                <label>차박 장소*</label>
-                <input type='text' {...register('location')} placeholder='차박 장소 리스트 중 자동으로 들어가기' />
+                <label>차박 장소</label>
+                <input
+                    type='text'
+                    //   {...register("location")}
+                    value={selectedSpotName || ''}
+                    onChange={handleSpotLocationChange}
+                />
             </StBox>
             <StButton type='submit'>차박로그 등록하기</StButton>
         </StForm>
@@ -203,9 +239,9 @@ const StyledTextField = styled(TextField)({
     '& .MuiOutlinedInput-root': {
         borderColor: '#5eb470',
 
-        minHeight: '48px',
+        maxHeight: '48px',
         marginTop: '12px',
-        padding: '20px',
+        padding: '13px 20px',
         background: '#f1f1f1',
         borderRadius: '5px',
         whiteSpace: 'pre-wrap',
@@ -215,7 +251,7 @@ const StyledTextField = styled(TextField)({
 });
 
 const StForm = styled.form`
-    max-width: 530px;
+    max-width: 620px;
     padding: 40px 20px;
 
     & h2 {
@@ -235,8 +271,8 @@ const StBox = styled.div`
     & input {
         height: 48px;
         margin-top: 12px;
-        padding: 20px;
-        border-radius: 8px;
+        padding: 13px 20px;
+        border-radius: 5px;
         background: #f1f1f1;
     }
     & input[type='file'] {
@@ -253,7 +289,7 @@ const StDatePicker = styled(DatePicker)`
     height: 46px;
     text-align: center;
     background: #f1f1f1;
-    border-radius: 8px;
+    border-radius: 4px;
     box-sizing: border-box;
     cursor: pointer;
     &:active,
@@ -263,12 +299,16 @@ const StDatePicker = styled(DatePicker)`
 `;
 
 const StyledTextAreaField = styled(TextField)({
+    textarea: {
+        height: '200px',
+        overflowY: 'auto',
+    },
     '& .MuiOutlinedInput-root': {
         borderColor: '#5eb470',
-
-        minHeight: '200px',
+        height: '200px',
+        overflowY: 'auto',
         marginTop: '12px',
-        padding: '20px',
+        padding: '13px 20px',
         background: '#f1f1f1',
         borderRadius: '5px',
         whiteSpace: 'pre-wrap',
@@ -288,16 +328,16 @@ const StImgSelect = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 90px;
-    height: 90px;
+    width: 100px;
+    height: 100px;
     background: #f1f1f1;
-    border-radius: 8px;
+    border-radius: 5px;
     cursor: pointer;
 `;
 const StImgBox = styled.div`
-    width: 90px;
-    height: 90px;
-    border-radius: 8px;
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
     background: #f1f1f1;
     overflow: hidden;
 
@@ -313,7 +353,7 @@ const StButton = styled.button`
     height: 48px;
     font-size: 16px;
     color: #5eb470;
-    border-radius: 8px;
+    border-radius: 5px;
     border: 1px solid #5eb470;
     cursor: pointer;
     transition: background 200ms;

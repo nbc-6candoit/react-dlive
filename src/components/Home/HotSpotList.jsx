@@ -40,6 +40,7 @@ const StSpotContainer = styled.div`
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     margin-top: 10px;
+    margin-bottom: 40px;
 `;
 
 const Stbox = styled.figure`

@@ -13,7 +13,6 @@ const LogCard = ({ title, content, images, index }) => {
                     <StTitle>
                         <h5>{title}</h5>
                     </StTitle>
-
                     <StContent>
                         <p>{content}</p>
                     </StContent>
@@ -61,10 +60,8 @@ const StLogWrapper = styled.div`
     width: calc(100% - 27% - 10px);
     gap: 0.5rem;
     overflow: hidden;
-    /* margin-top: 10px; */
     & div {
         display: flex;
-        align-items: center;
         gap: 0.5rem;
 
         & h6 {

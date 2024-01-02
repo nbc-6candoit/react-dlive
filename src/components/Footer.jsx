@@ -24,4 +24,5 @@ const StyledDiv = styled.div`
 const StCopyright = styled.p`
     font-weight: 500;
     font-size: 13px;
+    color: #fff;
 `;

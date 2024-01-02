@@ -19,7 +19,6 @@ const StButton = styled.button`
     color: #5eb470;
     border-radius: 8px;
     border: 1px solid #5eb470;
-    margin-top: 40px;
     cursor: pointer;
     transition: background 200ms;
     &:hover {
