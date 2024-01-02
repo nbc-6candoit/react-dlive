@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { auth, db, storage } from "../shared/firebase";
 import styled from "styled-components";
 import Button from "components/common/Button";
-
 import {
   query,
   collection,
@@ -18,6 +17,7 @@ const InfoFix = () => {
   const [userData, setUserData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [nickname, setNickname] = useState("");
+  const [profileImage, setProfileImage] = useState(null);
 
   const handleProfilePictureChange = () => {
     const fileInput = document.getElementById("profilePictureInput");
@@ -31,7 +31,7 @@ const InfoFix = () => {
       try {
         const avatarRef = storage
           .ref()
-          .child(`avatars/${auth.currentUser.uid}`);
+          .child(`avatars/${auth.currentUser.uid}/${file.name}`);
         await avatarRef.put(file);
         const avatarUrl = await avatarRef.getDownloadURL();
 
@@ -39,6 +39,7 @@ const InfoFix = () => {
         await updateDoc(userDoc, { avatar: avatarUrl });
 
         setUserData({ ...userData, avatar: avatarUrl });
+        setProfileImage(avatarUrl);
 
         swal("Good Job!", "Profile picture has been updated!", "success");
       } catch (error) {
@@ -90,6 +91,7 @@ const InfoFix = () => {
               ...userSnapshot.docs[0].data(),
             };
             setUserData(userData);
+            setProfileImage(userData.avatar);
           }
         }
       } catch (error) {
@@ -105,7 +107,7 @@ const InfoFix = () => {
         <>
           <StlogCard>
             <StlogWrapper>
-              {!isEditing && <Avatar imageUrl={userData.avatar} />}
+              {!isEditing && <Avatar imageUrl={profileImage} />}
               {isEditing ? (
                 <input
                   type="text"
