@@ -8,20 +8,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from "shared/firebase";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { __getSpots } from "../../../redux/modules/spotDataSlice";
 
-const __getSpots = createAsyncThunk("getSpots", async (payload, thunkAPI) => {
-  try {
-    const querySnapshop = await getDocs(collection(db, "spot"));
-    const spotsData = querySnapshop.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    return spotsData;
-  } catch (error) {
-    console.log("error :", error);
-    return thunkAPI.rejectWithValue(error);
-  }
-});
 export const Slide = () => {
   const dispatch = useDispatch();
   const { spot } = useSelector((state) => state.spotData);
@@ -30,7 +18,7 @@ export const Slide = () => {
     dispatch(__getSpots([]));
   }, []);
   const recentSpots = spot.slice([0, spot.length]);
-  console.log("recentSpots Array : ", recentSpots);
+  // console.log("recentSpots Array : ", recentSpots);
   const settings = {
     dots: true,
     speed: 1500,

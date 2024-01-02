@@ -1,28 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import mountains from "assets/img/산.png";
+
 import { db } from "shared/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { __getSpots } from "../../../redux/modules/spotDataSlice";
 import {
   updateCoordinates,
   setCoordinatesError,
 } from "../../../redux/modules/homeSlice";
 
-const __getSpots = createAsyncThunk("getSpots", async (payload, thunkAPI) => {
-  try {
-    const querySnapshot = await getDocs(collection(db, "spot"));
-    const spotsData = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    return spotsData;
-  } catch (error) {
-    console.log("error:", error);
-    return thunkAPI.rejectWithValue(error);
-  }
-});
+
 
 export const Map = ({ documentId }) => {
   const [viewportWidth, setViewportWidth] = useState(window.innerWidth); //마커 지도

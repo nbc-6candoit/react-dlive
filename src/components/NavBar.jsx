@@ -2,7 +2,7 @@ import React from "react";
 import Button from "./common/Button";
 import { auth } from "shared/firebase";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/img/logo.png";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -10,12 +10,14 @@ import swal from "sweetalert";
 import {
   changeLoginStatus,
   changeMemberStatus,
+  setAuthChecked,
 } from "../redux/modules/authSlice";
 import { signOut } from "firebase/auth";
 
 export const NavBar = () => {
   const authState = useSelector((state) => state.authSlice);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   console.log(authState.isLogin);
   // const dispatch = useDispatch();
   // const isLogin = useSelector((state) => state.authSlice.isLogin);
@@ -24,8 +26,10 @@ export const NavBar = () => {
     await signOut(auth);
 
     swal("로그아웃", "로그아웃 되었습니다.", "success");
+    navigate("/");
 
     dispatch(changeLoginStatus(false));
+    dispatch(setAuthChecked(false));
     console.log(authState.isLogin);
   };
 

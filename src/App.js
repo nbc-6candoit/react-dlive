@@ -1,5 +1,8 @@
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { useEffect } from 'react';
+import store from './redux/config/configStore';
+import { checkAuthState } from './redux/modules/authSlice';
 import Router from './shared/Router';
 import { ThemeProvider, createTheme } from '@mui/material';
 
@@ -12,6 +15,11 @@ const theme = createTheme({
 });
 
 function App() {
+    useEffect(() => {
+        store.dispatch(checkAuthState());
+        console.log('checkAuth in App');
+    }, []);
+
     return (
         <ThemeProvider theme={theme}>
             <QueryClientProvider client={queryClient}>

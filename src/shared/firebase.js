@@ -1,6 +1,10 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import {
+  browserLocalPersistence,
+  getAuth,
+  setPersistence,
+} from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -17,3 +21,12 @@ export const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+
+// 지속성 상태 설정
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("지속성 설정(로컬스토리지)");
+  })
+  .catch((error) => {
+    console.error("지속성 설정 중 오류:", error);
+  });
