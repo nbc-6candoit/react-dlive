@@ -1,17 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-
-import { db } from "shared/firebase";
-import { collection, getDocs } from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
-import { createAsyncThunk } from "@reduxjs/toolkit";
 import { __getSpots } from "../../../redux/modules/spotDataSlice";
-import {
-  updateCoordinates,
-  setCoordinatesError,
-} from "../../../redux/modules/homeSlice";
-
-
+import { setCoordinatesError } from "../../../redux/modules/homeSlice";
 
 export const Map = ({ documentId }) => {
   const [viewportWidth, setViewportWidth] = useState(window.innerWidth); //마커 지도
