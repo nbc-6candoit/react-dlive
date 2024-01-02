@@ -8144,6 +8144,11 @@ makeerror@1.0.12:
   dependencies:
     tmpl "1.0.5"
 
+marker-clusterer-plus@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/marker-clusterer-plus/-/marker-clusterer-plus-2.1.4.tgz#f8eff74d599dab3b7d0e3fed5264ea0e704f5d67"
+  integrity sha512-4WLZnYCkgsUfSC0pftldd0YrLNupSqVIEdxL979f3sXVMBHTUOF3gDa6cEuOk2z8UGyVGcANiNZgvVc333mrHA==
+
 match-sorter@^6.0.2:
   version "6.3.1"
   resolved "https://registry.npmjs.org/match-sorter/-/match-sorter-6.3.1.tgz"
@@ -9817,7 +9822,7 @@ react-is@^18.0.0, react-is@^18.2.0:
 
 react-naver-maps@^0.1.3:
   version "0.1.3"
-  resolved "https://registry.npmjs.org/react-naver-maps/-/react-naver-maps-0.1.3.tgz"
+  resolved "https://registry.yarnpkg.com/react-naver-maps/-/react-naver-maps-0.1.3.tgz#242da4556799e7a854cc0fe5f061c188919f32c7"
   integrity sha512-J2AD+MMn33NQ0RH3ldn4kG0ehV9Ao+16/w2kw4XilWl/xWI8mu2DnHUJNaxWBu7S0JSEIsFJuUp7JfZ48wH8kw==
   dependencies:
     camelcase "^5.3.1"
@@ -11705,7 +11710,7 @@ uuid@^8.3.2:
 
 uuid@^9.0.1:
   version "9.0.1"
-  resolved "https://registry.npmjs.org/uuid/-/uuid-9.0.1.tgz"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.1.tgz#e188d4c8853cc722220392c424cd637f32293f30"
   integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
 
 v8-to-istanbul@^8.1.0:
