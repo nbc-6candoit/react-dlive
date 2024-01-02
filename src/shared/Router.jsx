@@ -1,4 +1,3 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AddSpot from "../pages/AddSpot";
 import Login from "../pages/Login";
 import Main from "../pages/Main";
@@ -16,6 +15,8 @@ import Signup from "../pages/Signup";
 import Mountains from "components/Home/viewDetail/Mountains";
 import Ocean from "components/Home/viewDetail/Ocean";
 import River from "components/Home/viewDetail/River";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import InfoFix from "../pages/InfoFix";
 
 const Router = () => {
   return (
@@ -29,6 +30,7 @@ const Router = () => {
           <Route path="/viewDetail/Ocean" element={<Ocean />} />
           <Route path="/viewDetail/River" element={<River />} />
           <Route path="/mypage/:id" element={<Mypage />} />
+          <Route path="/infofix" element={<InfoFix />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/spotdetail/:type" element={<SpotDetail />} />
