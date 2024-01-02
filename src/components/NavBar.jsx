@@ -1,10 +1,11 @@
 import React from "react";
 import Button from "./common/Button";
-import { auth } from "shared/firebase";
+import { auth, db } from "shared/firebase";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/img/logo.png";
 import { useDispatch, useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 
 import swal from "sweetalert";
 import {
@@ -12,15 +13,22 @@ import {
   changeMemberStatus,
   setAuthChecked,
 } from "../redux/modules/authSlice";
-import { signOut } from "firebase/auth";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 
 export const NavBar = () => {
   const authState = useSelector((state) => state.authSlice);
   const dispatch = useDispatch();
+  const [currentUser, setCurrentUser] = useState(null);
+
   const navigate = useNavigate();
   console.log(authState.isLogin);
-  // const dispatch = useDispatch();
-  // const isLogin = useSelector((state) => state.authSlice.isLogin);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log(user);
+      setCurrentUser(user?.email);
+    });
+  }, []);
 
   const handlerlogout = async () => {
     await signOut(auth);
@@ -28,6 +36,7 @@ export const NavBar = () => {
     swal("로그아웃", "로그아웃 되었습니다.", "success");
     navigate("/");
 
+    setCurrentUser(null);
     dispatch(changeLoginStatus(false));
     dispatch(setAuthChecked(false));
     console.log(authState.isLogin);
@@ -41,9 +50,10 @@ export const NavBar = () => {
       <StBtnInputWrapper>
         <StHeaderButton>
           <div>
-            {authState.isLogin === true ? (
+            {/* {authState.isLogin === true ? ( */}
+            {currentUser ? (
               <>
-                <Link to={`/mypage/:${authState.uid}`}>마이페이지</Link>
+                <Link to={`/mypage/:${auth.currentUser.uid}`}>마이페이지</Link>
                 <button onClick={handlerlogout}>로그아웃</button>
               </>
             ) : (

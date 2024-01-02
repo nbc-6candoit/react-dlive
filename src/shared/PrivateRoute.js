@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { setAuthChecked } from "../redux/modules/authSlice";
+import React, { useEffect } from 'react';
+import { Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAuthChecked } from '../redux/modules/authSlice';
 
 const PrivateRoute = () => {
-  const { isLogin, isAuthChecked } = useSelector((state) => state.authSlice);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+    const { isLogin, isAuthChecked } = useSelector((state) => state.authSlice);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
   useEffect(() => {
     const delayRedirect = setTimeout(() => {
@@ -15,18 +15,19 @@ const PrivateRoute = () => {
       }
     }, 1500);
 
-    return () => clearTimeout(delayRedirect);
-  }, [dispatch, isLogin, navigate]);
 
-  if (!isAuthChecked) {
-    return <div>Loading...</div>;
-  }
+        return () => clearTimeout(delayRedirect);
+    }, [dispatch, isLogin, navigate]);
 
-  if (!isLogin) {
-    return <Navigate to="/login" replace />;
-  }
+    if (!isAuthChecked) {
+        return <div>Loading...</div>;
+    }
 
-  return <Outlet />;
+    if (!isLogin) {
+        return <Navigate to='/login' replace />;
+    }
+
+    return <Outlet />;
 };
 
 export default PrivateRoute;

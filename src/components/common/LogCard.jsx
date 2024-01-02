@@ -3,20 +3,21 @@ import styled from "styled-components";
 import { FaUserCircle } from "react-icons/fa";
 
 const LogCard = ({ title, content, images, index }) => {
-  return (
-    <>
-      <StLogCard key={index}>
-        <StImgWrapper>
-          <img src={images[0].url} alt={`img ${index}`} />
-        </StImgWrapper>
-        <StLogWrapper>
-          <StTitle>
-            <h5>{title}</h5>
-            <div>
-              <h6>nickname</h6>
-              <FaUserCircle className="user" size="24" fill="#dddddd" />
-            </div>
-          </StTitle>
+
+    return (
+        <>
+            <StLogCard key={index}>
+                <StImgWrapper>
+                    <img src={images?.[0]?.url} alt={`img ${index}`} />
+                </StImgWrapper>
+                <StLogWrapper>
+                    <StTitle>
+                        <h5>{title}</h5>
+                        <div>
+                            <h6>nickname</h6>
+                            <FaUserCircle className='user' size='24' fill='#dddddd' />
+                        </div>
+                    </StTitle>
 
           <StContent>
             <p>{content}</p>

@@ -2,8 +2,9 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
+  onAuthStateChanged,
 } from "firebase/auth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { auth } from "../shared/firebase";
 import Glogo from "../assets/img/g-logo.png";
 import styled from "styled-components";
@@ -20,8 +21,16 @@ import { Await, Link, useNavigate } from "react-router-dom";
 export default function Login() {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log(user);
+      setCurrentUser(user?.email);
+    });
+  }, []);
 
   const handlerlogin = async () => {
     try {
@@ -36,6 +45,7 @@ export default function Login() {
       dispatch(setAuthChecked(true));
 
       await swal("로그인 완료 🏕️", "어서오세요!", "success");
+      setCurrentUser(userCredential.user.email);
 
       console.log("일반 로그인 성공!");
       navigate("/");
