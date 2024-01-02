@@ -7,20 +7,34 @@ import Button from "components/common/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { getQueryLogs } from "../../redux/modules/logSlice";
 import LogCard from "components/common/LogCard";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-const SpotLog = () => {
+const SpotLog = ({ filterBySpot = false }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { spotId } = useParams();
+  console.log(spotId);
 
   const logList = useSelector((state) => {
     return state.logSlice.snapshotLogs;
   });
 
+  console.log(logList);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "log"));
+        let querySnapshot;
+
+        if (filterBySpot) {
+          querySnapshot = await getDocs(
+            collection(db, "log").where("spotId", "==", spotId)
+          );
+        } else {
+          querySnapshot = await getDocs(collection(db, "log"));
+        }
+
         const array = querySnapshot.docs.map((log) => {
           let logData = log.data();
           const docID = log.id;
@@ -33,6 +47,7 @@ const SpotLog = () => {
 
           return logData;
         });
+
         await dispatch(getQueryLogs(array));
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -40,9 +55,12 @@ const SpotLog = () => {
     };
 
     fetchData();
-  }, []);
+  }, [dispatch, filterBySpot, spotId]);
 
-  console.log(logList);
+  const filteredLogList = filterBySpot
+    ? logList.filter((log) => log.spotId === spotId)
+    : logList;
+  console.log(filteredLogList);
 
   return (
     <StSpotInfoContainer>
@@ -51,18 +69,20 @@ const SpotLog = () => {
         <StHorizontalLine />
       </StDetailInfo>
       <StLogListWrapper>
-        {logList.map((log, index) => {
-          return (
-            <Link key={log.docID} to={`/log/${log.docID}`}>
+        {filteredLogList.length === 0 ? (
+          <p>해당 명소의 로그가 없습니다. 차박로그를 등록해 주세요!</p>
+        ) : (
+          filteredLogList.slice(0, 3).map((log, index) => (
+            <Link key={log.docID} to={`/log/${log.docID}/${spotId}`}>
               <LogCard
                 title={log.title}
                 content={log.content}
                 index={index}
                 images={log.images}
-              ></LogCard>
+              />
             </Link>
-          );
-        })}
+          ))
+        )}
       </StLogListWrapper>
     </StSpotInfoContainer>
   );

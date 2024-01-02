@@ -57,16 +57,11 @@ const Router = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/spotdetail/:type" element={<SpotDetail />} />
           <Route path="/spot/:spotId" element={<Spot />} />
-          <Route path="/log/:id" element={<Log />} />
+          <Route path="/log/:id/:spotId" element={<Log />} />
           <Route path="*" element={<Main />} />
-          {/* <Route
-            path="/addspot"
-            element={isLogin ? <AddSpot /> : <Navigate replace to="/login" />}
-          />
-          <Route path="/addlog" element={<AddLog />} /> */}
           <Route element={<PrivateRoute />}>
             <Route path="/addspot" element={<AddSpot />} />
-            <Route path="/addlog" element={<AddLog />} />
+            <Route path="/addlog/:spotId" element={<AddLog />} />
           </Route>
         </Routes>
         <Footer />

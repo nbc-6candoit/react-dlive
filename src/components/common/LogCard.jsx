@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Avatar from "./Avatar";
-import { useSelector } from "react-redux";
+import { FaUserCircle } from "react-icons/fa";
 
 const LogCard = ({ title, content, images, index }) => {
   return (
@@ -15,7 +14,7 @@ const LogCard = ({ title, content, images, index }) => {
             <h5>{title}</h5>
             <div>
               <h6>nickname</h6>
-              <Avatar />
+              <FaUserCircle className="user" size="24" fill="#dddddd" />
             </div>
           </StTitle>
 
@@ -49,6 +48,7 @@ const StImgWrapper = styled.div`
 const StTitle = styled.div`
   display: flex;
   justify-content: space-between;
+  color: #111;
   & div {
     display: flex;
     align-items: center;
@@ -67,8 +67,9 @@ const StLogWrapper = styled.div`
     gap: 0.5rem;
 
     & h6 {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: normal;
+      color: #999;
     }
   }
   & p {
@@ -79,6 +80,7 @@ const StLogWrapper = styled.div`
     text-overflow: ellipsis;
     font-size: 14px;
     line-height: 1.6;
+    color: #777;
   }
 `;
 const StContent = styled.div`

@@ -146,7 +146,7 @@ const AddSpot = () => {
           console.log("New Spot:", newSpot);
           dispatch(__addSpot(newSpot));
           dispatch(addSpot(newSpot));
-          navigate("/");
+          navigate(`/`);
         }
       } catch (error) {
         console.error("데이터 추가 에러", error.message);
