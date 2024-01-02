@@ -41,22 +41,6 @@ const AddSpot = () => {
     fetchData();
   }, [dispatch]);
 
-  console.log(isLogin);
-  console.log(isAuthChecked);
-
-  // if (!isAuthChecked) {
-  //   return null; // or loading spinner
-  // }
-
-  // if (!isLogin) {
-  //   navigate("/login");
-  //   return null;
-  // }
-
-  // if (!isAuthChecked) {
-  //   return null;
-  // }
-
   const { uploadImageURL } = useImageUploader();
   const { currentUser } = auth;
 

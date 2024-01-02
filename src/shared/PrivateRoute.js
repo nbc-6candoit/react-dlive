@@ -13,7 +13,7 @@ const PrivateRoute = () => {
       if (!isLogin) {
         navigate("/login");
       }
-    }, 1000);
+    }, 1500);
 
     return () => clearTimeout(delayRedirect);
   }, [dispatch, isLogin, navigate]);
