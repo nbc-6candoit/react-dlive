@@ -30,7 +30,7 @@ export const Slide = () => {
     dispatch(__getSpots([]));
   }, []);
   const recentSpots = spot.slice([0, spot.length]);
-  console.log("recentSpots Array : ", recentSpots);
+  // console.log("recentSpots Array : ", recentSpots);
   const settings = {
     dots: true,
     speed: 1500,
