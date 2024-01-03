@@ -183,7 +183,7 @@ const StlogWrapper = styled.div`
     & input {
         border: ${(props) => (props.isEditing ? '1px solid red' : '1px solid #5eb470')};
         width: 100%;
-        height: 30px;
+        height: 48px;
         border-radius: 10px;
         &:focus {
             outline: 1px solid #5eb470;
