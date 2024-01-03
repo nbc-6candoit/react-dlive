@@ -1,8 +1,13 @@
 // 메인페이지(Main)
+import Body from "components/Home/Body";
 import React from "react";
 
 const Main = () => {
-  return <div>Main</div>;
+  return (
+    <>
+      <Body />
+    </>
+  );
 };
 
 export default Main;

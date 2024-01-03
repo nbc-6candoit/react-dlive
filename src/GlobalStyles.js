@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
 
@@ -19,7 +19,6 @@ time, mark, audio, video {
 	padding: 0;
 	border: 0;
 	font-size: 100%;
-	font: inherit;
 	vertical-align: baseline;
 }
 article, aside, details, figcaption, figure, 
@@ -30,7 +29,7 @@ body {
 	min-height: 100vh;
 	font-size: 16px;
 	line-height: 1;
-	font-family: 'Roboto', sans-serif;
+
 }
 ol, ul, li {
 	list-style: none;
@@ -54,12 +53,12 @@ a {
 input, button, textarea{
 	background: transparent;
     border: none;
-	font-family: 'Roboto', sans-serif;
 	color: inherit;
 	outline: none;
 } 
 * { 
     box-sizing: border-box;
+	font-family: 'Pretendard', sans-serif;
 }
 
 body::-webkit-scrollbar {

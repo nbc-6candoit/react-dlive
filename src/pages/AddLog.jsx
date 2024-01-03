@@ -1,8 +1,13 @@
 // 차박로그 등록페이지(AddLog)
-import React from "react";
+import AddLogForm from 'components/AddLogForm/AddLogForm';
+import React from 'react';
 
 const AddLog = () => {
-  return <div>AddLog</div>;
+    return (
+        <>
+            <AddLogForm />
+        </>
+    );
 };
 
 export default AddLog;
