@@ -1,95 +1,98 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import { NaverMap, Marker, useNavermaps } from "react-naver-maps";
+import { useSelector } from "react-redux";
 
-import { db } from "shared/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import { useDispatch, useSelector } from "react-redux";
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { __getSpots } from "../../../redux/modules/spotDataSlice";
-import {
-  updateCoordinates,
-  setCoordinatesError,
-} from "../../../redux/modules/homeSlice";
+export const Map = () => {
+  const navermaps = useNavermaps();
+  const { location } = useSelector((state) => state.spot);
+  const [userMarker, setUserMarker] = useState(null);
+  const [otherMarkers, setOtherMarkers] = useState([]);
+  const [selectedMarker, setSelectedMarker] = useState(null);
 
-
-
-export const Map = ({ documentId }) => {
-  const [viewportWidth, setViewportWidth] = useState(window.innerWidth); //마커 지도
-  const mapContainerRef = useRef(null);
-  const dispatch = useDispatch();
-  const { spot } = useSelector((state) => state.spotData);
-
-  // 지도 마커
-  useEffect(() => {
-    const handleResize = () => {
-      setViewportWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  const spotMap = useRef(null);
 
   useEffect(() => {
-    dispatch(__getSpots([]));
-    const { naver } = window;
+    if (!spotMap.current) {
+      spotMap.current = new navermaps.Map("map", {
+        center: new navermaps.LatLng(location.latitude, location.longitude),
+        zoom: 15,
+      });
+    }
 
-    const handleGeoLocationSuccess = (position) => {
-      var HOME_PATH = window.HOME_PATH || ".";
-      try {
-        const { latitude, longitude } = position.coords;
-        const currentLocation = new naver.maps.LatLng({
-          lat: latitude,
-          lng: longitude,
-        });
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLocation = new navermaps.LatLng(
+            position.coords.latitude,
+            position.coords.longitude
+          );
 
-        const mapOptions = {
-          center: currentLocation,
-          zoom: 17,
-        };
+          const userMarker = new navermaps.Marker({
+            position: userLocation,
+            map: spotMap.current,
+            title: "Your Location",
+            draggable: false,
+            animation: navermaps.Animation.NONE,
+          });
 
-        const map = new naver.maps.Map(mapContainerRef.current, mapOptions);
+          setUserMarker(userMarker);
 
-        // spotData가 있는지 확인
+          spotMap.current.setCenter(userLocation);
+          spotMap.current.setZoom(15);
 
-        const marker = new naver.maps.Marker({
-          position: currentLocation,
-          map,
-          title: "마운틴뷰",
-          icon: {
-            url: HOME_PATH + `/assets/img/산.png`,
-            size: new naver.maps.Size(50, 52),
-            origin: new naver.maps.Point(0, 0),
-            anchor: new naver.maps.Point(25, 26),
-          },
-        });
-      } catch (error) {
-        console.error("현재 위치를 설정하는 중에 오류가 발생했습니다:", error);
-        dispatch(
-          setCoordinatesError("현재 위치를 설정하는 중에 오류가 발생했습니다.")
-        );
-      }
-    };
+          const otherMarkersArray = [];
+          const radius = 0.01;
 
-    const handleGeoLocationError = (error) => {
-      console.error("현재 위치를 가져오는 데 실패했습니다:", error);
-      dispatch(setCoordinatesError("현재 위치를 가져오는 데 실패했습니다."));
-    };
+          for (let i = 0; i < 10; i++) {
+            const angle = (i * 360) / 10;
+            const markerPosition = new navermaps.LatLng(
+              userLocation.lat() + radius * Math.cos(angle),
+              userLocation.lng() + radius * Math.sin(angle)
+            );
 
-    navigator.geolocation.getCurrentPosition(
-      handleGeoLocationSuccess,
-      handleGeoLocationError
-    );
-  }, []);
-  const viewSpots = spot.filter((spot) => spot.view === "리버뷰") ?? [];
+            const otherMarker = new navermaps.Marker({
+              position: markerPosition,
+              map: spotMap.current,
+              title: `Marker ${i + 1}`,
+              animation: navermaps.Animation.NONE,
+            });
 
-  return <StyledMapContainer ref={mapContainerRef}></StyledMapContainer>;
+            navermaps.Event.addListener(otherMarker, "click", () => {
+              setSelectedMarker(otherMarker);
+            });
+
+            otherMarkersArray.push(otherMarker);
+          }
+
+          setOtherMarkers(otherMarkersArray);
+        },
+        (error) => {
+          console.error("Error getting user's location:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }, [navermaps, location]);
+
+  return (
+    <div>
+      <div id="map" style={{ width: "100%", height: "500px" }}>
+        {selectedMarker && (
+          <div
+            style={{
+              position: "absolute",
+              zIndex: 1,
+              background: "white",
+              padding: "10px",
+              borderRadius: "5px",
+              boxShadow: "0 0 5px rgba(0, 0, 0, 0.3)",
+            }}
+          >
+            <p>{selectedMarker.getTitle()}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
-
-const StyledMapContainer = styled.div`
-  margin: 0 auto;
-`;
-
-export default Map;
