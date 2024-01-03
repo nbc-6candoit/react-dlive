@@ -6,6 +6,9 @@ import { __getSpots } from '../redux/modules/spotDataSlice';
 import styled from 'styled-components';
 import Button from 'components/common/Button';
 import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom/dist';
+import { collection, getDocs } from '@firebase/firestore';
+import { db } from 'shared/firebase';
 
 const SpotDetail = () => {
     const dispatch = useDispatch();
@@ -18,12 +21,17 @@ const SpotDetail = () => {
 
     useEffect(() => {
         dispatch(__getSpots());
-    }, []);
+    }, [dispatch, type]);
 
     const displayedItems = type === 'log' ? logList.slice(0, visibleItems) : spot.slice(0, visibleItems);
+
     const handleLoadMoreClick = () => {
         setVisibleItems((prevVisibleItems) => prevVisibleItems + 5);
     };
+
+    const totalItems = type === 'log' ? logList.length : spot.length;
+
+    const isAllItemsVisible = visibleItems >= totalItems;
 
     return (
         <StSpotInfoContainer>
@@ -33,20 +41,24 @@ const SpotDetail = () => {
             </StDetailInfo>
             <StLogListWrapper>
                 {displayedItems.map((spot, index) => (
-                    <LogCard
-                        key={index}
-                        title={spot.name}
-                        content={spot.content}
-                        images={spot.images}
-                        index={spot.id}
-                    />
+                    <Link key={spot.id} to={`/${type}/${spot.id}`}>
+                        <LogCard
+                            key={index}
+                            title={type === 'log' ? spot.title : spot.name}
+                            content={spot.content}
+                            images={spot.images}
+                            index={spot.id}
+                        />
+                    </Link>
                 ))}
             </StLogListWrapper>
-            <Button
-                type={'button'}
-                text={type === 'spot' ? '차박명소 더보기' : '차박로그 더보기'}
-                onClick={handleLoadMoreClick}
-            />
+            {!isAllItemsVisible && (
+                <Button
+                    type={'button'}
+                    text={type === 'spot' ? '차박명소 더보기' : '차박로그 더보기'}
+                    onClick={handleLoadMoreClick}
+                />
+            )}
         </StSpotInfoContainer>
     );
 };
