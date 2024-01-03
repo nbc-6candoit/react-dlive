@@ -14,7 +14,7 @@ const SpotLog = ({ filterBySpot = false }) => {
     const navigate = useNavigate();
 
     const { spotId } = useParams();
-    console.log(spotId);
+    console.log('spotId___값이 나와야 함', spotId);
 
     const logList = useSelector((state) => {
         return state.logSlice.snapshotLogs;
@@ -68,7 +68,7 @@ const SpotLog = ({ filterBySpot = false }) => {
                     <p>해당 명소의 로그가 없습니다. 차박로그를 등록해 주세요!</p>
                 ) : (
                     filteredLogList.slice(0, 3).map((log, index) => (
-                        <Link key={log.docID} to={`/log/${log.docID}/${spotId}`}>
+                        <Link key={log.docID} to={`/log/${log.docID}/${log.spotId}`}>
                             <LogCard title={log.title} content={log.content} index={index} images={log.images} />
                         </Link>
                     ))

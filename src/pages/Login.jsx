@@ -76,7 +76,7 @@ export default function Login() {
                 />
             </StinputSection>
             <StbuttonSection>
-                <Button type='button' onClick={handlerlogin} text='로그인'></Button>
+                <Button type='button' onClick={handlerlogin} text='로그인' width={'320px'}></Button>
                 <StstyledGoogleButton type='button' onClick={handlergoogleLogin}>
                     <img src={Glogo}></img>
                     <p>Sign in with Google</p>
@@ -100,8 +100,10 @@ const StloginWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 50px;
-    gap: 50px;
+    width: 100%;
+    max-width: 620px;
+    margin: 40px 0;
+    gap: 30px;
     & h1 {
         font-size: 20px;
     }
@@ -110,15 +112,18 @@ const StloginWrapper = styled.div`
 const StinputSection = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
 `;
 
 const StloginInput = styled.input`
-    width: 200px;
-    height: 20px;
-    border-radius: 20px;
-    border: 1px solid black;
-    padding: 15px;
+    max-width: 320px;
+    width: 100%;
+    height: 48px;
+    background: #f1f1f1;
+    border-radius: 8px;
+    padding: 0 20px;
     font-size: 16px;
 `;
 const StbuttonSection = styled.div`
@@ -127,13 +132,18 @@ const StbuttonSection = styled.div`
 `;
 
 const StstyledGoogleButton = styled.button`
-    width: ${(props) => (props.width ? props.width : '100%')};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    max-width: 320px;
+    width: 100%;
     height: 48px;
     font-size: 16px;
     color: #5eb470;
     border-radius: 5px;
     border: 1px solid #5eb470;
-    margin-top: 30px;
+    margin: 20px 0;
     cursor: pointer;
     transition: background 200ms;
     &:hover {
