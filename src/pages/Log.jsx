@@ -15,7 +15,10 @@ const Log = () => {
     const { spot } = useSelector((state) => state.spotData);
     const dispatch = useDispatch();
 
-    const filteredSpot = spot.filter((spot) => spot.id === spotId);
+    const filteredSpot = spot.filter((spot) => {
+        console.log('spot.id  /// spotId', spot.id, spotId);
+        return spot.id === spotId;
+    });
     const selectedSpot = filteredSpot[0];
 
     const targetLog = useSelector((state) => state.logSlice.targetLog);
