@@ -16,10 +16,10 @@ const LogCard = ({ title, content, images, index }) => {
                     <StContent>
                         <p>{content}</p>
                     </StContent>
-                    <div>
+                    {/* <div>
                         <FaUserCircle className='user' size='18' fill='#dddddd' />
                         <h6>nickname</h6>
-                    </div>
+                    </div> */}
                 </StLogWrapper>
             </StLogCard>
         </>
