@@ -7,8 +7,6 @@ import styled from 'styled-components';
 import Button from 'components/common/Button';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom/dist';
-import { collection, getDocs } from '@firebase/firestore';
-import { db } from 'shared/firebase';
 
 const SpotDetail = () => {
     const dispatch = useDispatch();
@@ -40,17 +38,19 @@ const SpotDetail = () => {
                 <StHorizontalLine />
             </StDetailInfo>
             <StLogListWrapper>
-                {displayedItems.map((spot, index) => (
-                    <Link key={spot.id} to={`/${type}/${spot.id}`}>
-                        <LogCard
-                            key={index}
-                            title={type === 'log' ? spot.title : spot.name}
-                            content={spot.content}
-                            images={spot.images}
-                            index={spot.id}
-                        />
-                    </Link>
-                ))}
+                {displayedItems.map((spot, index) => {
+                    return (
+                        <Link key={spot.id} to={`/${type}/${spot.docID}/${spot.spotId}`}>
+                            <LogCard
+                                key={index}
+                                title={type === 'log' ? spot.title : spot.name}
+                                content={spot.content}
+                                images={spot.images}
+                                index={spot.id}
+                            />
+                        </Link>
+                    );
+                })}
             </StLogListWrapper>
             {!isAllItemsVisible && (
                 <Button

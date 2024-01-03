@@ -91,7 +91,7 @@ const InfoFix = () => {
                     <StlogCard>
                         <StlogWrapper>
                             {!isEditing && (
-                                <FaUserCircle className='user' size='40' fill='#dddddd' imageUrl={profileImage} />
+                                <FaUserCircle className='user' size='80' fill='#dddddd' imageUrl={profileImage} />
                             )}
                             {isEditing ? (
                                 <input
@@ -107,12 +107,27 @@ const InfoFix = () => {
 
                             {isEditing ? (
                                 <>
-                                    <Button type='button' text='저장하기' onClick={handleNicknameSave} />
-                                    <Button type='button' text='취소하기' onClick={() => setIsEditing(false)} />
+                                    <Button
+                                        type='button'
+                                        text='저장하기'
+                                        onClick={handleNicknameSave}
+                                        width={`320px`}
+                                    />
+                                    <Button
+                                        type='button'
+                                        text='취소하기'
+                                        onClick={() => setIsEditing(false)}
+                                        width={`320px`}
+                                    />
                                 </>
                             ) : (
                                 <>
-                                    <Button type='button' text='닉네임 변경' onClick={handleNicknameEdit} width='20%' />
+                                    <Button
+                                        type='button'
+                                        text='닉네임 변경'
+                                        onClick={handleNicknameEdit}
+                                        width={`320px`}
+                                    />
 
                                     <input
                                         type='file'
@@ -125,7 +140,7 @@ const InfoFix = () => {
                                         type='button'
                                         text='프로필 이미지 변경'
                                         onClick={handleProfilePictureChange}
-                                        width='30%'
+                                        width={`320px`}
                                     />
                                 </>
                             )}
@@ -158,15 +173,16 @@ const Stcontainer = styled.div`
 
 const StlogCard = styled.div`
     width: 100%;
-    max-height: 120px;
     display: flex;
     align-items: center;
     gap: 1.2rem;
 `;
 
 const StlogWrapper = styled.div`
+    margin: 40px 0;
     padding: 40px 20px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     color: #5eb470;
@@ -183,8 +199,11 @@ const StlogWrapper = styled.div`
     & input {
         border: ${(props) => (props.isEditing ? '1px solid red' : '1px solid #5eb470')};
         width: 100%;
+        max-width: 320px;
         height: 48px;
         border-radius: 10px;
+        padding: 0 20px;
+        font-size: 16px;
         &:focus {
             outline: 1px solid #5eb470;
         }
