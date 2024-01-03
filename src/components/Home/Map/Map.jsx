@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { NaverMap, Marker, useNavermaps } from "react-naver-maps";
+import { useNavermaps } from "react-naver-maps";
 import { useSelector } from "react-redux";
 
 export const Map = () => {
@@ -30,7 +30,7 @@ export const Map = () => {
           const userMarker = new navermaps.Marker({
             position: userLocation,
             map: spotMap.current,
-            title: "Your Location",
+            title: "Location",
             draggable: false,
             animation: navermaps.Animation.NONE,
           });

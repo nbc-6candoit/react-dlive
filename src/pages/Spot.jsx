@@ -1,14 +1,14 @@
 // 차박명소 상세페이지(Spot)
-import React from 'react';
-import SpotInfo from 'components/SpotDetail/SpotInfo';
-import SpotLog from 'components/SpotDetail/SpotLog';
-import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
-import Button from 'components/common/Button';
+import React from "react";
+import SpotInfo from "components/SpotDetail/SpotInfo";
+import SpotLog from "components/SpotDetail/SpotLog";
+import styled from "styled-components";
+import { useParams } from "react-router-dom";
+import Button from "components/common/Button";
 
 const Spot = () => {
-    const { spotId } = useParams();
-    console.log(spotId);
+  const { spotId } = useParams();
+  console.log(spotId);
 
   return (
     <StPageContainer>
@@ -29,17 +29,17 @@ const Spot = () => {
 export default Spot;
 
 const StPageContainer = styled.div`
-    max-width: 620px;
+  max-width: 620px;
 `;
 
 const StButton = styled.div`
-    margin-bottom: 20px;
-    padding: 0 40px;
+  margin-bottom: 20px;
+  padding: 0 40px;
 `;
 
 const StSpotLogWrapper = styled.div`
-    overflow-y: auto;
-    height: fit-content;
-    margin-bottom: 50px;
-    padding: 40px;
+  overflow-y: auto;
+  height: fit-content;
+  margin-bottom: 50px;
+  padding: 40px;
 `;
