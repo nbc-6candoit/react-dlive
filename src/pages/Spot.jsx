@@ -10,17 +10,20 @@ const Spot = () => {
     const { spotId } = useParams();
     console.log(spotId);
 
-    return (
-        <StPageContainer>
-            <SpotInfo />
-            <StButton>
-                <Button text={'차박로그 등록하기'} onClick={() => (window.location.href = `/addlog/${spotId}`)} />
-            </StButton>
-            <StSpotLogWrapper>
-                <SpotLog filterBySpot={true} />
-            </StSpotLogWrapper>
-        </StPageContainer>
-    );
+  return (
+    <StPageContainer>
+      <SpotInfo />
+      <StButton>
+        <Button
+          text={"차박로그 등록하기"}
+          onClick={() => (window.location.href = `/addlog/${spotId}`)}
+        />
+      </StButton>
+      <StSpotLogWrapper>
+        <SpotLog filterBySpot={true} />
+      </StSpotLogWrapper>
+    </StPageContainer>
+  );
 };
 
 export default Spot;
