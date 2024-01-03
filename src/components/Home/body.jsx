@@ -87,7 +87,7 @@ function Body() {
 export default Body;
 
 const StbodyContainer = styled.main`
-    overflow-y: auto;
+    /* overflow-y: auto; */
     max-width: 620px;
     height: fit-content;
     margin-bottom: 50px;

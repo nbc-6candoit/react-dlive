@@ -135,7 +135,6 @@ const AddLogForm = () => {
                     render={({ field, fieldState }) => (
                         <StyledTextField
                             value={field.value}
-                            multiline
                             onChange={field.onChange}
                             error={fieldState.error !== undefined}
                             helperText={fieldState.error && fieldState.error.message}
@@ -146,7 +145,6 @@ const AddLogForm = () => {
                         />
                     )}
                 />
-                {/* <input type='text' id='log_title' {...register('title', { required: true })} /> */}
             </StBox>
             <StBox>
                 <label>방문 일시</label>
@@ -191,7 +189,7 @@ const AddLogForm = () => {
                             InputProps={{
                                 placeholder: '차박로그 내용을 입력해주세요',
                             }}
-                            maxHeight='200px' // Set the maximum height in pixels or any CSS units
+                            maxHeight='200px'
                         />
                     )}
                 />
@@ -248,6 +246,11 @@ const StyledTextField = styled(TextField)({
         resize: 'none',
         alignItems: 'baseline',
     },
+    '& input': {
+        padding: '0 !important',
+        height: 'unset !important',
+        marginTop: 'unset !important',
+    },
 });
 
 const StForm = styled.form`
@@ -300,13 +303,14 @@ const StDatePicker = styled(DatePicker)`
 
 const StyledTextAreaField = styled(TextField)({
     textarea: {
-        height: '200px',
+        height: '174px',
+        maxHeight: '174px',
         overflowY: 'auto',
     },
     '& .MuiOutlinedInput-root': {
         borderColor: '#5eb470',
         height: '200px',
-        overflowY: 'auto',
+        maxHeight: '200px',
         marginTop: '12px',
         padding: '13px 20px',
         background: '#f1f1f1',
