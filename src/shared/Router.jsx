@@ -5,7 +5,7 @@ import Mypage from "../pages/Mypage";
 import Spot from "../pages/Spot";
 import AddLog from "../pages/AddLog";
 import SpotDetail from "../pages/SpotDetail";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
@@ -15,13 +15,7 @@ import Signup from "../pages/Signup";
 import Mountains from "components/Home/viewDetail/Mountains";
 import Ocean from "components/Home/viewDetail/Ocean";
 import River from "components/Home/viewDetail/River";
-import {
-  BrowserRouter,
-  Navigate,
-  Route,
-  Routes,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import InfoFix from "../pages/InfoFix";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuthState } from "../redux/modules/authSlice";
